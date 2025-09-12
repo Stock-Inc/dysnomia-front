@@ -11,7 +11,9 @@ export default function Button(
                 rounded-2xl font-main text-center text-2xl cursor-pointer p-3
                 hover:drop-shadow-accent hover:scale-105 transition-all max-md:text-xl
             ${className}`}
-            aria-label={children?.toLocaleString() + " button"}
+            aria-label={typeof children === "object" && "props" in children! ?
+                (children! as React.ReactElement<{children: React.ReactNode}, never>).props.children?.toLocaleString() + " button" :
+                children?.toLocaleString() + " button"}
             onClick={onClickAction}>{children}</button>
     );
 }
