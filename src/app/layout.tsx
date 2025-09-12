@@ -8,7 +8,7 @@ const Dustismo = localFont({
 
 export const metadata: Metadata = {
     title: "Dysnomia",
-    description: "",
+    description: "Free open source chat application with a focus on privacy",
 };
 
 export default function RootLayout({
