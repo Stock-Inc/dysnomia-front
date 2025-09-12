@@ -3,8 +3,9 @@
 :root {
     --background: #121318;
     --light-background: #181820;
+    --card-border: #252535;
     --accent: #ea96ad;
-    --dark-accent: #aa6d7d;
+    --dark-accent: #ba7787;
     --foreground: #d8d8d8;
     --error: #ff1b1b;
 }
@@ -16,9 +17,11 @@
     --color-accent: var(--accent);
     --color-dark-accent: var(--dark-accent);
     --color-error: var(--error);
+    --color-card-border: var(--card-border);
     --font-main: var(--font-dustismo);
     --drop-shadow-accent: 0px 0px 10px #ea96ad;
     --text-shadow-glow: 0px 0px 2px #ea96ad;
+    --shadow-glow: 0px 0px 10px 1px #ea96ad;
 }
 
 body {
