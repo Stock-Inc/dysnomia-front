@@ -6,16 +6,21 @@
     --accent: #ea96ad;
     --dark-accent: #aa6d7d;
     --foreground: #d8d8d8;
-    --error: #000000;
+    --error: #ff1b1b;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-main: var(--font-dustismo);
+    --color-background: var(--background);
+    --color-light-background: var(--light-background);
+    --color-foreground: var(--foreground);
+    --color-accent: var(--accent);
+    --color-dark-accent: var(--dark-accent);
+    --color-error: var(--error);
+    --font-main: var(--font-dustismo);
+    --drop-shadow-accent: 0px 0px 10px #ea96ad;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+    background: var(--background);
+    color: var(--foreground);
 }
