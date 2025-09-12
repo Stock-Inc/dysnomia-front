@@ -18,6 +18,7 @@
     --color-error: var(--error);
     --font-main: var(--font-dustismo);
     --drop-shadow-accent: 0px 0px 10px #ea96ad;
+    --text-shadow-glow: 0px 0px 2px #ea96ad;
 }
 
 body {
