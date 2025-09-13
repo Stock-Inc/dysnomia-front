@@ -27,6 +27,7 @@ export default function LoginForm() {
         setCanSubmit(false);
         const result = await loginAction(values);
         if (result.success) {
+            setCanSubmit(true);
             appStore.getState().setUsername(values.username);
             appStore.getState().setAccessToken(result.accessToken!);
             redirect("/");
@@ -45,8 +46,8 @@ export default function LoginForm() {
                 <input
                     spellCheck={"false"}
                     onFocus={() => setErrored(false)}
-                    className={`border-2 rounded-2xl text-xl focus:outline-2 p-2 text-accent focus:shadow-glow transition-all w-full
-                    ${errored ? "border-error focus:outline-error" : "border-accent focus:outline-accent"}`}
+                    className={`w-full border-2 rounded-2xl text-xl focus:outline-2 p-2 focus:text-accent focus:shadow-glow transition-all
+                    ${errored ? "border-error focus:outline-error text-error" : "border-accent focus:outline-accent text-foreground"}`}
                     placeholder="Username"
                     {...form.register("username")}
                 />
@@ -57,8 +58,8 @@ export default function LoginForm() {
                 <input
                     spellCheck={"false"}
                     onFocus={() => setErrored(false)}
-                    className={`border-2 rounded-2xl text-xl focus:outline-2 p-2 text-accent focus:shadow-glow transition-all w-full
-                    ${errored ? "border-error focus:outline-error" : "border-accent focus:outline-accent"}`}
+                    className={`w-full border-2 rounded-2xl text-xl focus:outline-2 p-2 focus:text-accent focus:shadow-glow transition-all
+                    ${errored ? "border-error focus:outline-error text-error" : "border-accent focus:outline-accent text-foreground"}`}
                     placeholder="Password"
                     type="password"
                     {...form.register("password")}/>
