@@ -9,15 +9,14 @@ import {redirect} from "next/navigation";
 import {useState} from "react";
 import {appStore} from "@/lib/app-store";
 
-export default function LoginForm() {
+const formSchema = z.object({
+    username: z.string(),
+    password: z.string(),
+});
 
+export default function LoginForm() {
     const [canSubmit, setCanSubmit] = useState(true);
     const [errored, setErrored] = useState(false);
-
-    const formSchema = z.object({
-        username: z.string(),
-        password: z.string(),
-    });
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -40,8 +39,9 @@ export default function LoginForm() {
 
     return (
         <form className="flex flex-col space-y-4" onSubmit={form.handleSubmit(handleSubmit)}>
-            <div className="flex space-x-4">
-                <User className={`scale-140 place-self-center transition-all ${errored ? "text-error" : "text-accent"}`}/>
+            <div className="flex space-x-4 group">
+                <User className={`scale-140 place-self-center transition-all group-focus-within:drop-shadow-accent
+                 ${errored ? "text-error" : "text-accent"}`}/>
                 <input
                     onFocus={() => setErrored(false)}
                     className={`border-2 rounded-2xl text-xl focus:outline-2 p-2 text-accent focus:shadow-glow transition-all
@@ -50,8 +50,9 @@ export default function LoginForm() {
                     {...form.register("username")}
                 />
             </div>
-            <div className="flex space-x-4">
-                <Lock className={`scale-140 place-self-center transition-all ${errored ? "text-error" : "text-accent"}`}/>
+            <div className="flex space-x-4 group">
+                <Lock className={`scale-140 place-self-center transition-all group-focus-within:drop-shadow-accent
+                 ${errored ? "text-error" : "text-accent"}`}/>
                 <input
                     onFocus={() => setErrored(false)}
                     className={`border-2 rounded-2xl text-xl focus:outline-2 p-2 text-accent focus:shadow-glow transition-all
