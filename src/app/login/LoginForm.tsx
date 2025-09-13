@@ -43,6 +43,7 @@ export default function LoginForm() {
                 <User className={`scale-140 place-self-center transition-all group-focus-within:drop-shadow-accent
                  ${errored ? "text-error" : "text-accent"}`}/>
                 <input
+                    spellCheck={"false"}
                     onFocus={() => setErrored(false)}
                     className={`border-2 rounded-2xl text-xl focus:outline-2 p-2 text-accent focus:shadow-glow transition-all w-full
                     ${errored ? "border-error focus:outline-error" : "border-accent focus:outline-accent"}`}
@@ -54,6 +55,7 @@ export default function LoginForm() {
                 <Lock className={`scale-140 place-self-center transition-all group-focus-within:drop-shadow-accent
                  ${errored ? "text-error" : "text-accent"}`}/>
                 <input
+                    spellCheck={"false"}
                     onFocus={() => setErrored(false)}
                     className={`border-2 rounded-2xl text-xl focus:outline-2 p-2 text-accent focus:shadow-glow transition-all w-full
                     ${errored ? "border-error focus:outline-error" : "border-accent focus:outline-accent"}`}
