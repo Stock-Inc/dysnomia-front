@@ -19,7 +19,7 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body
-                className={`${Dustismo.variable} antialiased`}
+                className={`${Dustismo.variable} antialiased selection:bg-highlight-background selection:text-highlight-text`}
             >
             {children}
         </body>

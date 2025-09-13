@@ -8,6 +8,8 @@
     --dark-accent: #ba7787;
     --foreground: #d8d8d8;
     --error: #e36666;
+    --highlight-background: #653f46;
+    --highlight-text: #e1b7c2;
 }
 
 @theme inline {
@@ -22,6 +24,8 @@
     --drop-shadow-accent: 0px 0px 10px #ea96ad;
     --text-shadow-glow: 0px 0px 2px #ea96ad;
     --shadow-glow: 0px 0px 10px 1px #ea96ad;
+    --color-highlight-background: var(--highlight-background);
+    --color-highlight-text: var(--highlight-text);
 }
 
 body {
