@@ -1,7 +1,8 @@
 "use server";
 import {cookies} from "next/headers";
-import Interceptors from "undici-types/interceptors";
-import responseError = Interceptors.responseError;
+
+const BACKEND_URL = "https://api.femboymatrix.su";
+const COOKIE_EXPIRATION_TIME = 60 * 60 * 24 * 7; // 7 days
 
 export type LoginData = {
     username: string,
@@ -16,7 +17,7 @@ export type LoginResponse = {
 
 export async function loginAction(credentials: LoginData): Promise<LoginResponse> {
     try {
-        const response = await fetch("https://api.femboymatrix.su/login", {
+        const response = await fetch(`${BACKEND_URL}/login`, {
             method: "POST",
             headers: {
                 "Content-type": "application/json"
@@ -26,11 +27,11 @@ export async function loginAction(credentials: LoginData): Promise<LoginResponse
         const data = await response.json();
         if (response.ok) {
             const cookieJar = await cookies();
-            cookieJar.set("dysnomia", data.refreshToken, {
+            cookieJar.set("dysnomia", credentials.username + "thisisagreatwayofstoringstuffiamsurenothingwillevergowrong" + data.refreshToken, {
                 httpOnly: true,
                 secure: true,
                 sameSite: "strict",
-                maxAge: 60 * 5,
+                maxAge: COOKIE_EXPIRATION_TIME,
             });
             return {
                 success: true,
@@ -64,7 +65,7 @@ export type SignupResponse = {
 
 export async function signupAction(credentials: SignupData): Promise<SignupResponse> {
     try {
-        const response = await fetch("https://api.femboymatrix.su/registration", {
+        const response = await fetch(`${BACKEND_URL}/registration`, {
             method: "POST",
             headers: {
                 "Content-type": "application/json"
@@ -88,4 +89,67 @@ export async function signupAction(credentials: SignupData): Promise<SignupRespo
             message: (error as Error).message,
         };
     }
+}
+
+export type SessionCheckResponse = {
+    success: boolean,
+    message: string,
+    username?: string,
+    accessToken?: string,
+}
+
+export async function checkForActiveSessions(): Promise<SessionCheckResponse> {
+    try {
+        const cookieJar = await cookies();
+        const cookie = cookieJar.get("dysnomia");
+        if (!cookie) {
+            return {
+                success: false,
+                message: "No active session found",
+            };
+        }
+        const [username, refreshToken] = cookie.value.split("thisisagreatwayofstoringstuffiamsurenothingwillevergowrong");
+        let newRefreshToken: string;
+        try {
+            const response = await fetch(`${BACKEND_URL}/refresh_token`, {
+                method: "POST",
+                headers: {
+                    "Authorization": "Bearer " + refreshToken,
+                }
+            });
+            if (response.ok) {
+                const data = await response.json();
+                newRefreshToken = data.refreshToken;
+                const newAccessToken = data.accessToken;
+                cookieJar.set("dysnomia", username + "thisisagreatwayofstoringstuffiamsurenothingwillevergowrong" + newRefreshToken, {
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: "strict",
+                    maxAge: COOKIE_EXPIRATION_TIME,
+                });
+                return {
+                    success: true,
+                    message: "Session active",
+                    username: username,
+                    accessToken: newAccessToken,
+                };
+            } else {
+                return {
+                    success: false,
+                    message: response.statusText,
+                };
+            }
+        } catch (e) {
+            return {
+                success: false,
+                message: (e as Error).message,
+            };
+        }
+    } catch (e) {
+        return {
+            success: false,
+            message: (e as Error).message,
+        };
+    }
+
 }

@@ -8,6 +8,7 @@ import Button from "@/components/Button";
 import Link from "next/link";
 import {AtSign, Shield, ShieldCheck, User} from "lucide-react";
 import {redirect} from "next/navigation";
+import useSessionRedirect from "@/hook/useSessionRedirect";
 
 const formSchema = z.object({
     username: z.string().
@@ -27,6 +28,7 @@ const formSchema = z.object({
 });
 
 export default function SignupForm() {
+    useSessionRedirect("/home");
     const [canSubmit, setCanSubmit] = useState(true);
     const [errored, setErrored] = useState(false);
 
