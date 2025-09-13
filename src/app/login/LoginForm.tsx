@@ -44,7 +44,7 @@ export default function LoginForm() {
                  ${errored ? "text-error" : "text-accent"}`}/>
                 <input
                     onFocus={() => setErrored(false)}
-                    className={`border-2 rounded-2xl text-xl focus:outline-2 p-2 text-accent focus:shadow-glow transition-all
+                    className={`border-2 rounded-2xl text-xl focus:outline-2 p-2 text-accent focus:shadow-glow transition-all w-full
                     ${errored ? "border-error focus:outline-error" : "border-accent focus:outline-accent"}`}
                     placeholder="Username"
                     {...form.register("username")}
@@ -55,7 +55,7 @@ export default function LoginForm() {
                  ${errored ? "text-error" : "text-accent"}`}/>
                 <input
                     onFocus={() => setErrored(false)}
-                    className={`border-2 rounded-2xl text-xl focus:outline-2 p-2 text-accent focus:shadow-glow transition-all
+                    className={`border-2 rounded-2xl text-xl focus:outline-2 p-2 text-accent focus:shadow-glow transition-all w-full
                     ${errored ? "border-error focus:outline-error" : "border-accent focus:outline-accent"}`}
                     placeholder="Password"
                     type="password"
