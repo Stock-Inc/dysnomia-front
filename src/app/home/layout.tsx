@@ -1,4 +1,5 @@
-import Sidebar from "@/components/Sidebar";
+import Sidebar from "@/components/home/Sidebar";
+import ProfileButton from "@/components/home/ProfileButton";
 
 export default function HomeLayout({children}: Readonly<{
     children: React.ReactNode;
@@ -6,6 +7,7 @@ export default function HomeLayout({children}: Readonly<{
     return (
         <div className="">
             <Sidebar/>
+            <ProfileButton/>
             {children}
         </div>
     );
