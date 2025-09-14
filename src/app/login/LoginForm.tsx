@@ -30,7 +30,6 @@ export default function LoginForm() {
         if (result.success) {
             setCanSubmit(true);
             appStore.getState().setUsername(values.username);
-            appStore.getState().setAccessToken(result.accessToken!);
             redirect("/home");
         } else {
             console.log(result.message);
