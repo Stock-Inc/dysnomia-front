@@ -1,16 +1,16 @@
 import {create} from "zustand/react";
+import {persist} from "zustand/middleware";
 
 type AppStoreState = {
     username: string,
     setUsername: (username: string) => void,
-    accessToken: string,
-    setAccessToken: (accessToken: string) => void,
 }
 
-export const appStore = create<AppStoreState>((set) => ({
-    username: '',
-    setUsername: (username: string) => set({username: username}),
-    accessToken: '',
-    setAccessToken: (accessToken: string) => set({accessToken: accessToken}),
+export const appStore = create(persist<AppStoreState>(
+    (set) => ({
+        username: '',
+        setUsername: (username: string) => set({username: username}),
+    }), {
+        name: "dysnomia-client-store"
     })
 );
