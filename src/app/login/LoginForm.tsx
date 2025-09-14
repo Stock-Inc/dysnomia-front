@@ -8,7 +8,6 @@ import {loginAction, LoginData} from "@/lib/auth";
 import {redirect} from "next/navigation";
 import {useState} from "react";
 import {appStore} from "@/lib/app-store";
-import useSessionRedirect from "@/hook/useSessionRedirect";
 
 const formSchema = z.object({
     username: z.string(),
@@ -16,7 +15,6 @@ const formSchema = z.object({
 });
 
 export default function LoginForm() {
-    useSessionRedirect("/home");
 
     const [canSubmit, setCanSubmit] = useState(true);
     const [errored, setErrored] = useState(false);

@@ -2,10 +2,8 @@
 import Image from "next/image";
 import Button from "@/components/Button";
 import Link from "next/link";
-import useSessionRedirect from "@/hook/useSessionRedirect";
 
 export default function Page() {
-    useSessionRedirect("/home");
     return (
         <div className="flex flex-col items-center justify-center p-6 font-main space-y-5">
             <Image
