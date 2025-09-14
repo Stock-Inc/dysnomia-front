@@ -13,9 +13,10 @@ export default function Button(
         <button
             disabled={disabled}
             type={type}
-            className={`${variant === "accent" ? "bg-accent text-white disabled:bg-dark-accent disabled:text-foreground" :
+            className={`${variant === "accent" ? "bg-accent text-white disabled:bg-dark-accent" +
+                " disabled:text-foreground focus:outline-white focus:outline-2" :
                 "border-2 disabled:border-dark-accent border-accent bg-light-background text-accent hover:text-shadow-glow" +
-                "disabled:text-dark-accent disabled:hover:text-shadow-none"} 
+                "disabled:text-dark-accent disabled:hover:text-shadow-none focus:outline-foreground focus:outline-2"} 
                 rounded-2xl font-main text-center text-2xl cursor-pointer p-3
                 hover:drop-shadow-accent hover:scale-105 transition-all max-md:text-xl
                 disabled:cursor-default disabled:hover:drop-shadow-none disabled:hover:scale-100
