@@ -1,7 +1,7 @@
 "use client";
 import Button from "@/components/Button";
 import {SidebarIcon} from "lucide-react";
-import {useEffect, useRef, useState} from "react";
+import {useRef, useState} from "react";
 
 const initialWidth = 240;
 
@@ -36,7 +36,7 @@ export default function Sidebar() {
         <div>
             <Button
                 variant={"outline"}
-                className={`z-30 absolute m-2 hover:drop-shadow-none border-foreground 
+                className={`z-30 absolute m-4 hover:drop-shadow-none border-foreground 
                 text-foreground hover:scale-none hover:border-accent hover:text-accent`}
                 onClickAction={() => {setIsOpen(o => !o)}}
             >
@@ -45,7 +45,7 @@ export default function Sidebar() {
             <div
                 ref={sidebarRef}
                 className={
-                    `max-sm:w-full transition-transform ease-in-out duration-300 w-60
+                    `max-sm:w-full transition-transform ease-in-out duration-300 w-90
                     ${!isOpen && "-translate-x-full border-r-2 border-card-border"} 
                     h-screen max-h-screen bg-light-background absolute
                     z-10 left-0 top-0 flex flex-col font-main`
@@ -56,8 +56,8 @@ export default function Sidebar() {
                         isResizing.current = true;
                     }}
                      // style={{left: width}}
-                     className={`${!isOpen && "hidden"} max-sm:hidden fixed cursor-ew-resize w-0.5 h-full bg-card-border left-60`}></div>
-                <h2 className={"text-center text-3xl border-b-2 border-card-border p-4"}>Chats</h2>
+                     className={`${!isOpen && "hidden"} max-sm:hidden fixed cursor-ew-resize w-0.5 h-full bg-card-border left-90`}></div>
+                <h2 className={"text-center text-3xl border-b-2 border-card-border p-6"}>Chats</h2>
             </div>
         </div>
 
