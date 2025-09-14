@@ -26,10 +26,12 @@ export default function LoginForm() {
     async function handleSubmit(values: LoginData) {
         setErrored(false);
         setCanSubmit(false);
+        const store = appStore();
         const result = await loginAction(values);
         if (result.success) {
             setCanSubmit(true);
-            appStore.getState().setUsername(values.username);
+            store.setDisplayName(values.username); //TODO: get display name from server
+            store.setUsername(values.username);
             redirect("/home");
         } else {
             console.log(result.message);
