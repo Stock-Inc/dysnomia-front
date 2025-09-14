@@ -16,6 +16,7 @@ const formSchema = z.object({
 
 export default function LoginForm() {
 
+    const store = appStore();
     const [canSubmit, setCanSubmit] = useState(true);
     const [errored, setErrored] = useState(false);
 
@@ -26,7 +27,6 @@ export default function LoginForm() {
     async function handleSubmit(values: LoginData) {
         setErrored(false);
         setCanSubmit(false);
-        const store = appStore();
         const result = await loginAction(values);
         if (result.success) {
             setCanSubmit(true);
