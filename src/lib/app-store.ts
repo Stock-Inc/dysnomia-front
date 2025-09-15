@@ -8,16 +8,20 @@ type AppStoreState = {
     setDisplayName: (displayName: string) => void,
     isSidebarOpen: boolean,
     setIsSidebarOpen: () => void,
+    currentChatId: string,
+    setCurrentChatId: (id: string) => void,
 }
 
 export const appStore = create(persist<AppStoreState>(
     (set, get) => ({
-        username: '',
+        username: "",
         setUsername: username => set({username: username}),
-        displayName: '',
+        displayName: "",
         setDisplayName: displayName => set({displayName: displayName}),
         isSidebarOpen: true,
-        setIsSidebarOpen: () => set({isSidebarOpen: !get().isSidebarOpen})
+        setIsSidebarOpen: () => set({isSidebarOpen: !get().isSidebarOpen}),
+        currentChatId: "",
+        setCurrentChatId: id => set({currentChatId: id}),
     }), {
         name: "dysnomia-client-store"
     })

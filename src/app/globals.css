@@ -10,6 +10,7 @@
     --error: #e36666;
     --highlight-background: #653f46;
     --highlight-text: #e1b7c2;
+    --chat-background: #14141b;
 }
 
 @theme inline {
@@ -26,6 +27,9 @@
     --shadow-glow: 0px 0px 10px 1px #ea96ad;
     --color-highlight-background: var(--highlight-background);
     --color-highlight-text: var(--highlight-text);
+    --shadow-dim-glow: 0px 0px 10px 1px #252535;
+    --text-shadow-white-glow: 0px 0px 2px #ffffff;
+    --color-chat-background: var(--chat-background);
 }
 
 body {
