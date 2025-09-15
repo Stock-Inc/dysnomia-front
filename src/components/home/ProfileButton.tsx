@@ -9,7 +9,7 @@ export default function ProfileButton() {
         <Button
             onClickAction={() => redirect("/profile")}
             variant={"outline"}
-            className={`z-30 absolute right-0 m-4 hover:drop-shadow-none border-foreground 
+            className={`z-30 absolute right-0 m-4 border-foreground 
             text-foreground hover:scale-none hover:border-accent hover:text-accent`}>
             <User/>
         </Button>
