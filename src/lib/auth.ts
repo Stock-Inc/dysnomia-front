@@ -1,8 +1,12 @@
 "use server";
 import {cookies} from "next/headers";
+import hash from "@/lib/hash";
 
 const BACKEND_URL = "https://api.femboymatrix.su";
 const COOKIE_EXPIRATION_TIME = 60 * 60 * 24 * 7; // 7 days
+const COOKIE_SECRET = await hash("SHA-256", process.env.SALT_PHRASE!);
+
+console.log(COOKIE_SECRET);
 
 export type LoginData = {
     username: string,
@@ -17,6 +21,7 @@ export type LoginResponse = {
 
 export async function loginAction(credentials: LoginData): Promise<LoginResponse> {
     try {
+        console.log(JSON.stringify(credentials));
         const response = await fetch(`${BACKEND_URL}/login`, {
             method: "POST",
             headers: {
@@ -24,10 +29,12 @@ export async function loginAction(credentials: LoginData): Promise<LoginResponse
             },
             body: JSON.stringify(credentials),
         });
+        console.log(response);
         const data = await response.json();
+        //TODO: Store access token in cookies
         if (response.ok) {
             const cookieJar = await cookies();
-            cookieJar.set("dysnomia", credentials.username + "thisisagreatwayofstoringstuffiamsurenothingwillevergowrong" + data.refreshToken, {
+            cookieJar.set("dysnomia", credentials.username + COOKIE_SECRET + data.refreshToken, {
                 httpOnly: true,
                 secure: true,
                 sameSite: "strict",
@@ -41,13 +48,13 @@ export async function loginAction(credentials: LoginData): Promise<LoginResponse
         } else {
             return {
                 success: false,
-                message: "Invalid Username or Password",
+                message: response.statusText,
             };
         }
     } catch (error) {
         return {
             success: false,
-            message: "Network Error",
+            message: (error as Error).message,
         };
     }
 }
@@ -108,7 +115,7 @@ export async function checkForActiveSessions(): Promise<SessionCheckResponse> {
                 message: "No active session found",
             };
         }
-        const [username, refreshToken] = cookie.value.split("thisisagreatwayofstoringstuffiamsurenothingwillevergowrong");
+        const [username, refreshToken] = cookie.value.split(COOKIE_SECRET);
         let newRefreshToken: string;
         try {
             const response = await fetch(`${BACKEND_URL}/refresh_token`, {
