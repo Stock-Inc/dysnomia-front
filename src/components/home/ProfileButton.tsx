@@ -4,6 +4,7 @@ import {User} from "lucide-react";
 import {redirect} from "next/navigation";
 
 export default function ProfileButton() {
+    //TODO: make it open a little window where you can see some general info and be able to log out or visit profile page
     return (
         <Button
             onClickAction={() => redirect("/profile")}
