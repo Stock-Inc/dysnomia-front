@@ -11,6 +11,8 @@
     --highlight-background: #653f46;
     --highlight-text: #e1b7c2;
     --chat-background: #14141b;
+    --chat-outer-reply-background: #20202e;
+    --muted-foreground: #9393a1;
 }
 
 @theme inline {
@@ -30,6 +32,8 @@
     --shadow-dim-glow: 0px 0px 10px 1px #252535;
     --text-shadow-white-glow: 0px 0px 2px #ffffff;
     --color-chat-background: var(--chat-background);
+    --color-chat-outer-reply-background: var(--chat-outer-reply-background);
+    --color-muted-foreground: var(--muted-foreground);
 }
 
 body {
