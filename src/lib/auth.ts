@@ -1,12 +1,33 @@
 "use server";
 import {cookies} from "next/headers";
-import hash from "@/lib/hash";
+import {EncryptJWT, jwtDecrypt} from "jose";
 
 const BACKEND_URL = "https://api.femboymatrix.su";
 const COOKIE_EXPIRATION_TIME = 60 * 60 * 24 * 7; // 7 days
-const COOKIE_SECRET = await hash("SHA-256", process.env.SALT_PHRASE!);
-
-console.log(COOKIE_SECRET);
+const textEncoder = new TextEncoder();
+const baseKey = await crypto.subtle.importKey(
+    "raw",
+    textEncoder.encode(process.env.COOKIE_SECRET),
+    {name: "PBKDF2"},
+    false,
+    ["deriveBits", "deriveKey"],
+);
+const salt = textEncoder.encode("the-saltiest-salt-in-the-whole-world");
+const COOKIE_SECRET = await crypto.subtle.deriveKey(
+    {
+        name: "PBKDF2",
+        salt: salt,
+        iterations: 100000,
+        hash: {name: "SHA-256"},
+    },
+    baseKey,
+    {
+        name: "AES-GCM",
+        length: 256,
+    },
+    true,
+    ["encrypt", "decrypt"],
+);
 
 export type LoginData = {
     username: string,
@@ -21,7 +42,6 @@ export type LoginResponse = {
 
 export async function loginAction(credentials: LoginData): Promise<LoginResponse> {
     try {
-        console.log(JSON.stringify(credentials));
         const response = await fetch(`${BACKEND_URL}/login`, {
             method: "POST",
             headers: {
@@ -33,8 +53,17 @@ export async function loginAction(credentials: LoginData): Promise<LoginResponse
         const data = await response.json();
         //TODO: Store access token in cookies
         if (response.ok) {
+            const payload = {
+                username: credentials.username,
+                refreshToken: data.refreshToken,
+            };
+            const cookieContent = await new EncryptJWT(payload)
+                .setProtectedHeader({alg: "dir", enc: "A256GCM"})
+                .setExpirationTime('7 days')
+                .setIssuedAt()
+                .encrypt(COOKIE_SECRET);
             const cookieJar = await cookies();
-            cookieJar.set("dysnomia", credentials.username + COOKIE_SECRET + data.refreshToken, {
+            cookieJar.set("dysnomia", cookieContent, {
                 httpOnly: true,
                 secure: true,
                 sameSite: "strict",
@@ -79,6 +108,7 @@ export async function signupAction(credentials: SignupData): Promise<SignupRespo
             },
             body: JSON.stringify(credentials),
         });
+        console.log(response);
         if (response.ok) {
             return {
                 success: true,
@@ -115,7 +145,9 @@ export async function checkForActiveSessions(): Promise<SessionCheckResponse> {
                 message: "No active session found",
             };
         }
-        const [username, refreshToken] = cookie.value.split(COOKIE_SECRET);
+        const {payload} = await jwtDecrypt(cookie.value, COOKIE_SECRET);
+        const username = payload.username as string;
+        const refreshToken = payload.refreshToken as string;
         let newRefreshToken: string;
         try {
             const response = await fetch(`${BACKEND_URL}/refresh_token`, {
@@ -127,8 +159,17 @@ export async function checkForActiveSessions(): Promise<SessionCheckResponse> {
             if (response.ok) {
                 const data = await response.json();
                 newRefreshToken = data.refreshToken;
+                const newPayload = {
+                    username,
+                    refreshToken: newRefreshToken,
+                };
                 const newAccessToken = data.accessToken;
-                cookieJar.set("dysnomia", username + "thisisagreatwayofstoringstuffiamsurenothingwillevergowrong" + newRefreshToken, {
+                const cookieContent = await new EncryptJWT(newPayload)
+                    .setProtectedHeader({alg: "dir", enc: "A256GCM"})
+                    .setExpirationTime('7 days')
+                    .setIssuedAt()
+                    .encrypt(COOKIE_SECRET);
+                cookieJar.set("dysnomia", cookieContent, {
                     httpOnly: true,
                     secure: true,
                     sameSite: "strict",
