@@ -13,11 +13,11 @@ export default function MessageBox({message, isOuter}: {message: ChatMessage, is
     }, [message.reply_id]);
 
     return (
-        <div className={`text-lg rounded-2xl p-1 flex flex-col max-w-300 w-fit ${isOuter ? 
+        <div className={`text-lg rounded-2xl p-1 flex flex-col max-w-300 w-fit ml-4 ${isOuter ? 
             "place-self-start rounded-bl-none bg-card-border" :
             "place-self-end rounded-br-none text-white bg-accent"}`}
         >
-            <p className={"text-xl p-1 mb-1"}>
+            <p className={"text-md p-1 mb-1"}>
                 {message.name ? message.name : "anon"}
             </p>
             {message.reply_id !== 0 &&
@@ -36,7 +36,6 @@ export default function MessageBox({message, isOuter}: {message: ChatMessage, is
                         timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
                     })}
                 </p>
-
             </div>
         </div>
     );
