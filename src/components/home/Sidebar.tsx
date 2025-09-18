@@ -1,16 +1,14 @@
 "use client";
 import Button from "@/components/Button";
 import {SidebarIcon} from "lucide-react";
-import {useEffect, useRef, useState} from "react";
+import {useRef} from "react";
 import {appStore} from "@/lib/app-store";
-
-const initialWidth = 240;
+import SidebarChatButton from "@/components/home/SidebarChatButton";
 
 export default function Sidebar() {
     const store = appStore();
     const isResizing = useRef(false);
-    const [width, setWidth] = useState(initialWidth);
-    const sidebarRef = useRef(null);
+    const sidebarRef = useRef<null | HTMLDivElement>(null);
 
     //TODO: disable the awkward slide that the sidebar does if it is initially closed
     //TODO: Make sidebar resizable
@@ -49,7 +47,7 @@ export default function Sidebar() {
             <div
                 ref={sidebarRef}
                 className={
-                    `max-sm:w-full transition-transform w-90 left-0 border-r-1 border-card-border
+                    `max-sm:w-full transition-transform w-90 left-0 border-r-1 border-card-border duration-75
                     ${store.isSidebarOpen ? "translate-x-0" : "-translate-x-full"} 
                     h-screen max-h-screen bg-light-background absolute
                     z-10 top-0 flex flex-col font-main`
@@ -62,6 +60,10 @@ export default function Sidebar() {
                      // style={{left: width}}
                      className={`${!store.isSidebarOpen && "hidden"} max-sm:hidden fixed cursor-ew-resize w-0.5 h-full bg-card-border left-90`}></div>
                 <h2 className={"text-center text-3xl border-b-2 border-card-border p-6"}>Chats</h2>
+                <div className={"flex flex-col space-y-2 p-2"}>
+                    <SidebarChatButton chatId={"public"}/>
+                </div>
+
             </div>
         </div>
 
