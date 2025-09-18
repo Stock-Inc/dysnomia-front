@@ -22,8 +22,8 @@ export default function MessageBox({message, isOuter}: {message: ChatMessage, is
             </p>
             {message.reply_id !== 0 &&
                 <div className={`p-1 mx-1 line-clamp-2 overflow-hidden text-md ${isOuter ?
-                    "bg-chat-outer-reply-background border-l-4 border-foreground" : 
-                    "bg-dark-accent border-r-4 border-white"}`}>
+                    "bg-chat-outer-reply-background border-l-4 border-foreground rounded-r-xl" : 
+                    "bg-dark-accent border-r-4 border-white rounded-l-xl"}`}>
                     {replyText}
                 </div>
             }
