@@ -8,6 +8,7 @@ import Button from "@/components/Button";
 import Link from "next/link";
 import {AtSign, Shield, ShieldCheck, User} from "lucide-react";
 import {redirect} from "next/navigation";
+import {appStore} from "@/lib/app-store";
 
 const formSchema = z.object({
     username: z.string().
@@ -27,6 +28,7 @@ const formSchema = z.object({
 });
 
 export default function SignupForm() {
+    const store = appStore();
     const [canSubmit, setCanSubmit] = useState(true);
     const [errored, setErrored] = useState(false);
 
@@ -40,7 +42,9 @@ export default function SignupForm() {
         const result = await signupAction(values);
         if (result.success) {
             setCanSubmit(true);
-            redirect("/login");
+            store.setDisplayName(values.username); //TODO: get display name from server
+            store.setUsername(values.username);
+            redirect("/home");
         } else {
             console.log(result.message);
             setCanSubmit(true);

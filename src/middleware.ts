@@ -1,6 +1,5 @@
 import {NextRequest, NextResponse} from "next/server";
 import {checkForActiveSessions} from "@/lib/auth";
-import {appStore} from "@/lib/app-store";
 
 export async function middleware(request: NextRequest) {
     const {pathname} = request.nextUrl;
@@ -18,6 +17,7 @@ export async function middleware(request: NextRequest) {
         const activeSessionData = await checkForActiveSessions();
         hasActiveSession = activeSessionData.success;
     } catch (error) {
+        console.log(error);
         return NextResponse.redirect(new URL("/login", request.url));
     }
 

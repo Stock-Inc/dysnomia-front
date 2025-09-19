@@ -3,7 +3,8 @@ import {cookies} from "next/headers";
 import {EncryptJWT, jwtDecrypt} from "jose";
 
 const BACKEND_URL = "https://api.femboymatrix.su";
-const COOKIE_EXPIRATION_TIME = 60 * 60 * 24 * 7; // 7 days
+const MAIN_COOKIE_EXPIRATION_TIME = 60 * 60 * 24 * 7; // 7 days
+const ACCESS_COOKIE_EXPIRATION_TIME = 60 * 60 * 10; // 10 hours
 const textEncoder = new TextEncoder();
 const baseKey = await crypto.subtle.importKey(
     "raw",
@@ -40,39 +41,51 @@ export type LoginResponse = {
     accessToken?: string,
 }
 
+async function setCookies(response: Response, username: string) {
+    try {
+        const data = await response.json();
+        const payload = {
+            username,
+            refreshToken: data.refreshToken,
+        };
+        const cookieContent = await new EncryptJWT(payload)
+            .setProtectedHeader({alg: "dir", enc: "A256GCM"})
+            .setExpirationTime('7 days')
+            .setIssuedAt()
+            .encrypt(COOKIE_SECRET);
+        const cookieJar = await cookies();
+        cookieJar.set("dysnomia", cookieContent, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "strict",
+            maxAge: MAIN_COOKIE_EXPIRATION_TIME,
+        });
+        cookieJar.set("dysnomia-access", data.accessToken, {
+            httpOnly: true,
+            maxAge: ACCESS_COOKIE_EXPIRATION_TIME,
+        });
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
+
 export async function loginAction(credentials: LoginData): Promise<LoginResponse> {
+    const needed: LoginData = {username: credentials.username, password: credentials.password};
     try {
         const response = await fetch(`${BACKEND_URL}/login`, {
             method: "POST",
             headers: {
                 "Content-type": "application/json"
             },
-            body: JSON.stringify(credentials),
+            body: JSON.stringify(needed),
         });
-        console.log(response);
-        const data = await response.json();
-        //TODO: Store access token in cookies
+        console.log(response, JSON.stringify(needed));
         if (response.ok) {
-            const payload = {
-                username: credentials.username,
-                refreshToken: data.refreshToken,
-            };
-            const cookieContent = await new EncryptJWT(payload)
-                .setProtectedHeader({alg: "dir", enc: "A256GCM"})
-                .setExpirationTime('7 days')
-                .setIssuedAt()
-                .encrypt(COOKIE_SECRET);
-            const cookieJar = await cookies();
-            cookieJar.set("dysnomia", cookieContent, {
-                httpOnly: true,
-                secure: true,
-                sameSite: "strict",
-                maxAge: COOKIE_EXPIRATION_TIME,
-            });
+            const cookiesSet = await setCookies(response, credentials.username);
             return {
-                success: true,
+                success: cookiesSet,
                 message: "Logged in",
-                accessToken: data.accessToken,
             };
         } else {
             return {
@@ -110,8 +123,9 @@ export async function signupAction(credentials: SignupData): Promise<SignupRespo
         });
         console.log(response);
         if (response.ok) {
+            const cookiesSet = await setCookies(response, credentials.username);
             return {
-                success: true,
+                success: cookiesSet,
                 message: "Signed up",
             };
         } else {
@@ -138,59 +152,54 @@ export type SessionCheckResponse = {
 export async function checkForActiveSessions(): Promise<SessionCheckResponse> {
     try {
         const cookieJar = await cookies();
-        const cookie = cookieJar.get("dysnomia");
-        if (!cookie) {
-            return {
-                success: false,
-                message: "No active session found",
-            };
-        }
-        const {payload} = await jwtDecrypt(cookie.value, COOKIE_SECRET);
-        const username = payload.username as string;
-        const refreshToken = payload.refreshToken as string;
-        let newRefreshToken: string;
-        try {
-            const response = await fetch(`${BACKEND_URL}/refresh_token`, {
-                method: "POST",
-                headers: {
-                    "Authorization": "Bearer " + refreshToken,
-                }
-            });
-            if (response.ok) {
-                const data = await response.json();
-                newRefreshToken = data.refreshToken;
-                const newPayload = {
-                    username,
-                    refreshToken: newRefreshToken,
-                };
-                const newAccessToken = data.accessToken;
-                const cookieContent = await new EncryptJWT(newPayload)
-                    .setProtectedHeader({alg: "dir", enc: "A256GCM"})
-                    .setExpirationTime('7 days')
-                    .setIssuedAt()
-                    .encrypt(COOKIE_SECRET);
-                cookieJar.set("dysnomia", cookieContent, {
-                    httpOnly: true,
-                    secure: true,
-                    sameSite: "strict",
-                    maxAge: COOKIE_EXPIRATION_TIME,
-                });
-                return {
-                    success: true,
-                    message: "Session active",
-                    username: username,
-                    accessToken: newAccessToken,
-                };
-            } else {
+        const accessCookie = cookieJar.get("dysnomia-access");
+        if (!accessCookie) {
+            const mainCookie = cookieJar.get("dysnomia");
+            if (!mainCookie) {
                 return {
                     success: false,
-                    message: response.statusText,
+                    message: "No active session found",
                 };
+            } else {
+                const {payload} = await jwtDecrypt(mainCookie.value, COOKIE_SECRET);
+                const username = payload.username as string;
+                const refreshToken = payload.refreshToken as string;
+                try {
+                    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/refresh_token`, {
+                        method: "POST",
+                        headers: {
+                            "Authorization": "Bearer " + refreshToken
+                        }
+                    });
+                    if (response.ok) {
+                        const cookiesSet = await setCookies(response, username);
+                        return cookiesSet ? {
+                            success: true,
+                            message: "session extended",
+                            accessToken: accessCookie,
+                        } : {
+                            success: false,
+                            message: "session prolongation failed",
+                        };
+                    } else {
+                        return {
+                            success: false,
+                            message: response.statusText,
+                        };
+                    }
+                } catch (e) {
+                    return {
+                        success: false,
+                        message: (e as Error).message
+                    };
+                }
             }
-        } catch (e) {
+        } else {
+            const accessToken = accessCookie.value;
             return {
-                success: false,
-                message: (e as Error).message,
+                success: true,
+                message: "session found",
+                accessToken: accessToken,
             };
         }
     } catch (e) {
@@ -199,5 +208,4 @@ export async function checkForActiveSessions(): Promise<SessionCheckResponse> {
             message: (e as Error).message,
         };
     }
-
 }
