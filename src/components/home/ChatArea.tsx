@@ -3,7 +3,7 @@ import SockJS from "sockjs-client";
 import React, {ChangeEvent, useEffect, useRef, useState} from "react";
 import {Client} from "@stomp/stompjs";
 import MessageBox from "@/components/home/MessageBox";
-import {SendHorizonal} from "lucide-react";
+import {SendHorizonal, X} from "lucide-react";
 
 export interface ChatMessage {
     id: number,
@@ -16,9 +16,12 @@ export interface ChatMessage {
 export default function ChatArea() {
     const store = appStore();
     const stompClient = useRef<Client | null>(null);
+    const chatAreaRef = useRef<null | HTMLDivElement>(null);
     const textareaRef = useRef<null | HTMLTextAreaElement>(null);
     const [messages, setMessages] = useState<undefined|ChatMessage[]>(undefined);
     const [input, setInput] = useState("");
+    const [replyId, setReplyId] = useState(0);
+    const [messageToReplyTo, setMessageToReplyTo] = useState<undefined | ChatMessage>(undefined);
 
     useEffect(() => {
         //TODO: caching, suspense ui, prolly put it on serverside
@@ -55,12 +58,35 @@ export default function ChatArea() {
 
     }, []);
 
+    useEffect(() => {
+        setMessageToReplyTo(messages?.find((msg) => msg.id === replyId));
+    }, [replyId, messages]);
+
+    function sendMessage() {
+        stompClient.current!.publish(
+            {
+                destination: "/app/chat",
+                body: JSON.stringify({
+                    name: store.username,
+                    message: input,
+                    reply_id: replyId,
+                }),
+                headers: {
+                    "content-type": "application/json",
+                },
+            }
+        );
+        setInput("");
+        setReplyId(0);
+        textareaRef.current!.rows = 1;
+        chatAreaRef.current!.scrollTop = chatAreaRef.current!.scrollHeight;
+    }
+
     function handleKeyPress(e: React.KeyboardEvent<HTMLTextAreaElement>) {
         if (e.key === "Enter" && e.shiftKey) return;
         if (e.key === "Enter" && input.trim() !== "") {
             e.preventDefault();
-            setInput("");
-            textareaRef.current!.rows = 1;
+            sendMessage();
         }
     }
 
@@ -73,38 +99,59 @@ export default function ChatArea() {
 
     return (
         store.currentChatId ?
-            <div className={`bg-chat-background max-sm:border-t-2 sm:border-x-2 border-card-border
-             h-screen space-y-2 max-h-screen overflow-y-scroll [&::-webkit-scrollbar-track]:border-card-border
+            <div ref={chatAreaRef} className={`bg-chat-background max-sm:border-t-2 sm:border-x-2 border-card-border
+             space-y-2 h-screen overflow-y-scroll [&::-webkit-scrollbar-track]:border-card-border flex flex-col justify-between
              [&::-webkit-scrollbar-thumb]:hover:bg-accent [&::-webkit-scrollbar-thumb]:transition-all
-             flex flex-col [&::-webkit-scrollbar]:w-3 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-light-background
+             [&::-webkit-scrollbar]:w-3 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-light-background
              [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-card-border [&::-webkit-scrollbar-track]:border-l-2
              ${store.isSidebarOpen && "max-md:hidden"}`}>
-                {
-                    messages?.map((message) => <MessageBox key={message.id} isOuter={store.username !== message.name} message={message}/>)
-                }
-                <div className={`sticky bottom-0 w-full left-0 h-fit flex group ${!messages && "hidden"}`}>
-                    <textarea value={input}
-                              placeholder={"Write a message..."}
-                              rows={1}
-                              ref={textareaRef}
-                              maxLength={1024}
-                              onKeyDown={handleKeyPress}
-                              onChange={handleInputChange}
-                              className={`bg-light-background resize-none w-full min-h-15 p-2 text-lg group-has-focus:border-accent
+                <div className={"flex flex-col p-4 space-y-2"}>
+                    {
+                        messages?.map((message) =>
+                            <MessageBox
+                                doubleClickHandler={() => setReplyId(message.id)}
+                                key={message.id}
+                                isOuter={store.username !== message.name}
+                                message={message}/>
+                        )
+                    }
+                </div>
+                <div className={`sticky bottom-0 w-full left-0 h-fit flex flex-col group ${!messages && "hidden"}`}>
+                    <div className={`${!replyId && "hidden"} line-clamp-1 border-t-2 border-card-border group-has-focus:border-accent
+                    bg-light-background flex justify-between transition-all`}>
+                        <div className={"flex space-x-2 p-2"}>
+                            <p className={"text-lg"}>{messageToReplyTo?.name === "" ? "anon" : messageToReplyTo?.name}:</p>
+                            <q className={"text-sm place-self-center"}>{messageToReplyTo?.message}</q>
+                        </div>
+                        <button onClick={() => setReplyId(0)}
+                                className={`place-self-center cursor-pointer transition-all focus:outline-none hover:text-accent
+                                hover:bg-card-border focus:text-accent focus:bg-card-border h-full aspect-square`}>
+                            <X className={"place-self-center"}/>
+                        </button>
+                    </div>
+                    <div className={"flex"}>
+                        <textarea value={input}
+                                  placeholder={"Write a message..."}
+                                  rows={1}
+                                  ref={textareaRef}
+                                  maxLength={1024}
+                                  onKeyDown={handleKeyPress}
+                                  onChange={handleInputChange}
+                                  className={`bg-light-background resize-none w-full min-h-15 p-2 text-lg group-has-focus:border-accent
                               [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-background
                               [&::-webkit-scrollbar-thumb]:hover:bg-accent [&::-webkit-scrollbar-thumb]:transition-all
                               [&::-webkit-scrollbar-thumb]:cursor-default
                               [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-card-border
                               border-t-2 border-card-border focus:outline-none focus:border-accent transition-all h-auto`}>
-                    </textarea>
-                    <button spellCheck={"false"} className={`
+                        </textarea>
+                        <button spellCheck={"false"} onClick={sendMessage} className={`
                         place-self-center p-5 rounded-none bg-light-background border-t-2 border-card-border cursor-pointer
                         group-has-focus:border-accent transition-all h-full
                         ${!input.trim() && "text-light-background pointer-events-none focus:bg-light-background"}
-                        hover:text-accent hover:bg-card-border flex justify-center focus:outline-none focus:bg-card-border`}>
-                        <SendHorizonal className={"place-self-center w-8 h-8"}/>
-                    </button>
-
+                        hover:text-accent hover:bg-card-border focus:bg-card-border flex justify-center focus:outline-none`}>
+                            <SendHorizonal className={"place-self-center w-8 h-8"}/>
+                        </button>
+                    </div>
                 </div>
 
             </div>

@@ -1,8 +1,10 @@
 import {ChatMessage} from "@/components/home/ChatArea";
 import {useEffect, useState} from "react";
 
-export default function MessageBox({message, isOuter}: {message: ChatMessage, isOuter: boolean}) {
-
+export default function MessageBox(
+    {message, isOuter, doubleClickHandler}:
+    {message: ChatMessage, isOuter: boolean, doubleClickHandler:() => void}
+) {
     const [replyText, setReplyText] = useState("");
 
     useEffect(() => {
@@ -13,7 +15,7 @@ export default function MessageBox({message, isOuter}: {message: ChatMessage, is
     }, [message.reply_id]);
 
     return (
-        <div className={`text-lg rounded-2xl p-1 flex flex-col max-w-300 w-fit ml-4 ${isOuter ? 
+        <div onDoubleClick={doubleClickHandler} className={`text-lg rounded-2xl p-1 flex flex-col max-w-300 w-fit ${isOuter ? 
             "place-self-start rounded-bl-none bg-card-border" :
             "place-self-end rounded-br-none text-white bg-accent"}`}
         >
