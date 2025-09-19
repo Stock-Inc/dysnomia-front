@@ -14,6 +14,8 @@ export default function MessageBox(
             .then(msg => setReplyText(msg.message)).catch(e => console.log(e));
     }, [message.reply_id]);
 
+    //TODO: clicking on a reply text scrolls to the original message
+
     return (
         <div onDoubleClick={doubleClickHandler} className={`text-lg rounded-2xl p-1 flex flex-col max-w-300 w-fit ${isOuter ? 
             "place-self-start rounded-bl-none bg-card-border" :
@@ -31,7 +33,7 @@ export default function MessageBox(
             }
             <div className={"flex justify-between"}>
                 <p className={"p-1 wrap-anywhere"}>{message.message}</p>
-                <p className={`text-sm place-self-end p-1 ${isOuter ? "text-muted-foreground" : "text-gray-100"}`}>
+                <p className={`text-sm place-self-end p-1 select-none pointer-events-none ${isOuter ? "text-muted-foreground" : "text-gray-100"}`}>
                     {new Date(message.date).toLocaleTimeString("en-US", {
                         hour12: false ,
                         localeMatcher: "best fit",
