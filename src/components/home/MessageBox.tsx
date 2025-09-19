@@ -17,7 +17,7 @@ export default function MessageBox({message, isOuter}: {message: ChatMessage, is
             "place-self-start rounded-bl-none bg-card-border" :
             "place-self-end rounded-br-none text-white bg-accent"}`}
         >
-            <p className={"text-md p-1 mb-1"}>
+            <p className={"text-md p-1 mb-1 text-shadow-white-glow"}>
                 {message.name ? message.name : "anon"}
             </p>
             {message.reply_id !== 0 &&
