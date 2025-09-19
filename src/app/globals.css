@@ -25,12 +25,15 @@
     --color-card-border: var(--card-border);
     --font-main: var(--font-dustismo);
     --drop-shadow-accent: 0px 0px 10px #ea96ad;
+    --drop-shadow-white-glow: 0px 0px 10px rgba(255, 255, 255, 0.38);
+    --drop-shadow-error-glow: 0px 0px 10px #e36666;
     --text-shadow-glow: 0px 0px 2px #ea96ad;
     --shadow-glow: 0px 0px 10px 1px #ea96ad;
     --color-highlight-background: var(--highlight-background);
     --color-highlight-text: var(--highlight-text);
     --shadow-dim-glow: 0px 0px 10px 1px #252535;
     --text-shadow-white-glow: 0px 0px 2px #ffffff;
+    --text-shadow-error-glow: 0px 0px 2px #e36666;
     --color-chat-background: var(--chat-background);
     --color-chat-outer-reply-background: var(--chat-outer-reply-background);
     --color-muted-foreground: var(--muted-foreground);
