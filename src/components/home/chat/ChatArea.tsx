@@ -2,8 +2,9 @@ import {appStore} from "@/lib/app-store";
 import SockJS from "sockjs-client";
 import React, {ChangeEvent, useEffect, useRef, useState} from "react";
 import {Client} from "@stomp/stompjs";
-import MessageBox from "@/components/home/MessageBox";
-import {SendHorizonal, X} from "lucide-react";
+import MessageBox from "@/components/home/chat/MessageBox";
+import {X} from "lucide-react";
+import ChatInput from "@/components/home/chat/ChatInput";
 
 export interface ChatMessage {
     id: number,
@@ -123,35 +124,19 @@ export default function ChatArea() {
                             <p className={"text-lg"}>{messageToReplyTo?.name === "" ? "anon" : messageToReplyTo?.name}:</p>
                             <q className={"text-sm place-self-center"}>{messageToReplyTo?.message}</q>
                         </div>
-                        <button onClick={() => setReplyId(0)}
+                        <button aria-label={"Cancel reply"} onClick={() => setReplyId(0)}
                                 className={`place-self-center cursor-pointer transition-all focus:outline-none hover:text-accent
                                 hover:bg-card-border focus:text-accent focus:bg-card-border h-full aspect-square`}>
                             <X className={"place-self-center"}/>
                         </button>
                     </div>
-                    <div className={"flex"}>
-                        <textarea value={input}
-                                  placeholder={"Write a message..."}
-                                  rows={1}
-                                  ref={textareaRef}
-                                  maxLength={1024}
-                                  onKeyDown={handleKeyPress}
-                                  onChange={handleInputChange}
-                                  className={`bg-light-background resize-none w-full min-h-15 p-2 text-lg group-has-focus:border-accent
-                              [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-background
-                              [&::-webkit-scrollbar-thumb]:hover:bg-accent [&::-webkit-scrollbar-thumb]:transition-all
-                              [&::-webkit-scrollbar-thumb]:cursor-default
-                              [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-card-border
-                              border-t-2 border-card-border focus:outline-none focus:border-accent transition-all h-auto`}>
-                        </textarea>
-                        <button spellCheck={"false"} onClick={sendMessage} className={`
-                        place-self-center p-5 rounded-none bg-light-background border-t-2 border-card-border cursor-pointer
-                        group-has-focus:border-accent transition-all h-full
-                        ${!input.trim() && "text-light-background pointer-events-none focus:bg-light-background"}
-                        hover:text-accent hover:bg-card-border focus:bg-card-border flex justify-center focus:outline-none`}>
-                            <SendHorizonal className={"place-self-center w-8 h-8"}/>
-                        </button>
-                    </div>
+                    <ChatInput
+                        taValue={input}
+                        taRef={textareaRef}
+                        taKeyDownAction={handleKeyPress}
+                        taChangeAction={handleInputChange}
+                        sendButtonAction={sendMessage}
+                    />
                 </div>
 
             </div>

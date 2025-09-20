@@ -1,4 +1,4 @@
-import {ChatMessage} from "@/components/home/ChatArea";
+import {ChatMessage} from "@/components/home/chat/ChatArea";
 import {useEffect, useState} from "react";
 
 export default function MessageBox(
@@ -37,7 +37,7 @@ export default function MessageBox(
                     {new Date(message.date).toLocaleTimeString("en-US", {
                         hour12: false ,
                         localeMatcher: "best fit",
-                        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone, //TODO: fix time
                     })}
                 </p>
             </div>
