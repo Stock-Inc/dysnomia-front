@@ -5,6 +5,7 @@ import {Client} from "@stomp/stompjs";
 import MessageBox from "@/components/home/chat/MessageBox";
 import {X} from "lucide-react";
 import ChatInput from "@/components/home/chat/ChatInput";
+import Loadable from "@/components/Loadable";
 
 export interface ChatMessage {
     id: number,
@@ -106,17 +107,19 @@ export default function ChatArea() {
              [&::-webkit-scrollbar]:w-3 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-light-background
              [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-card-border [&::-webkit-scrollbar-track]:border-l-2
              ${store.isSidebarOpen && "max-md:hidden"}`}>
-                <div className={"flex flex-col p-4 space-y-2"}>
-                    {
-                        messages?.map((message) =>
-                            <MessageBox
-                                doubleClickHandler={() => setReplyId(message.id)}
-                                key={message.id}
-                                isOuter={store.username !== message.name}
-                                message={message}/>
-                        )
-                    }
-                </div>
+                <Loadable awaitedValue={messages} fallback={<h1>Loading</h1>}>
+                    <div className={"flex flex-col p-4 space-y-2"}>
+                        {
+                            messages?.map((message) =>
+                                <MessageBox
+                                    doubleClickHandler={() => setReplyId(message.id)}
+                                    key={message.id}
+                                    isOuter={store.username !== message.name}
+                                    message={message}/>
+                            )
+                        }
+                    </div>
+                </Loadable>
                 <div className={`sticky bottom-0 w-full left-0 h-fit flex flex-col group ${!messages && "hidden"}`}>
                     <div className={`${!replyId && "hidden"} line-clamp-1 border-t-2 border-card-border group-has-focus:border-accent
                     bg-light-background flex justify-between transition-all`}>
