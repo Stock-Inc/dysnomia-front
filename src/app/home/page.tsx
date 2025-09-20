@@ -1,5 +1,5 @@
 "use client";
-import ChatArea from "@/components/home/ChatArea";
+import ChatArea from "@/components/home/chat/ChatArea";
 import {appStore} from "@/lib/app-store";
 import {useEffect} from "react";
 
