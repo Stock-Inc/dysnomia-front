@@ -1,7 +1,7 @@
 "use client";
 import Button from "@/components/Button";
 import {LogOut, Settings, User} from "lucide-react";
-import {useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {appStore} from "@/lib/app-store";
 import ProfileModalButton from "@/components/home/ProfileModalButton";
 import {redirect} from "next/navigation";
@@ -10,6 +10,19 @@ import {logoutAction} from "@/lib/auth";
 export default function ProfileModal() {
     const store = appStore();
     const [isOpen, setIsOpen] = useState(false);
+    const modalRef = useRef<null | HTMLDivElement>(null);
+
+    useEffect(() => {
+        function handleClick(e: MouseEvent) {
+            const modalRect = modalRef.current?.getBoundingClientRect();
+            if (!modalRect || !isOpen) return;
+            if (e.x > modalRect.left && e.x < modalRect.right && e.y < modalRect.bottom && e.y > modalRect.top) return;
+            setIsOpen(false);
+        }
+        window.addEventListener("click", handleClick);
+        return () => window.removeEventListener("click", handleClick);
+    }, [isOpen]);
+
     function logout() {
         logoutAction().then(() => {
             store.setDisplayName("");
@@ -18,8 +31,9 @@ export default function ProfileModal() {
             redirect("/login");
         });
     }
+
     return (
-        <div className={"absolute z-30 right-0 m-4 flex flex-col font-main text-xl"}>
+        <div ref={modalRef} className={"absolute z-30 right-0 m-4 flex flex-col font-main text-xl"}>
             <Button
                 onClickAction={() => setIsOpen(i => !i)}
                 variant={"outline"}
@@ -28,7 +42,7 @@ export default function ProfileModal() {
                 <User/>
             </Button>
             <div className={`${!isOpen && "hidden"} transition-all
-            mt-2 bg-light-background flex flex-col border-2 border-foreground rounded-2xl p-2 space-y-2`}>
+            mt-2 bg-light-background flex flex-col border-2 border-card-border rounded-2xl p-2 space-y-2`}>
                 <p>Logged in as: <span className={"text-accent text-shadow-glow"}>{store.username}</span></p>
                 <ProfileModalButton onClickAction={() => {redirect("/profile")}}>
                     <User className={"group-hover:drop-shadow-white-glow place-self-center"}/>
