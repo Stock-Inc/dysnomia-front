@@ -36,7 +36,7 @@ export default function Sidebar() {
         <div>
             <Button
                 variant={"outline"}
-                className={`z-30 absolute m-4 border-foreground 
+                className={`z-30 absolute m-4 border-foreground hover:drop-shadow-none hover:bg-card-border
                 text-foreground hover:scale-none hover:border-accent hover:text-accent`}
                 onClickAction={() => {
                     store.setIsSidebarOpen();

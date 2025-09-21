@@ -37,7 +37,7 @@ export default function ProfileModal() {
             <Button
                 onClickAction={() => setIsOpen(i => !i)}
                 variant={"outline"}
-                className={`border-foreground place-self-end
+                className={`border-foreground place-self-end hover:drop-shadow-none hover:bg-card-border
             text-foreground hover:scale-none hover:border-accent hover:text-accent`}>
                 <User/>
             </Button>
