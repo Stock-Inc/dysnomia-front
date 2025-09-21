@@ -5,7 +5,6 @@ import {Client} from "@stomp/stompjs";
 import MessageBox from "@/components/home/chat/MessageBox";
 import {X} from "lucide-react";
 import ChatInput from "@/components/home/chat/ChatInput";
-import Loadable from "@/components/Loadable";
 
 export interface ChatMessage {
     id: number,
@@ -103,23 +102,26 @@ export default function ChatArea() {
         store.currentChatId ?
             <div ref={chatAreaRef} className={`bg-chat-background max-sm:border-t-2 sm:border-x-2 border-card-border
              space-y-2 h-screen overflow-y-scroll [&::-webkit-scrollbar-track]:border-card-border flex flex-col justify-between
-             [&::-webkit-scrollbar-thumb]:hover:bg-accent [&::-webkit-scrollbar-thumb]:transition-all
+             [&::-webkit-scrollbar-thumb]:hover:bg-accent [&::-webkit-scrollbar-thumb]:transition-all ${!messages && "justify-center"}
              [&::-webkit-scrollbar]:w-3 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-light-background
              [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-card-border [&::-webkit-scrollbar-track]:border-l-2
              ${store.isSidebarOpen && "max-md:hidden"}`}>
-                <Loadable awaitedValue={messages} fallback={<h1>Loading</h1>}>
-                    <div className={"flex flex-col p-4 space-y-2"}>
-                        {
-                            messages?.map((message) =>
-                                <MessageBox
-                                    doubleClickHandler={() => setReplyId(message.id)}
-                                    key={message.id}
-                                    isOuter={store.username !== message.name}
-                                    message={message}/>
-                            )
-                        }
-                    </div>
-                </Loadable>
+                {messages ? <div className={"flex flex-col p-4 space-y-2"}>
+                    {
+                        messages?.map((message) =>
+                            <MessageBox
+                                doubleClickHandler={() => setReplyId(message.id)}
+                                key={message.id}
+                                isOuter={store.username !== message.name}
+                                message={message}/>
+                        )
+                    }
+                </div> : <div className={"flex flex-col"}>
+                    <div className={"self-center animate-loading-circle p-10 border-4 border-loading-circle rounded-full absolute"}/>
+                    <div className={"self-center opacity-0 animate-[loadingCircle_1s_ease-in-out_0.5s_infinite]" +
+                        " p-10 border-4 border-loading-circle rounded-full"}/>
+                </div>
+                }
                 <div className={`sticky bottom-0 w-full left-0 h-fit flex flex-col group ${!messages && "hidden"}`}>
                     <div className={`${!replyId && "hidden"} line-clamp-1 border-t-2 border-card-border group-has-focus:border-accent
                     bg-light-background flex justify-between transition-all`}>

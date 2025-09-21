@@ -13,6 +13,21 @@
     --chat-background: #14141b;
     --chat-outer-reply-background: #20202e;
     --muted-foreground: #9393a1;
+    --loading-circle: #383850;
+}
+
+@keyframes loadingCircle {
+    0% {
+        opacity: 0;
+        transform: scale(0);
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        transform: scale(1);
+    }
 }
 
 @theme inline {
@@ -37,6 +52,8 @@
     --color-chat-background: var(--chat-background);
     --color-chat-outer-reply-background: var(--chat-outer-reply-background);
     --color-muted-foreground: var(--muted-foreground);
+    --animate-loading-circle: loadingCircle 1s ease-in-out 0s infinite;
+    --color-loading-circle: var(--loading-circle);
 }
 
 body {
