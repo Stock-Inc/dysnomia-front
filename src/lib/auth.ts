@@ -209,3 +209,9 @@ export async function checkForActiveSessions(): Promise<SessionCheckResponse> {
         };
     }
 }
+
+export async function logoutAction() {
+    const cookieJar = await cookies();
+    cookieJar.delete("dysnomia");
+    cookieJar.delete("dysnomia-access");
+}
