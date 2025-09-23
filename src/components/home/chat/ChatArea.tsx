@@ -23,6 +23,7 @@ export default function ChatArea() {
     const [input, setInput] = useState("");
     const [replyId, setReplyId] = useState(0);
     const [messageToReplyTo, setMessageToReplyTo] = useState<undefined | ChatMessage>(undefined);
+    const [pending, setPending] = useState(true);
 
     useEffect(() => {
         //TODO: caching, suspense ui, prolly put it on serverside
@@ -63,6 +64,12 @@ export default function ChatArea() {
         setMessageToReplyTo(messages?.find((msg) => msg.id === replyId));
     }, [replyId, messages]);
 
+    useEffect(() => {
+        if (!chatAreaRef.current || !pending) return;
+        chatAreaRef.current.scrollTop = chatAreaRef.current.scrollHeight;
+        setPending(false);
+    }, [messages]);
+
     function sendMessage() {
         stompClient.current!.publish(
             {
@@ -79,6 +86,7 @@ export default function ChatArea() {
         );
         setInput("");
         setReplyId(0);
+        setPending(true);
         textareaRef.current!.rows = 1;
         chatAreaRef.current!.scrollTop = chatAreaRef.current!.scrollHeight;
     }

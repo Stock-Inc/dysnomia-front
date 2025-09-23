@@ -1,25 +1,40 @@
 import {ChatMessage} from "@/components/home/chat/ChatArea";
+import { motion } from "motion/react";
 import {useEffect, useState} from "react";
+
+const placeholderMessage: ChatMessage = {
+    id: 0,
+    name: "...",
+    message: "...",
+    date: 0,
+    reply_id: undefined,
+};
 
 export default function MessageBox(
     {message, isOuter, doubleClickHandler}:
     {message: ChatMessage, isOuter: boolean, doubleClickHandler:() => void}
 ) {
-    const [replyText, setReplyText] = useState("");
+    const [replyMessage, setReplyMessage] = useState<null | ChatMessage>(null);
 
     useEffect(() => {
         if (message.reply_id === 0) return;
         fetch(`https://api.femboymatrix.su/message/${message.reply_id}`, {method: "GET"})
             .then(r => r.json()).catch(e => console.log(e))
-            .then(msg => setReplyText(msg.message)).catch(e => console.log(e));
+            .then(msg => {
+                setReplyMessage(msg);
+            }).catch(e => console.log(e));
     }, [message.reply_id]);
 
     //TODO: clicking on a reply text scrolls to the original message
 
     return (
-        <div onDoubleClick={doubleClickHandler} className={`text-lg rounded-2xl p-1 flex flex-col max-w-300 w-fit ${isOuter ? 
+        <motion.div
+            onDoubleClick={doubleClickHandler}
+            className={`text-lg rounded-2xl p-1 flex flex-col max-w-300 w-fit ${isOuter ? 
             "place-self-start rounded-bl-none bg-card-border" :
             "place-self-end rounded-br-none text-white bg-accent"}`}
+            initial={{opacity: 0}}
+            animate={{opacity: 1}}
         >
             <p className={"text-md p-1 mb-1 text-shadow-white-glow"}>
                 {message.name ? message.name : "anon"}
@@ -28,7 +43,8 @@ export default function MessageBox(
                 <div className={`p-1 mx-1 line-clamp-2 overflow-hidden text-md ${isOuter ?
                     "bg-chat-outer-reply-background border-l-4 border-foreground rounded-r-xl" : 
                     "bg-dark-accent border-r-4 border-white rounded-l-xl"}`}>
-                    {replyText}
+                    <p className={"text-sm"}>{(replyMessage ?? placeholderMessage).name}</p>
+                    {(replyMessage ?? placeholderMessage).message}
                 </div>
             }
             <div className={"flex justify-between"}>
@@ -41,6 +57,6 @@ export default function MessageBox(
                     })}
                 </p>
             </div>
-        </div>
+        </motion.div>
     );
 }

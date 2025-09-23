@@ -1,6 +1,6 @@
 import {motion, VariantLabels} from "motion/react";
 import {TargetAndTransition} from "motion";
-import React, {ReactElement, useMemo} from "react";
+import React, {useMemo} from "react";
 
 export default function SplitText(
     {
