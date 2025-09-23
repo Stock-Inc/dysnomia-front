@@ -1,10 +1,9 @@
 import {appStore} from "@/lib/app-store";
-import SockJS from "sockjs-client";
 import React, {ChangeEvent, useEffect, useRef, useState} from "react";
-import {Client} from "@stomp/stompjs";
 import MessageBox from "@/components/home/chat/MessageBox";
 import {X} from "lucide-react";
 import ChatInput from "@/components/home/chat/ChatInput";
+import useStompClient from "@/hook/useStompClient";
 
 export interface ChatMessage {
     id: number,
@@ -13,52 +12,32 @@ export interface ChatMessage {
     date: number,
     reply_id: number | undefined
 }
+interface ChatPublishBody {
+    name: string,
+    message: string,
+    reply_id: number,
+}
 
 export default function ChatArea() {
     const store = appStore();
-    const stompClient = useRef<Client | null>(null);
     const chatAreaRef = useRef<null | HTMLDivElement>(null);
     const textareaRef = useRef<null | HTMLTextAreaElement>(null);
-    const [messages, setMessages] = useState<undefined|ChatMessage[]>(undefined);
     const [input, setInput] = useState("");
     const [replyId, setReplyId] = useState(0);
     const [messageToReplyTo, setMessageToReplyTo] = useState<undefined | ChatMessage>(undefined);
     const [pending, setPending] = useState(true);
-
-    useEffect(() => {
-        //TODO: caching, suspense ui, prolly put it on serverside
-        stompClient.current = new Client({
-            webSocketFactory: () => new SockJS("https://api.femboymatrix.su/ws"),
+    const [messages, publishMessage] = useStompClient<ChatMessage, ChatPublishBody>("https://api.femboymatrix.su/ws",
+        {
             reconnectDelay: 5000,
-            debug: (str) => console.log(str),
-
-            onConnect: (frame) => {
-                console.log("Connection established");
-                console.log(frame);
-
-                stompClient.current!.subscribe("/topic/message",
-                    (message) => {
-                        const parsedMessage: ChatMessage = JSON.parse(message.body);
-                        setMessages(m => [...(m ?? []), parsedMessage]);
-                    });
-
-                stompClient.current!.subscribe("/topic/history",
-                    (message) => {
-                        const parsedMessages: ChatMessage[] = JSON.parse(message.body);
-                        setMessages(parsedMessages.reverse());
-                    });
-
-                stompClient.current!.publish({destination: "/app/history", body: JSON.stringify([]), headers: {'content-type': 'application/json'}});
+            debugHandler: (str) => console.log(str),
+            onConnect: (f) => {
+                console.log("Connected");
+                console.log(f);
             },
+            onError: (err) => console.log(err),
+        }
+    );
 
-            onStompError: (frame) => {
-                console.log(`Error: ${frame}`);
-            }
-        });
-
-        stompClient.current.activate();
-
-    }, []);
 
     useEffect(() => {
         setMessageToReplyTo(messages?.find((msg) => msg.id === replyId));
@@ -68,20 +47,14 @@ export default function ChatArea() {
         if (!chatAreaRef.current || !pending) return;
         chatAreaRef.current.scrollTop = chatAreaRef.current.scrollHeight;
         setPending(false);
-    }, [messages]);
+    }, [messages, pending]);
 
     function sendMessage() {
-        stompClient.current!.publish(
+        publishMessage(
             {
-                destination: "/app/chat",
-                body: JSON.stringify({
-                    name: store.username,
-                    message: input,
-                    reply_id: replyId,
-                }),
-                headers: {
-                    "content-type": "application/json",
-                },
+                name: store.username,
+                message: input,
+                reply_id: replyId,
             }
         );
         setInput("");
