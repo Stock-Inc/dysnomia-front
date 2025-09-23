@@ -114,7 +114,7 @@ export default function ChatArea() {
              [&::-webkit-scrollbar]:w-3 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-light-background
              [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-card-border [&::-webkit-scrollbar-track]:border-l-2
              ${store.isSidebarOpen && "max-md:hidden"}`}>
-                {messages ? <div className={"flex flex-col p-4 space-y-2"}>
+                {messages && <div className={"flex flex-col p-4 space-y-2"}>
                     {
                         messages?.map((message) =>
                             <MessageBox
@@ -124,12 +124,14 @@ export default function ChatArea() {
                                 message={message}/>
                         )
                     }
-                </div> : <div className={"flex flex-col"}>
-                    <div className={"self-center animate-loading-circle p-10 border-4 border-loading-circle rounded-full absolute"}/>
-                    <div className={"self-center opacity-0 animate-[loadingCircle_1s_ease-in-out_0.5s_infinite]" +
-                        " p-10 border-4 border-loading-circle rounded-full"}/>
                 </div>
                 }
+                {!messages && <div className={"flex flex-col sticky w-full justify-center"}>
+                    <div
+                        className={"self-center animate-loading-circle p-10 border-4 border-loading-circle rounded-full absolute"}/>
+                    <div className={"self-center opacity-0 animate-[loadingCircle_1s_ease-in-out_0.5s_infinite]" +
+                        " p-10 border-4 border-loading-circle rounded-full"}/>
+                </div>}
                 <div className={`sticky bottom-0 w-full left-0 h-fit flex flex-col group ${!messages && "hidden"}`}>
                     <div className={`${!replyId && "hidden"} line-clamp-1 border-t-2 border-card-border group-has-focus:border-accent
                     bg-light-background flex justify-between transition-all`}>
