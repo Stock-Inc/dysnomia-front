@@ -6,12 +6,14 @@
     --card-border: #252535;
     --accent: #ea96ad;
     --dark-accent: #ba7787;
+    --dark-accent-focus: #c67e8f;
     --foreground: #d8d8d8;
     --error: #e36666;
     --highlight-background: #653f46;
     --highlight-text: #e1b7c2;
     --chat-background: #14141b;
     --chat-outer-reply-background: #20202e;
+    --chat-outer-reply-background-focus: #2a2a3c;
     --muted-foreground: #9393a1;
     --loading-circle: #383850;
 }
@@ -54,6 +56,8 @@
     --color-muted-foreground: var(--muted-foreground);
     --animate-loading-circle: loadingCircle 1s ease-in-out 0s infinite;
     --color-loading-circle: var(--loading-circle);
+    --color-dark-accent-focus: var(--dark-accent-focus);
+    --color-chat-outer-reply-background-focus: var(--chat-outer-reply-background-focus);
 }
 
 body {
