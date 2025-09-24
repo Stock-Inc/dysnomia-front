@@ -1,6 +1,7 @@
 "use client";
 import React, {ChangeEventHandler, KeyboardEventHandler, MouseEventHandler} from "react";
 import {SendHorizonal} from "lucide-react";
+import classBuilder from "@/lib/classBuilder";
 
 export default function ChatInput(
     {
@@ -33,11 +34,17 @@ export default function ChatInput(
                 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-card-border
                 border-t-2 border-card-border focus:outline-none focus:border-accent transition-all h-auto`}>
             </textarea>
-            <button aria-label={"Send button"} spellCheck={"false"} onClick={sendButtonAction} className={`
-                        place-self-center p-5 rounded-none bg-light-background border-t-2 border-card-border cursor-pointer
-                        group-has-focus:border-accent transition-all h-full
-                        ${!taValue.trim() && "text-light-background pointer-events-none focus:bg-light-background"}
-                        hover:text-accent hover:bg-card-border focus:bg-card-border flex justify-center focus:outline-none`}>
+            <button
+                aria-label={"Send button"}
+                spellCheck={"false"}
+                onClick={sendButtonAction}
+                className={classBuilder(
+                    `place-self-center p-5 rounded-none bg-light-background border-t-2 border-card-border
+                     cursor-pointer group-has-focus:border-accent transition-all h-full hover:text-accent 
+                     hover:bg-card-border focus:bg-card-border flex justify-center focus:outline-none`,
+                    ["text-light-background pointer-events-none focus:bg-light-background", !taValue.trim()]
+                )
+            }>
                 <SendHorizonal className={"place-self-center w-8 h-8"}/>
             </button>
         </div>

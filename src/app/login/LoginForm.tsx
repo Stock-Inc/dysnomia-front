@@ -8,6 +8,7 @@ import {loginAction, LoginData} from "@/lib/auth";
 import {redirect} from "next/navigation";
 import {useState} from "react";
 import {appStore} from "@/lib/app-store";
+import classBuilder from "@/lib/classBuilder";
 
 const formSchema = z.object({
     username: z.string(),
@@ -43,30 +44,48 @@ export default function LoginForm() {
     return (
         <form className="flex flex-col space-y-4" onSubmit={form.handleSubmit(handleSubmit)}>
             <div className="flex space-x-4 group">
-                <User className={`scale-140 place-self-center transition-all group-focus-within:drop-shadow-accent
-                 ${errored ? "text-error" : "text-accent"}`}/>
+                <User className={
+                    classBuilder(
+                        `scale-140 place-self-center transition-all group-focus-within:drop-shadow-accent text-accent`,
+                        ["text-error", errored]
+                    )
+                }/>
                 <input
                     spellCheck={"false"}
                     onFocus={() => setErrored(false)}
-                    className={`w-full border-2 rounded-2xl text-xl focus:outline-2 p-2 focus:text-accent focus:shadow-glow transition-all
-                    ${errored ? "border-error focus:outline-error text-error" : "border-accent focus:outline-accent text-foreground"}`}
+                    className={
+                        classBuilder(
+                            `w-full border-2 rounded-2xl text-xl focus:outline-2 p-2 focus:text-accent 
+                            focus:shadow-glow transition-all border-accent focus:outline-accent`,
+                            ["border-error focus:outline-error text-error", errored]
+                        )
+                    }
                     placeholder="Username"
                     {...form.register("username")}
                 />
             </div>
             <div className="flex space-x-4 group">
-                <Lock className={`scale-140 place-self-center transition-all group-focus-within:drop-shadow-accent
-                 ${errored ? "text-error" : "text-accent"}`}/>
+                <Lock className={
+                    classBuilder(
+                        `scale-140 place-self-center transition-all group-focus-within:drop-shadow-accent text-accent`,
+                        ["text-error", errored]
+                    )
+                }/>
                 <input
                     spellCheck={"false"}
                     onFocus={() => setErrored(false)}
-                    className={`w-full border-2 rounded-2xl text-xl focus:outline-2 p-2 focus:text-accent focus:shadow-glow transition-all
-                    ${errored ? "border-error focus:outline-error text-error" : "border-accent focus:outline-accent text-foreground"}`}
+                    className={
+                        classBuilder(
+                            `w-full border-2 rounded-2xl text-xl focus:outline-2 p-2 focus:text-accent 
+                            focus:shadow-glow transition-all border-accent focus:outline-accent`,
+                            ["border-error focus:outline-error text-error", errored]
+                        )
+                    }
                     placeholder="Password"
                     type="password"
                     {...form.register("password")}/>
             </div>
-            <Button disabled={!canSubmit} className={`text-xl ${!canSubmit && "animate-pulse"}`} type="submit">Login</Button>
+            <Button disabled={!canSubmit} className={`${!canSubmit && "animate-pulse"} text-xl`} type="submit">Login</Button>
         </form>
     );
 }

@@ -4,6 +4,7 @@ import {SidebarIcon} from "lucide-react";
 import {useRef} from "react";
 import {appStore} from "@/lib/app-store";
 import SidebarChatButton from "@/components/home/SidebarChatButton";
+import classBuilder from "@/lib/classBuilder";
 
 export default function Sidebar() {
     const store = appStore();
@@ -46,19 +47,21 @@ export default function Sidebar() {
             </Button>
             <div
                 ref={sidebarRef}
-                className={
-                    `max-sm:w-full transition-transform w-90 left-0 border-r-1 border-card-border duration-75
-                    ${store.isSidebarOpen ? "translate-x-0" : "-translate-x-full"} 
-                    h-screen max-h-screen bg-light-background absolute
-                    z-10 top-0 flex flex-col font-main`
-                }
+                className={classBuilder(
+                    `max-sm:w-full transition-transform w-90 left-0 border-r-1 border-card-border duration-75 -translate-x-full
+                    h-screen max-h-screen bg-light-background absolute z-10 top-0 flex flex-col font-main`,
+                    ["translate-x-0", store.isSidebarOpen]
+                )}
             >
                 <div onMouseDown={(e) => {
                         e.preventDefault();
                         isResizing.current = true;
                     }}
                      // style={{left: width}}
-                     className={`${!store.isSidebarOpen && "hidden"} max-sm:hidden fixed cursor-ew-resize w-0.5 h-full bg-card-border left-90`}></div>
+                     className={classBuilder(
+                         `max-sm:hidden fixed cursor-ew-resize w-0.5 h-full bg-card-border left-90`,
+                         ["hidden", store.isSidebarOpen]
+                     )}></div>
                 <h2 className={"text-center text-3xl border-b-2 border-card-border p-6"}>Chats</h2>
                 <div className={"flex flex-col space-y-2 p-2"}>
                     <SidebarChatButton chatId={"public"}/>
