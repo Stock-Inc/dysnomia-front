@@ -44,11 +44,11 @@ export default function ProfileModal() {
             <div className={`${!isOpen && "opacity-0"} transition-all
             mt-2 bg-light-background flex flex-col border-2 border-card-border rounded-2xl p-2 space-y-2`}>
                 <p>Logged in as: <span className={"text-accent text-shadow-glow"}>{store.username}</span></p>
-                <ProfileModalButton onClickAction={() => {redirect("/profile")}}>
+                <ProfileModalButton onClickAction={() => redirect("/profile")}>
                     <User className={"group-hover:drop-shadow-white-glow place-self-center"}/>
                     <p>Profile</p>
                 </ProfileModalButton>
-                <ProfileModalButton onClickAction={() => {redirect("/settings")}}>
+                <ProfileModalButton onClickAction={() => redirect("/settings")}>
                     <Settings className={"group-hover:drop-shadow-white-glow place-self-center"}/>
                     <p>Settings</p>
                 </ProfileModalButton>
