@@ -126,8 +126,8 @@ export default function ChatArea() {
 
                 </div>
                 <div className={`${!messages && "hidden"} sticky bottom-0 w-full left-0 h-fit flex flex-col group`}>
-                    <div className={`${!replyId && "hidden"} line-clamp-1 border-2 border-b-0 border-card-border group-has-focus:border-accent
-                    bg-light-background flex justify-between transition-all`}>
+                    <div className={`${!replyId && "hidden"} line-clamp-1 border-t-2 sm:border-2 border-b-0 
+                    border-card-border group-has-focus:border-accent bg-light-background flex justify-between transition-all`}>
                         <div className={"flex space-x-2 p-2"}>
                             <p className={"text-lg"}>{messageToReplyTo?.name === "" ? "anon" : messageToReplyTo?.name}:</p>
                             <q className={"text-sm place-self-center"}>{messageToReplyTo?.message}</q>
