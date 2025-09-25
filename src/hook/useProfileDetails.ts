@@ -16,8 +16,9 @@ export default function useProfileDetails<T>(username: string): FetchResult<T> {
         fetch(`https://api.femboymatrix.su/user/${username}`)
             .then(async (res) => {
                 try {
-                    const data: T = await res.json();
-                    setProfile(data);
+                    const data = await res.json();
+                    if (res.ok) setProfile(data as T);
+                    else setError(data.error);
                 } catch (e) {
                     setError((e as Error).message);
                 }
