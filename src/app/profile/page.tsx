@@ -1,12 +1,16 @@
-import ProfileDetails from "@/components/profile/ProfileDetails";
+"use client";
+import {redirect, usePathname} from "next/navigation";
+import {persistentStore} from "@/lib/app-store";
+import {useEffect} from "react";
 
 export default function Page() {
-    return (
-        <div className={"h-screen flex flex-col justify-center items-center font-main"}>
-            <div className={"p-8 bg-light-background border-2 border-card-border rounded-2xl flex flex-col space-y-4"}>
-                <h1 className={"text-center text-3xl"}>Profile</h1>
-                <ProfileDetails/>
-            </div>
-        </div>
-    );
+    //TODO: make this redirect serverside
+    const pathname = usePathname();
+    const store = persistentStore();
+
+    useEffect(() => {
+        if (pathname === "/profile") redirect(`/profile/${store.username}`);
+    }, [store, pathname]);
+
+    return (<></>);
 }

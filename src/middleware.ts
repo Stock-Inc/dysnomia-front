@@ -4,7 +4,7 @@ import {checkForActiveSessions} from "@/lib/auth";
 export async function middleware(request: NextRequest) {
     const {pathname} = request.nextUrl;
 
-    const protectedRoutes = ['/home', '/dashboard'];
+    const protectedRoutes = ['/home', '/dashboard', '/profile'];
     const authRoutes = ['/login', '/signup'];
     const publicRoutes = ['/', '/about']; // Add other public routes
 
