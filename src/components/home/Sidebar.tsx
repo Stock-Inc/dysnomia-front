@@ -36,6 +36,7 @@ export default function Sidebar() {
     return (
         <div>
             <Button
+                ariaLabel={"Toggle Sidebar"}
                 variant={"outline"}
                 className={`z-30 absolute m-4 border-foreground hover:drop-shadow-none hover:bg-card-border
                 text-foreground hover:scale-none hover:border-accent hover:text-accent`}

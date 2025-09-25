@@ -35,6 +35,7 @@ export default function ProfileModal() {
     return (
         <div ref={modalRef} className={"absolute z-30 right-0 m-4 flex flex-col font-main text-xl"}>
             <Button
+                ariaLabel={"Open profile modal"}
                 onClickAction={() => setIsOpen(i => !i)}
                 variant={"outline"}
                 className={`border-foreground place-self-end hover:drop-shadow-none hover:bg-card-border

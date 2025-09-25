@@ -6,6 +6,7 @@ import {redirect} from "next/navigation";
 export default function BackButton() {
     return (
         <Button variant={"outline"}
+                ariaLabel={"Go back"}
                 className={`z-30 absolute right-0 m-4 border-foreground hover:drop-shadow-none hover:bg-card-border
                 text-foreground hover:scale-none hover:border-accent hover:text-accent`}
                 onClickAction={() => redirect("/home")}>

@@ -4,14 +4,16 @@ import classBuilder from "@/lib/classBuilder";
 
 export default function Button(
     {
-        children, onClickAction, variant = "accent", className, type, disabled,
+        children, onClickAction, variant = "accent", className, type, disabled, ariaLabel
     }: {
         children: React.ReactNode, onClickAction?: () => void,
         variant?: "accent" | "outline", className?: string,
-        type?: "submit" | "reset" | "button", disabled?: boolean
+        type?: "submit" | "reset" | "button", disabled?: boolean,
+        ariaLabel?: string
     }) {
     return (
         <button
+            aria-label={ariaLabel}
             disabled={disabled}
             type={type}
             className={classBuilder(
