@@ -22,7 +22,6 @@ export default function ChatInput(
         <div className={"flex"}>
             <textarea value={taValue}
                 placeholder={"Write a message..."}
-                rows={1}
                 ref={taRef}
                 maxLength={1024}
                 onKeyDown={taKeyDownAction}

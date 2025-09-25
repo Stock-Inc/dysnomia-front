@@ -44,6 +44,10 @@ export default function ChatArea() {
     );
 
     useEffect(() => {
+        if (chatAreaRef.current) chatAreaRef.current.scrollTop = chatAreaRef.current.scrollHeight;
+    }, [store.currentChatId]);
+
+    useEffect(() => {
         setMessageToReplyTo(messages?.find((msg) => msg.id === replyId));
     }, [replyId, messages]);
 
@@ -65,8 +69,6 @@ export default function ChatArea() {
         setInput("");
         setReplyId(0);
         setPending(true);
-        textareaRef.current!.rows = 1;
-        // chatAreaRef.current!.scrollTop = chatAreaRef.current!.scrollHeight;
     }
 
     function handleKeyPress(e: React.KeyboardEvent<HTMLTextAreaElement>) {
@@ -78,15 +80,17 @@ export default function ChatArea() {
     }
 
     const handleInputChange = useCallback((e: ChangeEvent<HTMLTextAreaElement>) => {
+        const textarea = textareaRef.current!;
         const value = e.currentTarget.value;
         setInput(value);
 
-        // if (textareaRef.current) {
-        //     const lineCount = value.split("\n").length;
-        //     if (lineCount <= 5) {
-        //         textareaRef.current.rows = lineCount;
-        //     }
-        // }
+        textarea.style.height = 'auto';
+
+        const minHeight = 24;
+        const maxHeight = 120;
+        const newHeight = Math.min(Math.max(textarea.scrollHeight, minHeight), maxHeight);
+
+        textarea.style.height = `${newHeight}px`;
     }, []);
 
     return (
@@ -126,7 +130,7 @@ export default function ChatArea() {
 
                 </div>
                 <div className={`${!messages && "hidden"} sticky bottom-0 w-full left-0 h-fit flex flex-col group`}>
-                    <div className={`${!replyId && "hidden"} line-clamp-1 border-t-2 sm:border-2 border-b-0 
+                    <div className={`${!replyId && "hidden"} line-clamp-1 border-t-2 sm:border-2 sm:border-b-0 
                     border-card-border group-has-focus:border-accent bg-light-background flex justify-between transition-all`}>
                         <div className={"flex space-x-2 p-2"}>
                             <p className={"text-lg"}>{messageToReplyTo?.name === "" ? "anon" : messageToReplyTo?.name}:</p>
