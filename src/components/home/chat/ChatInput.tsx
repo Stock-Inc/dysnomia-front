@@ -32,14 +32,14 @@ export default function ChatInput(
                 [&::-webkit-scrollbar-thumb]:hover:bg-accent [&::-webkit-scrollbar-thumb]:transition-all
                 [&::-webkit-scrollbar-thumb]:cursor-default
                 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-card-border
-                border-t-2 border-card-border focus:outline-none focus:border-accent transition-all h-auto`}>
+                border-t-2 border-l-2 border-card-border focus:outline-none focus:border-accent transition-all h-auto`}>
             </textarea>
             <button
                 aria-label={"Send button"}
                 spellCheck={"false"}
                 onClick={sendButtonAction}
                 className={classBuilder(
-                    `place-self-center p-5 rounded-none bg-light-background border-t-2 border-card-border
+                    `place-self-center p-5 rounded-none bg-light-background border-t-2 border-r-2 border-card-border
                      cursor-pointer group-has-focus:border-accent transition-all h-full hover:text-accent 
                      hover:bg-card-border focus:bg-card-border flex justify-center focus:outline-none`,
                     ["text-light-background pointer-events-none focus:bg-light-background", !taValue.trim()]

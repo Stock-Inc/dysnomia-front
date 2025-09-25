@@ -81,49 +81,52 @@ export default function ChatArea() {
         const value = e.currentTarget.value;
         setInput(value);
 
-        if (textareaRef.current) {
-            const lineCount = value.split("\n").length;
-            if (lineCount <= 5) {
-                textareaRef.current.rows = lineCount;
-            }
-        }
+        // if (textareaRef.current) {
+        //     const lineCount = value.split("\n").length;
+        //     if (lineCount <= 5) {
+        //         textareaRef.current.rows = lineCount;
+        //     }
+        // }
     }, []);
 
     return (
         store.currentChatId ?
-            <div ref={chatAreaRef} className={
-                classBuilder(
-                    `bg-chat-background max-sm:border-t-2 sm:border-x-2 border-card-border 
+            <>
+                <div ref={chatAreaRef} className={
+                    classBuilder(
+                        `bg-chat-background max-sm:border-t-2 sm:border-x-2 border-card-border 
                     space-y-2 h-screen overflow-y-scroll [&::-webkit-scrollbar-track]:border-card-border flex flex-col justify-between
                     [&::-webkit-scrollbar-thumb]:hover:bg-accent [&::-webkit-scrollbar-thumb]:transition-all
                     [&::-webkit-scrollbar]:w-3 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-light-background
                     [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-card-border [&::-webkit-scrollbar-track]:border-l-2`,
-                    ["max-md:hidden", store.isSidebarOpen],
-                    ["justify-center", !messages]
-                )
-            }>
-                {messages && <div className={"flex flex-col p-4 space-y-2"}>
-                    {
-                        messages?.map((message) =>
-                            <MessageBox
-                                doubleClickHandler={() => setReplyId(message.id)}
-                                key={message.id}
-                                isOuter={store.username !== message.name}
-                                message={message}/>
-                        )
-                    }
-                </div>
-                }
-                {
-                    !messages &&
-                    <div className={"flex flex-col sticky w-full justify-center"}>
-                        <div className={"self-center animate-loading-circle p-10 border-4 border-loading-circle rounded-full absolute"}/>
-                        <div className={"self-center opacity-0 animate-[loadingCircle_1s_ease-in-out_0.5s_infinite]" +
-                            " p-10 border-4 border-loading-circle rounded-full"}/>
+                        ["max-md:hidden", store.isSidebarOpen],
+                        ["justify-center", !messages]
+                    )
+                }>
+                    {messages && <div className={"flex flex-col p-4 space-y-2"}>
+                        {
+                            messages?.map((message) =>
+                                <MessageBox
+                                    doubleClickHandler={() => setReplyId(message.id)}
+                                    key={message.id}
+                                    isOuter={store.username !== message.name}
+                                    message={message}/>
+                            )
+                        }
                     </div>
-                }
+                    }
+                    {
+                        !messages &&
+                        <div className={"flex flex-col sticky w-full justify-center"}>
+                            <div className={"self-center animate-loading-circle p-10 border-4 border-loading-circle rounded-full absolute"}/>
+                            <div className={"self-center opacity-0 animate-[loadingCircle_1s_ease-in-out_0.5s_infinite]" +
+                                " p-10 border-4 border-loading-circle rounded-full"}/>
+                        </div>
+                    }
+
+                </div>
                 <div className={`${!messages && "hidden"} sticky bottom-0 w-full left-0 h-fit flex flex-col group`}>
-                    <div className={`${!replyId && "hidden"} line-clamp-1 border-t-2 border-card-border group-has-focus:border-accent
+                    <div className={`${!replyId && "hidden"} line-clamp-1 border-2 border-b-0 border-card-border group-has-focus:border-accent
                     bg-light-background flex justify-between transition-all`}>
                         <div className={"flex space-x-2 p-2"}>
                             <p className={"text-lg"}>{messageToReplyTo?.name === "" ? "anon" : messageToReplyTo?.name}:</p>
@@ -143,8 +146,7 @@ export default function ChatArea() {
                         sendButtonAction={sendMessage}
                     />
                 </div>
-
-            </div>
+            </>
             :
             <h1 className="place-self-center text-2xl justify-self-center">Select a chat to open it</h1>
 
