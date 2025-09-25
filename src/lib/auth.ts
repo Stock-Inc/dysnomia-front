@@ -41,7 +41,7 @@ export type LoginResponse = {
     accessToken?: string,
 }
 
-async function setCookies(response: Response, username: string) {
+async function setCookies(response: Response, username: string): Promise<{success: boolean, accessToken?: string}> {
     try {
         const data = await response.json();
         const payload = {
@@ -61,12 +61,17 @@ async function setCookies(response: Response, username: string) {
             maxAge: MAIN_COOKIE_EXPIRATION_TIME,
         });
         cookieJar.set("dysnomia-access", data.accessToken, {
-            httpOnly: true,
+            sameSite: "strict",
             maxAge: ACCESS_COOKIE_EXPIRATION_TIME,
         });
-        return true;
+        return {
+            success: true,
+            accessToken: data.accessToken,
+        };
     } catch (e) {
-        return false;
+        return {
+            success: false
+        };
     }
 }
 
@@ -82,10 +87,11 @@ export async function loginAction(credentials: LoginData): Promise<LoginResponse
         });
         console.log(response, JSON.stringify(needed));
         if (response.ok) {
-            const cookiesSet = await setCookies(response, credentials.username);
+            const {success, accessToken} = await setCookies(response, credentials.username);
             return {
-                success: cookiesSet,
+                success,
                 message: "Logged in",
+                accessToken: accessToken, //FIXME: TEMPORARY TILL WE GET SPECIAL WEBSOCKET ONLY TOKENS
             };
         } else {
             return {
@@ -110,6 +116,7 @@ export type SignupData = {
 export type SignupResponse = {
     success: boolean,
     message: string,
+    accessToken?: string,
 }
 
 export async function signupAction(credentials: SignupData): Promise<SignupResponse> {
@@ -123,10 +130,11 @@ export async function signupAction(credentials: SignupData): Promise<SignupRespo
         });
         console.log(response);
         if (response.ok) {
-            const cookiesSet = await setCookies(response, credentials.username);
+            const {success, accessToken} = await setCookies(response, credentials.username);
             return {
-                success: cookiesSet,
+                success,
                 message: "Signed up",
+                accessToken: accessToken,
             };
         } else {
             return {
@@ -172,11 +180,11 @@ export async function checkForActiveSessions(): Promise<SessionCheckResponse> {
                         }
                     });
                     if (response.ok) {
-                        const cookiesSet = await setCookies(response, username);
-                        return cookiesSet ? {
+                        const {success, accessToken} = await setCookies(response, username);
+                        return success ? {
                             success: true,
                             message: "session extended",
-                            accessToken: accessCookie,
+                            accessToken: accessToken,
                         } : {
                             success: false,
                             message: "session prolongation failed",

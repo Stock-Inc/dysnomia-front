@@ -1,5 +1,5 @@
 import {persistentStore} from "@/lib/app-store";
-import React, {ChangeEvent, useEffect, useRef, useState} from "react";
+import React, {ChangeEvent, useCallback, useEffect, useRef, useState} from "react";
 import MessageBox from "@/components/home/chat/MessageBox";
 import {X} from "lucide-react";
 import ChatInput from "@/components/home/chat/ChatInput";
@@ -27,7 +27,7 @@ export default function ChatArea() {
     const [replyId, setReplyId] = useState(0);
     const [messageToReplyTo, setMessageToReplyTo] = useState<undefined | ChatMessage>(undefined);
     const [pending, setPending] = useState(true);
-    const [prevMessages, setPrevMessages] = useState<ChatMessage[] | null>([]);
+    const [prevMessages, setPrevMessages] = useState<ChatMessage[] | null>(null);
     const [messages, publishMessage] = useStompClient<ChatMessage, ChatPublishBody>("https://api.femboymatrix.su/ws",
         {
             reconnectDelay: 5000,
@@ -37,6 +37,9 @@ export default function ChatArea() {
                 console.log(f);
             },
             onError: (err) => console.log(err),
+            onDisconnect: (f) => {
+                console.log(f);
+            },
         }
     );
 
@@ -49,7 +52,7 @@ export default function ChatArea() {
         chatAreaRef.current.scrollTop = chatAreaRef.current.scrollHeight;
         setPrevMessages(messages);
         setPending(false);
-    }, [messages, pending]);
+    }, [messages, pending, prevMessages]);
 
     function sendMessage() {
         publishMessage(
@@ -63,7 +66,7 @@ export default function ChatArea() {
         setReplyId(0);
         setPending(true);
         textareaRef.current!.rows = 1;
-        chatAreaRef.current!.scrollTop = chatAreaRef.current!.scrollHeight;
+        // chatAreaRef.current!.scrollTop = chatAreaRef.current!.scrollHeight;
     }
 
     function handleKeyPress(e: React.KeyboardEvent<HTMLTextAreaElement>) {
@@ -74,12 +77,17 @@ export default function ChatArea() {
         }
     }
 
-    function handleInputChange(e: ChangeEvent<HTMLTextAreaElement>) {
-        setInput(e.currentTarget.value);
-        if (textareaRef.current!.value.split("\n").length <= 5) {
-            textareaRef.current!.rows = 1 + textareaRef.current!.value.split("\n").length;
+    const handleInputChange = useCallback((e: ChangeEvent<HTMLTextAreaElement>) => {
+        const value = e.currentTarget.value;
+        setInput(value);
+
+        if (textareaRef.current) {
+            const lineCount = value.split("\n").length;
+            if (lineCount <= 5) {
+                textareaRef.current.rows = lineCount;
+            }
         }
-    }
+    }, []);
 
     return (
         store.currentChatId ?
@@ -106,12 +114,14 @@ export default function ChatArea() {
                     }
                 </div>
                 }
-                {!messages && <div className={"flex flex-col sticky w-full justify-center"}>
-                    <div
-                        className={"self-center animate-loading-circle p-10 border-4 border-loading-circle rounded-full absolute"}/>
-                    <div className={"self-center opacity-0 animate-[loadingCircle_1s_ease-in-out_0.5s_infinite]" +
-                        " p-10 border-4 border-loading-circle rounded-full"}/>
-                </div>}
+                {
+                    !messages &&
+                    <div className={"flex flex-col sticky w-full justify-center"}>
+                        <div className={"self-center animate-loading-circle p-10 border-4 border-loading-circle rounded-full absolute"}/>
+                        <div className={"self-center opacity-0 animate-[loadingCircle_1s_ease-in-out_0.5s_infinite]" +
+                            " p-10 border-4 border-loading-circle rounded-full"}/>
+                    </div>
+                }
                 <div className={`${!messages && "hidden"} sticky bottom-0 w-full left-0 h-fit flex flex-col group`}>
                     <div className={`${!replyId && "hidden"} line-clamp-1 border-t-2 border-card-border group-has-focus:border-accent
                     bg-light-background flex justify-between transition-all`}>
