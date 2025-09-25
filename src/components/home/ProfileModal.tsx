@@ -4,8 +4,8 @@ import {LogOut, Settings, User} from "lucide-react";
 import {useEffect, useRef, useState} from "react";
 import {persistentStore} from "@/lib/app-store";
 import ProfileModalButton from "@/components/home/ProfileModalButton";
-import {redirect} from "next/navigation";
 import {logoutAction} from "@/lib/auth";
+import {redirect, RedirectType} from "next/navigation";
 
 export default function ProfileModal() {
     const store = persistentStore();
@@ -45,11 +45,11 @@ export default function ProfileModal() {
             <div className={`${!isOpen && "hidden"} transition-all
             mt-2 bg-light-background flex flex-col border-2 border-card-border rounded-2xl p-2 space-y-2`}>
                 <p>Logged in as: <span className={"text-accent text-shadow-glow"}>{store.username}</span></p>
-                <ProfileModalButton onClickAction={() => redirect(`/profile/${store.username}`)}>
+                <ProfileModalButton onClickAction={() => redirect(`/profile/${store.username}`, RedirectType.push)}>
                     <User className={"group-hover:drop-shadow-white-glow place-self-center"}/>
                     <p>Profile</p>
                 </ProfileModalButton>
-                <ProfileModalButton onClickAction={() => redirect("/settings")}>
+                <ProfileModalButton onClickAction={() => redirect("/settings", RedirectType.push)}>
                     <Settings className={"group-hover:drop-shadow-white-glow place-self-center"}/>
                     <p>Settings</p>
                 </ProfileModalButton>

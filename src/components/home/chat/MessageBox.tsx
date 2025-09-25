@@ -2,6 +2,7 @@ import {ChatMessage} from "@/components/home/chat/ChatArea";
 import {motion} from "motion/react";
 import useReplyMessage from "@/hook/useReplyMessage";
 import classBuilder from "@/lib/classBuilder";
+import {redirect, RedirectType} from "next/navigation";
 
 export default function MessageBox(
     {message, isOuter, doubleClickHandler}:
@@ -37,7 +38,12 @@ export default function MessageBox(
             animate={{opacity: 1}}
             transition={{duration: 0.5}}
         >
-            <p className={"text-md p-1 mb-1 text-shadow-white-glow"}>
+            <p
+                className={`${message.name && "cursor-pointer hover:text-shadow-white-glow"} text-md p-1 mb-1 transition-all`}
+                onClick={() => {
+                    if (message.name) redirect(`/profile/${message.name}`, RedirectType.push);
+                }}
+            >
                 {message.name || "anon"}
             </p>
             {message.reply_id !== 0 &&
