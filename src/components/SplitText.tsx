@@ -92,7 +92,7 @@ export default function SplitText(
     }, [children]);
 
     return (
-        <div ref={ref} className={className}>
+        <div ref={ref} className={`inline-block relative ${className}`}>
             {
                 toRender
             }
