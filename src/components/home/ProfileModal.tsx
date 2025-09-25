@@ -41,7 +41,7 @@ export default function ProfileModal() {
                 text-foreground hover:scale-none hover:border-accent hover:text-accent`}>
                 <User/>
             </Button>
-            <div className={`${!isOpen && "opacity-0"} transition-all
+            <div className={`${!isOpen && "hidden"} transition-all
             mt-2 bg-light-background flex flex-col border-2 border-card-border rounded-2xl p-2 space-y-2`}>
                 <p>Logged in as: <span className={"text-accent text-shadow-glow"}>{store.username}</span></p>
                 <ProfileModalButton onClickAction={() => redirect(`/profile/${store.username}`)}>
