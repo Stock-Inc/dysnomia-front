@@ -2,13 +2,13 @@
 import Button from "@/components/Button";
 import {LogOut, Settings, User} from "lucide-react";
 import {useEffect, useRef, useState} from "react";
-import {appStore} from "@/lib/app-store";
+import {persistentStore} from "@/lib/app-store";
 import ProfileModalButton from "@/components/home/ProfileModalButton";
 import {redirect} from "next/navigation";
 import {logoutAction} from "@/lib/auth";
 
 export default function ProfileModal() {
-    const store = appStore();
+    const store = persistentStore();
     const [isOpen, setIsOpen] = useState(false);
     const modalRef = useRef<null | HTMLDivElement>(null);
 
@@ -44,7 +44,7 @@ export default function ProfileModal() {
             <div className={`${!isOpen && "opacity-0"} transition-all
             mt-2 bg-light-background flex flex-col border-2 border-card-border rounded-2xl p-2 space-y-2`}>
                 <p>Logged in as: <span className={"text-accent text-shadow-glow"}>{store.username}</span></p>
-                <ProfileModalButton onClickAction={() => redirect("/profile")}>
+                <ProfileModalButton onClickAction={() => redirect(`/profile/${store.username}`)}>
                     <User className={"group-hover:drop-shadow-white-glow place-self-center"}/>
                     <p>Profile</p>
                 </ProfileModalButton>

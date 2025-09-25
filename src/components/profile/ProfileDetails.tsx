@@ -1,24 +1,32 @@
 "use client";
-import {appStore} from "@/lib/app-store";
 import {User} from "lucide-react";
+import {useParams} from "next/navigation";
+import useProfileDetails from "@/hook/useProfileDetails";
+
+export interface ProfileDetails {
+    username: string;
+    role: string;
+}
 
 export default function ProfileDetails() {
-    const store = appStore();
+    const {username} = useParams<{username: string}>();
+
+    const {data, isLoading, error} = useProfileDetails<ProfileDetails>(username);
 
     return (
         <div className={"flex justify-evenly sm:space-x-10 max-sm:flex-col"}>
             <div className={"flex flex-col space-y-2"}>
                 <User className={"border-2 border-foreground rounded-2xl w-40 h-40 place-self-center"}/>
-                <h2 className={"text-2xl text-center"}>{store.username}</h2>
+                <h2 className={"text-2xl text-center"}>{data?.username || error}</h2>
                 <button
                     onClick={e => {
                         e.preventDefault();
-                        navigator.clipboard.writeText(`@${store.username}`);
+                        navigator.clipboard.writeText(`@${data?.username}`);
                     }}
                     className={"w-fit h-fit place-self-center"}
                 >
                     <h3 className={"text-lg text-dark-accent text-center underline hover:text-accent cursor-pointer"}>
-                        @{store.username}
+                        @{data?.username}
                     </h3>
                 </button>
             </div>

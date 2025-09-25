@@ -1,4 +1,4 @@
-import {appStore} from "@/lib/app-store";
+import {persistentStore} from "@/lib/app-store";
 import React, {ChangeEvent, useEffect, useRef, useState} from "react";
 import MessageBox from "@/components/home/chat/MessageBox";
 import {X} from "lucide-react";
@@ -20,7 +20,7 @@ interface ChatPublishBody {
 }
 
 export default function ChatArea() {
-    const store = appStore();
+    const store = persistentStore();
     const chatAreaRef = useRef<null | HTMLDivElement>(null);
     const textareaRef = useRef<null | HTMLTextAreaElement>(null);
     const [input, setInput] = useState("");
@@ -39,7 +39,6 @@ export default function ChatArea() {
             onError: (err) => console.log(err),
         }
     );
-
 
     useEffect(() => {
         setMessageToReplyTo(messages?.find((msg) => msg.id === replyId));

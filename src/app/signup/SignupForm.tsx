@@ -8,7 +8,7 @@ import Button from "@/components/Button";
 import Link from "next/link";
 import {AtSign, Shield, ShieldCheck, User} from "lucide-react";
 import {redirect} from "next/navigation";
-import {appStore} from "@/lib/app-store";
+import {persistentStore} from "@/lib/app-store";
 import classBuilder from "@/lib/classBuilder";
 
 const formSchema = z.object({
@@ -29,7 +29,7 @@ const formSchema = z.object({
 });
 
 export default function SignupForm() {
-    const store = appStore();
+    const persistStore = persistentStore();
     const [canSubmit, setCanSubmit] = useState(true);
     const [errored, setErrored] = useState(false);
 
@@ -43,8 +43,8 @@ export default function SignupForm() {
         const result = await signupAction(values);
         if (result.success) {
             setCanSubmit(true);
-            store.setDisplayName(values.username); //TODO: get display name from server
-            store.setUsername(values.username);
+            persistStore.setDisplayName(values.username); //TODO: get display name from server
+            persistStore.setUsername(values.username);
             redirect("/home");
         } else {
             console.log(result.message);

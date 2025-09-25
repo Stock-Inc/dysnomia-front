@@ -2,12 +2,12 @@
 import Button from "@/components/Button";
 import {SidebarIcon} from "lucide-react";
 import {useRef} from "react";
-import {appStore} from "@/lib/app-store";
+import {persistentStore} from "@/lib/app-store";
 import SidebarChatButton from "@/components/home/SidebarChatButton";
 import classBuilder from "@/lib/classBuilder";
 
 export default function Sidebar() {
-    const store = appStore();
+    const store = persistentStore();
     const isResizing = useRef(false);
     const sidebarRef = useRef<null | HTMLDivElement>(null);
 

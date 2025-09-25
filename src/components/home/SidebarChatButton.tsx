@@ -1,9 +1,9 @@
 "use client";
-import {appStore} from "@/lib/app-store";
+import {persistentStore} from "@/lib/app-store";
 import classBuilder from "@/lib/classBuilder";
 
 export default function SidebarChatButton({chatId}: {chatId: string}) {
-    const store = appStore();
+    const store = persistentStore();
 
     return (
         <button

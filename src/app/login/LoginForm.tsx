@@ -7,7 +7,7 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {loginAction, LoginData} from "@/lib/auth";
 import {redirect} from "next/navigation";
 import {useState} from "react";
-import {appStore} from "@/lib/app-store";
+import {persistentStore} from "@/lib/app-store";
 import classBuilder from "@/lib/classBuilder";
 
 const formSchema = z.object({
@@ -16,8 +16,7 @@ const formSchema = z.object({
 });
 
 export default function LoginForm() {
-
-    const store = appStore();
+    const persistStore = persistentStore();
     const [canSubmit, setCanSubmit] = useState(true);
     const [errored, setErrored] = useState(false);
 
@@ -31,8 +30,8 @@ export default function LoginForm() {
         const result = await loginAction(values);
         if (result.success) {
             setCanSubmit(true);
-            store.setDisplayName(values.username); //TODO: get display name from server
-            store.setUsername(values.username);
+            persistStore.setDisplayName(values.username); //TODO: get display name from server
+            persistStore.setUsername(values.username);
             redirect("/home");
         } else {
             console.log(result.message);

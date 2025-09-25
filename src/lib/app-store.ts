@@ -1,7 +1,7 @@
 import {create} from "zustand/react";
 import {persist} from "zustand/middleware";
 
-type AppStoreState = {
+export type PersistentStoreState = {
     username: string,
     setUsername: (username: string) => void,
     displayName: string,
@@ -12,7 +12,7 @@ type AppStoreState = {
     setCurrentChatId: (id: string) => void,
 }
 
-export const appStore = create(persist<AppStoreState>(
+export const persistentStore = create(persist<PersistentStoreState>(
     (set, get) => ({
         username: "",
         setUsername: username => set({username: username}),
@@ -26,3 +26,12 @@ export const appStore = create(persist<AppStoreState>(
         name: "dysnomia-client-store"
     })
 );
+
+// type TemporaryStoreState = {
+// }
+//
+// export const temporaryStore =
+//     create<TemporaryStoreState>((set) => ({
+//
+//     }
+// ));

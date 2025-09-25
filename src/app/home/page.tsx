@@ -1,11 +1,11 @@
 "use client";
 import ChatArea from "@/components/home/chat/ChatArea";
-import {appStore} from "@/lib/app-store";
+import {persistentStore} from "@/lib/app-store";
 import {useEffect} from "react";
 
 export default function Page() {
 
-    const store = appStore();
+    const store = persistentStore();
 
     useEffect(() => {
         function handleEsc(e: KeyboardEvent) {
