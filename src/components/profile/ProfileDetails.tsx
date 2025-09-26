@@ -92,7 +92,7 @@ export default function ProfileDetails() {
             </div>
             {/*TODO: make bio editable*/}
             {/*TODO: make user tags in bio clickable*/}
-            <div className={"flex flex-col max-sm:w-60 sm:w-80 md:w-120 lg:w-180"}>
+            <div className={"flex flex-col max-sm:mt-4 max-sm:w-60 sm:w-80 md:w-120 lg:w-180"}>
                 {
                     isLoading ? <div className={"grid grid-cols-6 space-x-4 space-y-4"}>
                         <div className={"col-span-1 h-4 animate-pulse rounded-2xl p-2 bg-gray-600"}/>
