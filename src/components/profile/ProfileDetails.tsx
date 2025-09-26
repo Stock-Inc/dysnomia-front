@@ -1,11 +1,10 @@
 "use client";
 import {User} from "lucide-react";
 import {useParams} from "next/navigation";
-import useProfileDetails from "@/hook/useProfileDetails";
 import classBuilder from "@/lib/classBuilder";
-import SplitText from "@/components/SplitText";
-import {motion, stagger, useAnimate} from "motion/react";
-import {useEffect} from "react";
+import {motion} from "motion/react";
+import {useEffect, useState} from "react";
+import {useQuery} from "@tanstack/react-query";
 
 export interface ProfileDetails {
     username: string;
@@ -14,18 +13,20 @@ export interface ProfileDetails {
 
 export default function ProfileDetails() {
     const {username} = useParams<{username: string}>();
-    const [scope, animate] = useAnimate();
-
-    const {data, isLoading, error} = useProfileDetails<ProfileDetails>(username);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const {data, isLoading, error} = useQuery({
+        queryKey: ["profile"],
+        queryFn: () => fetch(`https://api.femboymatrix.su/user/${username}`).then(res => res.json()),
+    });
 
     useEffect(() => {
-        const nameSymbols = document.querySelectorAll(".nameSymbol");
-        const tagSymbols = document.querySelectorAll(".tagSymbol");
-        animate(nameSymbols, {opacity: [1, 0, 1]}, {delay: stagger(0.1), repeat: Infinity, repeatDelay: 1});
-        animate(tagSymbols, {opacity: [1, 0, 1]}, {delay: stagger(0.1), repeat: Infinity, repeatDelay: 1});
-    }, [animate]);
+        if (data?.error) setErrorMessage(data?.error);
+        else if (error) setErrorMessage(error.message);
+        else setErrorMessage(null);
+    }, [data, isLoading, error]);
 
     return (
+
         <div className={"flex justify-evenly sm:space-x-10 max-sm:flex-col"}>
             <div className={"flex flex-col space-y-2"}>
                 <User className={"border-2 border-foreground rounded-2xl w-40 h-40 place-self-center"}/>
@@ -33,16 +34,16 @@ export default function ProfileDetails() {
                     className={
                         classBuilder(
                             `text-2xl text-center`,
-                            ["text-error", error !== null],
-                            ["text-xl", isLoading || error !== null],
+                            ["text-error", errorMessage !== null],
+                            ["text-xl", isLoading || errorMessage !== null],
                         )
                     }
                 >
                     {
                         isLoading ?
-                            <SplitText ref={scope} initial={{}} childrenClassName={"nameSymbol"} split={"symbol"}>
+                            <p className={"animate-pulse"} >
                                 Loading
-                            </SplitText> : !error ? data?.username :
+                            </p> : !errorMessage ? data?.username :
                             <>
                                 <motion.span
                                     className={"inline-block relative pr-1"}
@@ -71,30 +72,41 @@ export default function ProfileDetails() {
                 <button
                     onClick={e => {
                         e.preventDefault();
-                        if (isLoading || error) return;
-                        navigator.clipboard.writeText(`@${data?.username}`);
+                        if (isLoading) return;
+                        navigator.clipboard.writeText(`@${username}`);
                     }}
                     className={"w-fit h-fit place-self-center focus:outline-none"}
                 >
                     <h3
                         className={
                             classBuilder(
-                                `text-lg text-dark-accent text-center underline`,
-                                ["text-error", error !== null],
-                                ["hover:text-accent cursor-pointer", !error],
+                                `text-lg text-dark-accent text-center underline cursor-pointer`,
+                                ["text-error", errorMessage !== null],
+                                ["hover:text-accent", !errorMessage],
                             )
                         }
                     >
-                        @{isLoading ?
-                        <SplitText ref={scope} initial={{}} childrenClassName={"tagSymbol"} split={"symbol"}>Loading...</SplitText>
-                        : !error ? data?.username : "oops"}
+                        @{username}
                     </h3>
                 </button>
             </div>
             {/*TODO: make bio editable*/}
             {/*TODO: make user tags in bio clickable*/}
             <div className={"flex flex-col max-sm:w-60 sm:w-80 md:w-120 lg:w-180"}>
-                <p className={"text-lg"}>Profile Bio please make it a feature @oneseil</p>
+                {
+                    isLoading ? <div className={"grid grid-cols-6 space-x-4 space-y-4"}>
+                        <div className={"col-span-1 h-4 animate-pulse rounded-2xl p-2 bg-gray-600"}/>
+                        <div className={"col-span-2 h-4 animate-pulse rounded-2xl p-2 bg-gray-600"}/>
+                        <div className={"col-span-3 h-4 animate-pulse rounded-2xl p-2 bg-gray-600"}/>
+                        <div className={"col-span-2 h-4 animate-pulse rounded-2xl p-2 bg-gray-600"}/>
+                        <div className={"col-span-3 h-4 animate-pulse rounded-2xl p-2 bg-gray-600"}/>
+                        <div className={"col-span-1 h-4 animate-pulse rounded-2xl p-2 bg-gray-600"}/>
+                        <div className={"col-span-4 h-4 animate-pulse rounded-2xl p-2 bg-gray-600"}/>
+                        <div className={"col-span-1 h-4 animate-pulse rounded-2xl p-2 bg-gray-600"}/>
+                    </div> : !errorMessage ?
+                        <p className={"text-lg"}>Profile Bio please make it a feature @{data?.username}</p> :
+                        <p className={"text-lg"}>Something went wrong...</p>
+                }
             </div>
         </div>
     );
