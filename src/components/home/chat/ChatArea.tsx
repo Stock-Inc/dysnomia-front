@@ -5,6 +5,8 @@ import {X} from "lucide-react";
 import ChatInput from "@/components/home/chat/ChatInput";
 import useStompClient from "@/hook/useStompClient";
 import classBuilder from "@/lib/classBuilder";
+import {QueryClient} from "@tanstack/query-core";
+import {QueryClientProvider} from "@tanstack/react-query";
 
 export interface ChatMessage {
     id: number,
@@ -28,6 +30,7 @@ export default function ChatArea() {
     const [messageToReplyTo, setMessageToReplyTo] = useState<undefined | ChatMessage>(undefined);
     const [pending, setPending] = useState(true);
     const [prevMessages, setPrevMessages] = useState<ChatMessage[] | null>(null);
+    const queryClient = new QueryClient();
     const [messages, publishMessage] = useStompClient<ChatMessage, ChatPublishBody>("https://api.femboymatrix.su/ws",
         {
             reconnectDelay: 5000,
@@ -107,17 +110,20 @@ export default function ChatArea() {
                         ["justify-center", !messages]
                     )
                 }>
-                    {messages && <div className={"flex flex-col p-4 space-y-2"}>
-                        {
-                            messages?.map((message) =>
-                                <MessageBox
-                                    doubleClickHandler={() => setReplyId(message.id)}
-                                    key={message.id}
-                                    isOuter={store.username !== message.name}
-                                    message={message}/>
-                            )
-                        }
-                    </div>
+                    {messages &&
+                        <QueryClientProvider client={queryClient}>
+                            <div className={"flex flex-col p-4 space-y-2"}>
+                                {
+                                    messages?.map((message) =>
+                                        <MessageBox
+                                            doubleClickHandler={() => setReplyId(message.id)}
+                                            key={message.id}
+                                            isOuter={store.username !== message.name}
+                                            message={message}/>
+                                    )
+                                }
+                            </div>
+                        </QueryClientProvider>
                     }
                     {
                         !messages &&

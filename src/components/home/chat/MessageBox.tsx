@@ -1,19 +1,23 @@
 import {ChatMessage} from "@/components/home/chat/ChatArea";
 import {motion} from "motion/react";
-import useReplyMessage from "@/hook/useReplyMessage";
 import classBuilder from "@/lib/classBuilder";
 import {redirect, RedirectType} from "next/navigation";
+import {useQuery} from "@tanstack/react-query";
 
 export default function MessageBox(
     {message, isOuter, doubleClickHandler}:
     {message: ChatMessage, isOuter: boolean, doubleClickHandler:() => void}
 ) {
-    const replyMessage = useReplyMessage(message.reply_id);
+    const {isLoading, error, data} = useQuery({
+        queryKey: [message.id],
+        queryFn: () => fetch(`https://api.femboymatrix.su/message/${message.reply_id}`).then(res => {
+            if (res.ok) return res.json();
+        }),
+    });
 
     const replyPreview = () => {
-        const loading = replyMessage.loading;
-        const profileName = loading ? "..." : replyMessage.data?.name;
-        const text = loading ? "..." : (replyMessage.error || replyMessage.data?.message);
+        const profileName = isLoading ? "" : data?.name || "anon";
+        const text = isLoading ? "Fetching..." : (data?.error || error?.message || data?.message);
         return (
             <>
                 <p className={"text-sm"}>{profileName}</p>
@@ -48,7 +52,7 @@ export default function MessageBox(
             </p>
             {message.reply_id !== 0 &&
                 <div onClick={() => {
-                    if (!replyMessage.error && !replyMessage.loading) {
+                    if (!data?.error && !error && !isLoading) {
                         //Scroll stuff
                     }
                 }} className={
