@@ -110,7 +110,7 @@ export default function ChatArea() {
                         ["justify-center", !messages]
                     )
                 }>
-                    {messages &&
+                    {!(messages === null) &&
                         <QueryClientProvider client={queryClient}>
                             <div className={"flex flex-col p-4 space-y-2"}>
                                 {
@@ -126,7 +126,7 @@ export default function ChatArea() {
                         </QueryClientProvider>
                     }
                     {
-                        !messages &&
+                        messages === null &&
                         <div className={"flex flex-col sticky w-full justify-center"}>
                             <div className={"self-center animate-loading-circle p-10 border-4 border-loading-circle rounded-full absolute"}/>
                             <div className={"self-center opacity-0 animate-[loadingCircle_1s_ease-in-out_0.5s_infinite]" +
@@ -135,7 +135,7 @@ export default function ChatArea() {
                     }
 
                 </div>
-                <div className={`${!messages && "hidden"} sticky bottom-0 w-full left-0 h-fit flex flex-col group`}>
+                <div className={`${messages === null && "hidden"} sticky bottom-0 w-full left-0 h-fit flex flex-col group`}>
                     <div className={`${!replyId && "hidden"} line-clamp-1 border-t-2 sm:border-2 sm:border-b-0 
                     border-card-border group-has-focus:border-accent bg-light-background flex justify-between transition-all`}>
                         <div className={"flex space-x-2 p-2"}>
