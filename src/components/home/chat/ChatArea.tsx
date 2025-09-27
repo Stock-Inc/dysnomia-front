@@ -25,8 +25,6 @@ interface ChatPublishBody {
 export default function ChatArea() {
     const store = persistentStore();
     const chatAreaRef = useRef<null | HTMLDivElement>(null);
-    const textareaRef = useRef<null | HTMLTextAreaElement>(null);
-    const [input, setInput] = useState("");
     const [replyId, setReplyId] = useState(0);
     const [messageToReplyTo, setMessageToReplyTo] = useState<undefined | ChatMessage>(undefined);
     const [pending, setPending] = useState(true);
@@ -77,7 +75,7 @@ export default function ChatArea() {
             });
         }
         return result;
-    }, [messages, store.username, messageRefs]);
+    }, [messages, store.username, animate]);
 
     useEffect(() => {
         if (chatAreaRef.current) chatAreaRef.current.scrollTop = chatAreaRef.current.scrollHeight;
@@ -94,40 +92,10 @@ export default function ChatArea() {
         setPending(false);
     }, [messages, pending, prevMessages]);
 
-    function sendMessage() {
-        publishMessage(
-            {
-                name: store.username,
-                message: input,
-                reply_id: replyId,
-            }
-        );
-        setInput("");
+    function onSendMessage() {
         setReplyId(0);
         setPending(true);
     }
-
-    function handleKeyPress(e: React.KeyboardEvent<HTMLTextAreaElement>) {
-        if (e.key === "Enter" && e.shiftKey) return;
-        if (e.key === "Enter" && input.trim() !== "") {
-            e.preventDefault();
-            sendMessage();
-        }
-    }
-
-    const handleInputChange = useCallback((e: ChangeEvent<HTMLTextAreaElement>) => {
-        const textarea = textareaRef.current!;
-        const value = e.currentTarget.value;
-        setInput(value);
-
-        textarea.style.height = 'auto';
-
-        const minHeight = 24;
-        const maxHeight = 120;
-        const newHeight = Math.min(Math.max(textarea.scrollHeight, minHeight), maxHeight);
-
-        textarea.style.height = `${newHeight}px`;
-    }, []);
 
     return (
         store.currentChatId ?
@@ -146,15 +114,6 @@ export default function ChatArea() {
                     {!(messages === null) &&
                         <QueryClientProvider client={queryClient}>
                             <div ref={scope} className={"flex flex-col p-4 space-y-2"}>
-                                {/*{*/}
-                                {/*    messages?.map((message) =>*/}
-                                {/*        <MessageBox*/}
-                                {/*            doubleClickHandler={() => setReplyId(message.id)}*/}
-                                {/*            key={message.id}*/}
-                                {/*            isOuter={store.username !== message.name}*/}
-                                {/*            message={message}/>*/}
-                                {/*    )*/}
-                                {/*}*/}
                                 {messagesToRender}
                             </div>
                         </QueryClientProvider>
@@ -183,11 +142,10 @@ export default function ChatArea() {
                         </button>
                     </div>
                     <ChatInput
-                        taValue={input}
-                        taRef={textareaRef}
-                        taKeyDownAction={handleKeyPress}
-                        taChangeAction={handleInputChange}
-                        sendButtonAction={sendMessage}
+                        publishMessageAction={publishMessage}
+                        username={store.username}
+                        replyId={replyId}
+                        onSendMessageAction={onSendMessage}
                     />
                 </div>
             </>
