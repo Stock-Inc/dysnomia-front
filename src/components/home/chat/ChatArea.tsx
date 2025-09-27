@@ -8,6 +8,7 @@ import classBuilder from "@/lib/classBuilder";
 import {QueryClient} from "@tanstack/query-core";
 import {QueryClientProvider} from "@tanstack/react-query";
 import {useAnimate} from "motion/react";
+import {AnimationPlaybackControlsWithThen} from "motion";
 
 export interface ChatMessage {
     id: number,
@@ -44,7 +45,6 @@ export default function ChatArea() {
             },
         }
     );
-    const [scope, animate] = useAnimate();
     const messageRefs = useRef<Map<number, HTMLDivElement>>(new Map());
     const messagesToRender = useMemo(() => {
         const result: React.ReactNode[] = [];
@@ -59,12 +59,10 @@ export default function ChatArea() {
                         doubleClickHandler={() => setReplyId(message.id)}
                         scrollToOriginal={() => {
                             if (message.reply_id && messageRefs.current.get(message.reply_id)) {
-                                chatAreaRef.current?.scrollTo(
-                                    0,
-                                    messageRefs.current.get(message.reply_id)!.offsetTop,
-                                );
-                                animate(messageRefs.current.get(message.reply_id)!,
-                                    {backgroundColor: "#ffffff"}, {duration: 0.4, ease: "easeOut", repeat: 1, repeatType: "reverse"},);
+                                chatAreaRef.current?.scrollTo({
+                                    top: messageRefs.current.get(message.reply_id)!.offsetTop - window.innerHeight / 2,
+                                    behavior: "smooth",
+                                });
                             }
                         }}
                         key={message.id}
@@ -75,7 +73,7 @@ export default function ChatArea() {
             });
         }
         return result;
-    }, [messages, store.username, animate]);
+    }, [messages, store.username]);
 
     useEffect(() => {
         if (chatAreaRef.current) chatAreaRef.current.scrollTop = chatAreaRef.current.scrollHeight;
@@ -113,7 +111,7 @@ export default function ChatArea() {
                 }>
                     {!(messages === null) &&
                         <QueryClientProvider client={queryClient}>
-                            <div ref={scope} className={"flex flex-col p-4 space-y-2"}>
+                            <div className={"flex flex-col p-4 space-y-2"}>
                                 {messagesToRender}
                             </div>
                         </QueryClientProvider>
