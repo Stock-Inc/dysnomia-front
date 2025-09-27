@@ -56,9 +56,12 @@ export default function MessageBox(
                 {message.name || "anon"}
             </p>
             {message.reply_id !== 0 &&
-                <div onClick={() => {
-                    if (!data?.error && !error && !isLoading) scrollToOriginal();
-                }} className={
+                <div
+                    onDoubleClick={() => {}}
+                    onClick={() => {
+                        if (!data?.error && !error && !isLoading) scrollToOriginal();
+                    }}
+                    className={
                     classBuilder(
                         `p-1 mx-1 line-clamp-2 overflow-hidden text-md cursor-pointer`,
                         [`bg-chat-outer-reply-background border-l-4 border-foreground 
