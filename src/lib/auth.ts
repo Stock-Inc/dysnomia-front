@@ -2,7 +2,7 @@
 import {cookies} from "next/headers";
 import {EncryptJWT, jwtDecrypt} from "jose";
 
-const BACKEND_URL = "https://api.femboymatrix.su";
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL!;
 const MAIN_COOKIE_EXPIRATION_TIME = 60 * 60 * 24 * 7; // 7 days
 const ACCESS_COOKIE_EXPIRATION_TIME = 60 * 60 * 10; // 10 hours
 const textEncoder = new TextEncoder();

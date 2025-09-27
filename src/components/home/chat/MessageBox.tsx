@@ -10,7 +10,7 @@ export default function MessageBox(
 ) {
     const {isLoading, error, data} = useQuery({
         queryKey: [message.id],
-        queryFn: () => fetch(`https://api.femboymatrix.su/message/${message.reply_id}`).then(res => {
+        queryFn: () => fetch(`${process.env.NEXT_PUBLIC_API_URL}/message/${message.reply_id}`).then(res => {
             if (res.ok) return res.json();
         }),
     });

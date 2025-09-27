@@ -16,7 +16,7 @@ export default function ProfileDetails() {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const {data, isLoading, error} = useQuery({
         queryKey: ["profile"],
-        queryFn: () => fetch(`https://api.femboymatrix.su/user/${username}`).then(res => res.json()),
+        queryFn: () => fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/${username}`).then(res => res.json()),
     });
 
     useEffect(() => {

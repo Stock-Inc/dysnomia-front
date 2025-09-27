@@ -31,7 +31,7 @@ export default function ChatArea() {
     const [pending, setPending] = useState(true);
     const [prevMessages, setPrevMessages] = useState<ChatMessage[] | null>(null);
     const queryClient = new QueryClient();
-    const [messages, publishMessage] = useStompClient<ChatMessage, ChatPublishBody>("https://api.femboymatrix.su/ws",
+    const [messages, publishMessage] = useStompClient<ChatMessage, ChatPublishBody>(`${process.env.NEXT_PUBLIC_API_URL}/ws`,
         {
             reconnectDelay: 5000,
             debugHandler: (str) => console.log(str),
