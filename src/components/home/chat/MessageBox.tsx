@@ -3,10 +3,16 @@ import {motion} from "motion/react";
 import classBuilder from "@/lib/classBuilder";
 import {redirect, RedirectType} from "next/navigation";
 import {useQuery} from "@tanstack/react-query";
+import React from "react";
 
 export default function MessageBox(
-    {message, isOuter, doubleClickHandler}:
-    {message: ChatMessage, isOuter: boolean, doubleClickHandler:() => void}
+    {message, isOuter, doubleClickHandler, ref, scrollToOriginal}:
+    {
+        message: ChatMessage,
+        isOuter: boolean,
+        doubleClickHandler:() => void,
+        scrollToOriginal:() => void,
+        ref?: React.Ref<HTMLDivElement>}
 ) {
     const {isLoading, error, data} = useQuery({
         queryKey: [message.id],
@@ -26,10 +32,9 @@ export default function MessageBox(
         );
     };
 
-    //TODO: clicking on a reply text scrolls to the original message
-
     return (
         <motion.div
+            ref={ref}
             onDoubleClick={doubleClickHandler}
             className={
                 classBuilder(
@@ -52,9 +57,7 @@ export default function MessageBox(
             </p>
             {message.reply_id !== 0 &&
                 <div onClick={() => {
-                    if (!data?.error && !error && !isLoading) {
-                        //Scroll stuff
-                    }
+                    if (!data?.error && !error && !isLoading) scrollToOriginal();
                 }} className={
                     classBuilder(
                         `p-1 mx-1 line-clamp-2 overflow-hidden text-md cursor-pointer`,

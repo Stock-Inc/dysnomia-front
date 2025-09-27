@@ -1,5 +1,5 @@
 import {persistentStore} from "@/lib/app-store";
-import React, {ChangeEvent, useCallback, useEffect, useRef, useState} from "react";
+import React, {ChangeEvent, useCallback, useEffect, useMemo, useRef, useState} from "react";
 import MessageBox from "@/components/home/chat/MessageBox";
 import {X} from "lucide-react";
 import ChatInput from "@/components/home/chat/ChatInput";
@@ -7,6 +7,7 @@ import useStompClient from "@/hook/useStompClient";
 import classBuilder from "@/lib/classBuilder";
 import {QueryClient} from "@tanstack/query-core";
 import {QueryClientProvider} from "@tanstack/react-query";
+import {useAnimate} from "motion/react";
 
 export interface ChatMessage {
     id: number,
@@ -45,6 +46,38 @@ export default function ChatArea() {
             },
         }
     );
+    const [scope, animate] = useAnimate();
+    const messageRefs = useRef<Map<number, HTMLDivElement>>(new Map());
+    const messagesToRender = useMemo(() => {
+        const result: React.ReactNode[] = [];
+        if (messages === null) return [null, null];
+        else {
+            messages.forEach((message) => {
+                result.push(
+                    <MessageBox
+                        ref={(e) => {
+                            messageRefs.current.set(message.id, e!);
+                        }}
+                        doubleClickHandler={() => setReplyId(message.id)}
+                        scrollToOriginal={() => {
+                            if (message.reply_id && messageRefs.current.get(message.reply_id)) {
+                                chatAreaRef.current?.scrollTo(
+                                    0,
+                                    messageRefs.current.get(message.reply_id)!.offsetTop,
+                                );
+                                animate(messageRefs.current.get(message.reply_id)!,
+                                    {backgroundColor: "#ffffff"}, {duration: 0.4, ease: "easeOut", repeat: 1, repeatType: "reverse"},);
+                            }
+                        }}
+                        key={message.id}
+                        isOuter={store.username !== message.name}
+                        message={message}
+                    />
+                );
+            });
+        }
+        return result;
+    }, [messages, store.username, messageRefs]);
 
     useEffect(() => {
         if (chatAreaRef.current) chatAreaRef.current.scrollTop = chatAreaRef.current.scrollHeight;
@@ -102,26 +135,27 @@ export default function ChatArea() {
                 <div ref={chatAreaRef} className={
                     classBuilder(
                         `bg-chat-background max-sm:border-t-2 sm:border-x-2 border-card-border 
-                    space-y-2 h-screen overflow-y-scroll [&::-webkit-scrollbar-track]:border-card-border flex flex-col justify-between
-                    [&::-webkit-scrollbar-thumb]:hover:bg-accent [&::-webkit-scrollbar-thumb]:transition-all
-                    [&::-webkit-scrollbar]:w-3 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-light-background
-                    [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-card-border [&::-webkit-scrollbar-track]:border-l-2`,
+                        space-y-2 h-screen overflow-y-scroll [&::-webkit-scrollbar-track]:border-card-border flex flex-col justify-between
+                        [&::-webkit-scrollbar-thumb]:hover:bg-accent [&::-webkit-scrollbar-thumb]:transition-all
+                        [&::-webkit-scrollbar]:w-3 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-light-background
+                        [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-card-border [&::-webkit-scrollbar-track]:border-l-2`,
                         ["max-md:hidden", store.isSidebarOpen],
                         ["justify-center", !messages]
                     )
                 }>
                     {!(messages === null) &&
                         <QueryClientProvider client={queryClient}>
-                            <div className={"flex flex-col p-4 space-y-2"}>
-                                {
-                                    messages?.map((message) =>
-                                        <MessageBox
-                                            doubleClickHandler={() => setReplyId(message.id)}
-                                            key={message.id}
-                                            isOuter={store.username !== message.name}
-                                            message={message}/>
-                                    )
-                                }
+                            <div ref={scope} className={"flex flex-col p-4 space-y-2"}>
+                                {/*{*/}
+                                {/*    messages?.map((message) =>*/}
+                                {/*        <MessageBox*/}
+                                {/*            doubleClickHandler={() => setReplyId(message.id)}*/}
+                                {/*            key={message.id}*/}
+                                {/*            isOuter={store.username !== message.name}*/}
+                                {/*            message={message}/>*/}
+                                {/*    )*/}
+                                {/*}*/}
+                                {messagesToRender}
                             </div>
                         </QueryClientProvider>
                     }
