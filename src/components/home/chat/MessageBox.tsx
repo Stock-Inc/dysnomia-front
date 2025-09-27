@@ -57,7 +57,6 @@ export default function MessageBox(
             </p>
             {message.reply_id !== 0 &&
                 <div
-                    onDoubleClick={() => {}}
                     onClick={() => {
                         if (!data?.error && !error && !isLoading) scrollToOriginal();
                     }}
