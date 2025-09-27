@@ -2,6 +2,7 @@
 import React, {ChangeEvent, useRef, useState} from "react";
 import {SendHorizonal} from "lucide-react";
 import classBuilder from "@/lib/classBuilder";
+import {ChatPublishBody} from "@/components/home/chat/ChatArea";
 
 export default function ChatInput(
     {
@@ -10,7 +11,7 @@ export default function ChatInput(
         replyId,
         onSendMessageAction,
     }: {
-        publishMessageAction: (body: any) => void;
+        publishMessageAction: (body: ChatPublishBody) => void;
         username: string;
         replyId: number;
         onSendMessageAction: () => void;

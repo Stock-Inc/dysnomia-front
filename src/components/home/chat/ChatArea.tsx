@@ -17,7 +17,7 @@ export interface ChatMessage {
     date: number,
     reply_id: number | undefined
 }
-interface ChatPublishBody {
+export interface ChatPublishBody {
     name: string,
     message: string,
     reply_id: number,
