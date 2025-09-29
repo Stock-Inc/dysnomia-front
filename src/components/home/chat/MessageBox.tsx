@@ -27,7 +27,7 @@ export default function MessageBox(
         return (
             <>
                 <p className={"text-sm"}>{profileName}</p>
-                <p>{text}</p>
+                <p className={`${isLoading && "p-[10px]"}`}>{text}</p>
             </>
         );
     };
