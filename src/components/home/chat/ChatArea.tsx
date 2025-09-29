@@ -1,5 +1,5 @@
 import {persistentStore} from "@/lib/app-store";
-import React, {ChangeEvent, useCallback, useEffect, useMemo, useRef, useState} from "react";
+import React, {useEffect, useMemo, useRef, useState} from "react";
 import MessageBox from "@/components/home/chat/MessageBox";
 import {X} from "lucide-react";
 import ChatInput from "@/components/home/chat/ChatInput";
@@ -7,8 +7,6 @@ import useStompClient from "@/hook/useStompClient";
 import classBuilder from "@/lib/classBuilder";
 import {QueryClient} from "@tanstack/query-core";
 import {QueryClientProvider} from "@tanstack/react-query";
-import {useAnimate} from "motion/react";
-import {AnimationPlaybackControlsWithThen} from "motion";
 
 export interface ChatMessage {
     id: number,
