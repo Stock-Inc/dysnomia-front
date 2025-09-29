@@ -1,7 +1,7 @@
 "use client";
 import Button from "@/components/Button";
 import {SidebarIcon} from "lucide-react";
-import {useEffect, useRef, useState} from "react";
+import {useRef} from "react";
 import {persistentStore} from "@/lib/app-store";
 import SidebarChatButton from "@/components/home/SidebarChatButton";
 import classBuilder from "@/lib/classBuilder";
@@ -13,7 +13,6 @@ export default function Sidebar() {
     // const [height, setHeight] = useState(0);
 
     //TODO: disable the awkward slide that the sidebar does if it is initially closed
-    //TODO: Make sidebar resizable
 
     // useEffect(() => {
     //     setHeight(window.innerHeight);
