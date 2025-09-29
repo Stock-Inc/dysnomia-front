@@ -48,7 +48,7 @@ export default function MessageBox(
             transition={{duration: 0.5}}
         >
             <p
-                className={`${message.name && "cursor-pointer hover:text-shadow-white-glow"} text-md p-1 mb-1 transition-all`}
+                className={`${message.name && "cursor-pointer hover:text-shadow-white-glow"} text-md p-1 mb-1 transition-all w-fit`}
                 onClick={() => {
                     if (message.name) redirect(`/profile/${message.name}`, RedirectType.push);
                 }}
