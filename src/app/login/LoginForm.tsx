@@ -6,7 +6,7 @@ import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {loginAction, LoginData} from "@/lib/auth";
 import {redirect} from "next/navigation";
-import {useState} from "react";
+import {useRef, useState} from "react";
 import {persistentStore} from "@/lib/app-store";
 import classBuilder from "@/lib/classBuilder";
 
@@ -19,6 +19,7 @@ export default function LoginForm() {
     const persistStore = persistentStore();
     const [canSubmit, setCanSubmit] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const consecutiveErrors = useRef(0);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -34,9 +35,16 @@ export default function LoginForm() {
             persistStore.setUsername(values.username);
             redirect("/home");
         } else {
-            console.log(result.message);
-            setError(result.message);
-            setCanSubmit(true);
+            consecutiveErrors.current++;
+            let delay = 0;
+            if (consecutiveErrors.current > 3) {
+                delay = 1000;
+            }
+            setTimeout(() => {
+                setCanSubmit(true);
+                console.log(result.message);
+                setError(result.message);
+            }, delay);
         }
     }
 
