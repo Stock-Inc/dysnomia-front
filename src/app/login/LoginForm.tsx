@@ -18,14 +18,14 @@ const formSchema = z.object({
 export default function LoginForm() {
     const persistStore = persistentStore();
     const [canSubmit, setCanSubmit] = useState(true);
-    const [errored, setErrored] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
     });
 
     async function handleSubmit(values: LoginData) {
-        setErrored(false);
+        setError(null);
         setCanSubmit(false);
         const result = await loginAction(values);
         if (result.success) {
@@ -35,28 +35,29 @@ export default function LoginForm() {
             redirect("/home");
         } else {
             console.log(result.message);
+            setError(result.message);
             setCanSubmit(true);
-            setErrored(true);
         }
     }
 
     return (
         <form className="flex flex-col space-y-4" onSubmit={form.handleSubmit(handleSubmit)}>
+            <p className={`${!error && "hidden"} text-error text-xl`}>{error}</p>
             <div className="flex space-x-4 group">
                 <User className={
                     classBuilder(
                         `scale-140 place-self-center transition-all group-focus-within:drop-shadow-accent text-accent`,
-                        ["text-error", errored]
+                        ["text-error", error !== null]
                     )
                 }/>
                 <input
                     spellCheck={"false"}
-                    onFocus={() => setErrored(false)}
+                    onFocus={() => setError(null)}
                     className={
                         classBuilder(
                             `w-full border-2 rounded-2xl text-xl focus:outline-2 p-2 focus:text-accent 
                             focus:shadow-glow transition-all border-accent focus:outline-accent`,
-                            ["border-error focus:outline-error text-error", errored]
+                            ["border-error focus:outline-error text-error", error !== null]
                         )
                     }
                     placeholder="Username"
@@ -67,17 +68,17 @@ export default function LoginForm() {
                 <Lock className={
                     classBuilder(
                         `scale-140 place-self-center transition-all group-focus-within:drop-shadow-accent text-accent`,
-                        ["text-error", errored]
+                        ["text-error", error !== null]
                     )
                 }/>
                 <input
                     spellCheck={"false"}
-                    onFocus={() => setErrored(false)}
+                    onFocus={() => setError(null)}
                     className={
                         classBuilder(
                             `w-full border-2 rounded-2xl text-xl focus:outline-2 p-2 focus:text-accent 
                             focus:shadow-glow transition-all border-accent focus:outline-accent`,
-                            ["border-error focus:outline-error text-error", errored]
+                            ["border-error focus:outline-error text-error", error !== null]
                         )
                     }
                     placeholder="Password"

@@ -31,14 +31,14 @@ const formSchema = z.object({
 export default function SignupForm() {
     const persistStore = persistentStore();
     const [canSubmit, setCanSubmit] = useState(true);
-    const [errored, setErrored] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
     });
 
     async function handleSubmit(values: z.infer<typeof formSchema>) {
-        setErrored(false);
+        setError(null);
         setCanSubmit(false);
         const result = await signupAction(values);
         if (result.success) {
@@ -49,26 +49,27 @@ export default function SignupForm() {
         } else {
             console.log(result.message);
             setCanSubmit(true);
-            setErrored(true);
+            setError(result.message);
         }
     }
 
     return (
         <form className="flex flex-col space-y-4 transition-all" onSubmit={form.handleSubmit(handleSubmit)}>
+            <p className={`${!error && "hidden"} text-error text-xl`}>{error}</p>
             <div className={"flex flex-col space-y-2"}>
                 <div className={"flex space-x-4 group"}>
                     <User className={classBuilder(
                         `scale-140 place-self-center transition-all group-focus-within:drop-shadow-accent text-accent`,
-                        ["text-error", errored || form.formState.errors.username],
+                        ["text-error", error !== null || form.formState.errors.username],
                     )}/>
                     <input
                         spellCheck={"false"}
-                        onFocus={() => setErrored(false)}
+                        onFocus={() => setError(null)}
                         placeholder={"Username"}
                         className={classBuilder(
                             `w-full border-2 rounded-2xl text-xl focus:outline-2 p-2 focus:text-accent focus:shadow-glow 
                             transition-all border-accent focus:outline-accent`,
-                            ["border-error focus:outline-error text-error", errored || form.formState.errors.username],
+                            ["border-error focus:outline-error text-error", error !== null || form.formState.errors.username],
                         )}
                         type={"text"} {...form.register("username")}
                     />
@@ -79,18 +80,19 @@ export default function SignupForm() {
                 <div className={"flex space-x-4 group"}>
                     <AtSign className={classBuilder(
                         `scale-140 place-self-center transition-all group-focus-within:drop-shadow-accent text-accent`,
-                        ["text-error", errored || form.formState.errors.email]
+                        ["text-error", error !== null || form.formState.errors.email]
                     )}/>
                     <input
                         spellCheck={"false"}
-                        onFocus={() => setErrored(false)}
+                        onFocus={() => setError(null)}
                         placeholder={"Email"}
                         className={classBuilder(
                             `w-full border-2 rounded-2xl text-xl focus:outline-2 p-2 focus:text-accent 
                             focus:shadow-glow transition-all border-accent focus:outline-accent`,
-                            ["border-error focus:outline-error text-error", errored || form.formState.errors.email]
+                            ["border-error focus:outline-error text-error", error !== null || form.formState.errors.email]
                         )}
-                        type={"text"} {...form.register("email")}
+                        type={"text"}
+                        {...form.register("email")}
                     />
                 </div>
                 {form.formState.errors.email && <p className={"text-md text-error"}>{form.formState.errors.email.message}</p>}
@@ -101,16 +103,16 @@ export default function SignupForm() {
                 <div className={"flex space-x-4 group"}>
                     <Shield className={classBuilder(
                         `scale-140 place-self-center transition-all group-focus-within:drop-shadow-accent text-accent`,
-                        ["text-error", errored || form.formState.errors.password])
+                        ["text-error", error !== null || form.formState.errors.password])
                     }/>
                     <input
                         spellCheck={"false"}
-                        onFocus={() => setErrored(false)}
+                        onFocus={() => setError(null)}
                         placeholder={"Create Password"}
                         className={classBuilder(
                             `w-full border-2 rounded-2xl text-xl focus:outline-2 p-2 focus:text-accent focus:shadow-glow 
                             transition-all border-accent focus:outline-accent`,
-                            ["border-error focus:outline-error text-error", errored || form.formState.errors.password])}
+                            ["border-error focus:outline-error text-error", error !== null || form.formState.errors.password])}
                         type={"password"} {...form.register("password")}
                     />
                 </div>
@@ -120,16 +122,16 @@ export default function SignupForm() {
                 <div className={"flex space-x-4 group"}>
                     <ShieldCheck className={classBuilder(
                         `scale-140 place-self-center transition-all group-focus-within:drop-shadow-accent text-accent`,
-                        ["text-error", errored || form.formState.errors.password]
+                        ["text-error", error !== null || form.formState.errors.password]
                     )}/>
                     <input
                         spellCheck={"false"}
-                        onFocus={() => setErrored(false)}
+                        onFocus={() => setError(null)}
                         placeholder={"Confirm Password"}
                         className={classBuilder(
                             `w-full border-2 rounded-2xl text-xl focus:outline-2 p-2 focus:text-accent focus:shadow-glow 
                             transition-all text-accent focus:outline-accent border-accent`,
-                            ["border-error text-error focus:outline-error", errored || form.formState.errors.password]
+                            ["border-error text-error focus:outline-error", error !== null || form.formState.errors.password]
                         )}
                         type={"password"} {...form.register("confirmPassword")}
                     />
