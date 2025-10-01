@@ -77,13 +77,23 @@ export default function ChatArea() {
                                 message,
                             };
                             setContextMenuState(s => {
+                                const ctx = contextMenuRef.current!;
+                                let deltaX = 0;
+                                let deltaY = 0;
+                                const chatAreaRect = chatAreaRef.current!.getBoundingClientRect();
+                                if (chatAreaRect.bottom - e.clientY < ctx.clientHeight) {
+                                    deltaY = ctx.clientHeight;
+                                }
+                                if (chatAreaRect.right - e.clientX < ctx.clientWidth) {
+                                    deltaX = ctx.clientWidth;
+                                }
                                 return s?.open ? {
                                     x: s.x,
                                     y: s.y,
                                     open: false,
                                 } : {
-                                    x: e.clientX,
-                                    y: e.clientY,
+                                    x: e.clientX - deltaX,
+                                    y: e.clientY - deltaY,
                                     open: true,
                                 };
                             });
