@@ -49,9 +49,17 @@ export default function ChatArea() {
         setPending(true);
     }
     const messageRefs = useRef<Map<number, HTMLDivElement>>(new Map());
-    const [contextMenuState, setContextMenuState] = useState<{x: number, y: number, open: boolean} | null>(null);
+    interface ContextMenuState {
+        x: number,
+        y: number,
+        open: boolean,
+        currentMessage: {
+            element: HTMLDivElement;
+            message: ChatMessage;
+        },
+    }
+    const [contextMenuState, setContextMenuState] = useState<ContextMenuState | null>(null);
     const contextMenuRef = useRef<null | HTMLDivElement>(null);
-    const currentMessageRef = useRef<null | { element: HTMLDivElement, message: ChatMessage }>(null);
     const messagesToRender = useMemo(() => {
         const result: React.ReactNode[] = [];
         if (messages === null) return [null, null];
@@ -72,11 +80,11 @@ export default function ChatArea() {
                             }
                         }}
                         contextHandler={(e) => {
-                            currentMessageRef.current = {
-                                element: messageRefs.current.get(message.id)!,
-                                message,
-                            };
                             setContextMenuState(s => {
+                                const currentMessage = {
+                                    element: messageRefs.current.get(message.id)!,
+                                    message
+                                };
                                 const ctx = contextMenuRef.current!;
                                 let deltaX = 0;
                                 let deltaY = 0;
@@ -91,10 +99,12 @@ export default function ChatArea() {
                                     x: s.x,
                                     y: s.y,
                                     open: false,
+                                    currentMessage
                                 } : {
                                     x: e.clientX - deltaX,
                                     y: e.clientY - deltaY,
                                     open: true,
+                                    currentMessage
                                 };
                             });
                         }}
@@ -203,13 +213,13 @@ export default function ChatArea() {
                     ref={contextMenuRef}
                     state={contextMenuState}
                     replyAction={() => {
-                        setReplyId(currentMessageRef.current?.message.id ?? 0);
+                        setReplyId(contextMenuState?.currentMessage.message.id ?? 0);
                     }}
                     forwardAction={() => {
                         //TODO: implement
                     }}
                     copyAction={() => {
-                        navigator.clipboard.writeText(currentMessageRef.current?.message.message ?? "");
+                        navigator.clipboard.writeText(contextMenuState?.currentMessage.message.message ?? "");
                     }}
                     pinAction={() => {
                         //TODO: implement
