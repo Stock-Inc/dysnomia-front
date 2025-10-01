@@ -17,8 +17,10 @@ export default function ProfileModalButton(
     return (
         <button onClick={onClickAction} className={classBuilder(
             `transition-all cursor-pointer hover:bg-card-border group 
-            rounded-lg focus:outline-2 border-card-border border-2 flex space-x-5 hover:text-shadow-white-glow`,
-            ["hover:text-shadow-error-glow hover:text-error", dangerous])}>
+            rounded-lg focus:outline-2 border-card-border border-2 flex space-x-5`,
+            ["hover:text-shadow-error-glow hover:text-error", dangerous],
+            ["hover:text-shadow-white-glow", !dangerous],
+        )}>
             {children}
         </button>
     );
