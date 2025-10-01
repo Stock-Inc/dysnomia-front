@@ -1,12 +1,13 @@
 import React, {Ref} from "react";
 import ContextMenuButton from "@/components/home/chat/ContextMenuButton";
-import {Clipboard, Pin, Reply, Trash} from "lucide-react";
+import {Clipboard, Forward, Pin, Reply, Trash} from "lucide-react";
 
 export default function ContextMenu(
     {
         ref,
         state,
         replyAction,
+        forwardAction,
         copyAction,
         pinAction,
         deleteAction,
@@ -18,6 +19,7 @@ export default function ContextMenu(
             open: boolean;
         } | null;
         replyAction: () => void;
+        forwardAction: () => void;
         copyAction: () => void;
         pinAction: () => void;
         deleteAction: () => void;
@@ -36,6 +38,10 @@ export default function ContextMenu(
             <ContextMenuButton onClick={replyAction} position={"top"}>
                 <Reply className={"group-hover:drop-shadow-white-glow"}/>
                 <p>Reply</p>
+            </ContextMenuButton>
+            <ContextMenuButton onClick={forwardAction}>
+                <Forward className={"group-hover:drop-shadow-white-glow"}/>
+                <p>Forward</p>
             </ContextMenuButton>
             <ContextMenuButton onClick={copyAction}>
                 <Clipboard className={"group-hover:drop-shadow-white-glow"}/>

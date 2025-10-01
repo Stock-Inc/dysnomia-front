@@ -195,6 +195,9 @@ export default function ChatArea() {
                     replyAction={() => {
                         setReplyId(currentMessageRef.current?.message.id ?? 0);
                     }}
+                    forwardAction={() => {
+                        //TODO: implement
+                    }}
                     copyAction={() => {
                         navigator.clipboard.writeText(currentMessageRef.current?.message.message ?? "");
                     }}
