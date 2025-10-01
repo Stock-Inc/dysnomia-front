@@ -8,6 +8,7 @@ import classBuilder from "@/lib/classBuilder";
 import {QueryClient} from "@tanstack/query-core";
 import {QueryClientProvider} from "@tanstack/react-query";
 import ContextMenu from "@/components/home/chat/ContextMenu";
+import LoadingCircles from "@/components/LoadingCircles";
 
 export interface ChatMessage {
     id: number,
@@ -180,12 +181,7 @@ export default function ChatArea() {
                         </QueryClientProvider>
                     }
                     {
-                        messages === null &&
-                        <div className={"flex flex-col sticky w-full justify-center"}>
-                            <div className={"self-center animate-loading-circle p-10 border-4 border-loading-circle rounded-full absolute"}/>
-                            <div className={"self-center opacity-0 animate-[loadingCircle_1s_ease-in-out_0.5s_infinite]" +
-                                " p-10 border-4 border-loading-circle rounded-full"}/>
-                        </div>
+                        messages === null && <LoadingCircles/>
                     }
 
                 </div>
