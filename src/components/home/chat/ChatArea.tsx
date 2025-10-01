@@ -5,8 +5,6 @@ import {X} from "lucide-react";
 import ChatInput from "@/components/home/chat/ChatInput";
 import useStompClient from "@/hook/useStompClient";
 import classBuilder from "@/lib/classBuilder";
-import {QueryClient} from "@tanstack/query-core";
-import {QueryClientProvider} from "@tanstack/react-query";
 import ContextMenu from "@/components/home/chat/ContextMenu";
 import LoadingCircles from "@/components/LoadingCircles";
 
@@ -30,7 +28,6 @@ export default function ChatArea() {
     const [messageToReplyTo, setMessageToReplyTo] = useState<undefined | ChatMessage>(undefined);
     const [pending, setPending] = useState(true);
     const [prevMessages, setPrevMessages] = useState<ChatMessage[] | null>(null);
-    const queryClient = new QueryClient();
     const [messages, publishMessage] = useStompClient<ChatMessage, ChatPublishBody>(`${process.env.NEXT_PUBLIC_API_URL}/ws`,
         {
             reconnectDelay: 5000,
@@ -138,12 +135,12 @@ export default function ChatArea() {
     }, [contextMenuState]);
 
     useEffect(() => {
-        if (chatAreaRef.current) chatAreaRef.current.scrollTop = chatAreaRef.current.scrollHeight;
-    }, [store.currentChatId]);
-
-    useEffect(() => {
         setMessageToReplyTo(messages?.find((msg) => msg.id === replyId));
     }, [replyId, messages]);
+
+    useEffect(() => {
+        if (chatAreaRef.current) chatAreaRef.current.scrollTop = chatAreaRef.current.scrollHeight;
+    }, [store.currentChatId]);
 
     useEffect(() => {
         if (!chatAreaRef.current || !pending || messages === prevMessages) return;
@@ -174,11 +171,9 @@ export default function ChatArea() {
                     }
                 >
                     {!(messages === null) &&
-                        <QueryClientProvider client={queryClient}>
-                            <div className={"flex flex-col p-4 space-y-2"}>
-                                {messagesToRender}
-                            </div>
-                        </QueryClientProvider>
+                        <div className={"flex flex-col p-4 space-y-2"}>
+                            {messagesToRender}
+                        </div>
                     }
                     {
                         messages === null && <LoadingCircles/>
@@ -186,6 +181,7 @@ export default function ChatArea() {
 
                 </div>
                 <div className={`${messages === null && "hidden"} sticky bottom-0 w-full left-0 h-fit flex flex-col group`}>
+                    {/*TODO: merge with ChatInput*/}
                     <div className={`${!replyId && "hidden"} line-clamp-1 border-t-2 sm:border-2 sm:border-b-0 
                     border-card-border group-has-focus:border-accent bg-light-background flex justify-between transition-all`}>
                         <div className={"flex space-x-2 p-2"}>
