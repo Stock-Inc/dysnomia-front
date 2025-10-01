@@ -88,10 +88,10 @@ export default function MessageBox(
                         )
                     }>
                         {
-                            new Date(message.date).toLocaleTimeString("en-US", {
+                            new Date(message.date * 1000).toLocaleTimeString("en-US", {
                                 hour12: false ,
                                 localeMatcher: "best fit",
-                                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone, //TODO: fix time
+                                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
                             })
                         }
                     </p>
