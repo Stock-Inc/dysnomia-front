@@ -7,6 +7,7 @@ import useStompClient from "@/hook/useStompClient";
 import classBuilder from "@/lib/classBuilder";
 import {QueryClient} from "@tanstack/query-core";
 import {QueryClientProvider} from "@tanstack/react-query";
+import ContextMenu from "@/components/home/chat/ContextMenu";
 
 export interface ChatMessage {
     id: number,
@@ -43,7 +44,14 @@ export default function ChatArea() {
             },
         }
     );
+    function onSendMessage() {
+        setReplyId(0);
+        setPending(true);
+    }
     const messageRefs = useRef<Map<number, HTMLDivElement>>(new Map());
+    const [contextMenuState, setContextMenuState] = useState<{x: number, y: number, open: boolean} | null>(null);
+    const contextMenuRef = useRef<null | HTMLDivElement>(null);
+    const currentMessageRef = useRef<null | { element: HTMLDivElement, message: ChatMessage }>(null);
     const messagesToRender = useMemo(() => {
         const result: React.ReactNode[] = [];
         if (messages === null) return [null, null];
@@ -63,6 +71,23 @@ export default function ChatArea() {
                                 });
                             }
                         }}
+                        contextHandler={(e) => {
+                            currentMessageRef.current = {
+                                element: messageRefs.current.get(message.id)!,
+                                message,
+                            };
+                            setContextMenuState(s => {
+                                return s?.open ? {
+                                    x: s.x,
+                                    y: s.y,
+                                    open: false,
+                                } : {
+                                    x: e.clientX,
+                                    y: e.clientY,
+                                    open: true,
+                                };
+                            });
+                        }}
                         key={message.id}
                         isOuter={store.username !== message.name}
                         message={message}
@@ -72,6 +97,24 @@ export default function ChatArea() {
         }
         return result;
     }, [messages, store.username]);
+
+    useEffect(() => {
+        function handleClick(e: MouseEvent) {
+            if (contextMenuState?.open) {
+                const rect = contextMenuRef.current!.getBoundingClientRect();
+                if (e.x > rect.right || e.x < rect.left || e.y > rect.top || e.y < rect.bottom) {
+                    setContextMenuState(s => s ? {
+                            ...s, open: false
+                        } : null
+                    );
+                }
+            }
+        }
+        window.addEventListener("click", handleClick);
+        return () => {
+            window.removeEventListener("click", handleClick);
+        };
+    }, [contextMenuState]);
 
     useEffect(() => {
         if (chatAreaRef.current) chatAreaRef.current.scrollTop = chatAreaRef.current.scrollHeight;
@@ -88,25 +131,27 @@ export default function ChatArea() {
         setPending(false);
     }, [messages, pending, prevMessages]);
 
-    function onSendMessage() {
-        setReplyId(0);
-        setPending(true);
-    }
-
     return (
         store.currentChatId ?
             <>
-                <div ref={chatAreaRef} className={
-                    classBuilder(
-                        `bg-chat-background max-sm:border-t-2 sm:border-x-2 border-card-border 
-                        space-y-2 h-screen overflow-y-scroll [&::-webkit-scrollbar-track]:border-card-border flex flex-col justify-between
-                        [&::-webkit-scrollbar-thumb]:hover:bg-accent [&::-webkit-scrollbar-thumb]:transition-all
-                        [&::-webkit-scrollbar]:w-3 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-light-background
-                        [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-card-border [&::-webkit-scrollbar-track]:border-l-2`,
-                        ["max-md:hidden", store.isSidebarOpen],
-                        ["justify-center", !messages]
-                    )
-                }>
+                <div
+                    ref={chatAreaRef}
+                    className={
+                        classBuilder(
+                            `bg-chat-background max-sm:border-t-2 sm:border-x-2 border-card-border 
+                            space-y-2 h-screen flex flex-col justify-between
+                            [&::-webkit-scrollbar-track]:border-card-border
+                            [&::-webkit-scrollbar-thumb]:hover:bg-accent [&::-webkit-scrollbar-thumb]:transition-all
+                            [&::-webkit-scrollbar]:w-3 [&::-webkit-scrollbar-track]:rounded-full 
+                            [&::-webkit-scrollbar-track]:bg-light-background [&::-webkit-scrollbar-thumb]:rounded-full 
+                            [&::-webkit-scrollbar-thumb]:bg-card-border [&::-webkit-scrollbar-track]:border-l-2`,
+                            ["overflow-y-hidden pr-3", contextMenuState?.open],
+                            ["overflow-y-scroll", !contextMenuState?.open],
+                            ["max-md:hidden", store.isSidebarOpen],
+                            ["justify-center", !messages]
+                        )
+                    }
+                >
                     {!(messages === null) &&
                         <QueryClientProvider client={queryClient}>
                             <div className={"flex flex-col p-4 space-y-2"}>
@@ -144,6 +189,22 @@ export default function ChatArea() {
                         onSendMessageAction={onSendMessage}
                     />
                 </div>
+                <ContextMenu
+                    ref={contextMenuRef}
+                    state={contextMenuState}
+                    replyAction={() => {
+                        setReplyId(currentMessageRef.current?.message.id ?? 0);
+                    }}
+                    copyAction={() => {
+                        navigator.clipboard.writeText(currentMessageRef.current?.message.message ?? "");
+                    }}
+                    pinAction={() => {
+                        //TODO: implement
+                    }}
+                    deleteAction={() => {
+                        //TODO: implement
+                    }}
+                />
             </>
             :
             <h1 className="place-self-center text-2xl justify-self-center">Select a chat to open it</h1>
