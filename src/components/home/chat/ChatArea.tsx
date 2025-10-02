@@ -1,7 +1,6 @@
 import {persistentStore} from "@/lib/app-store";
 import React, {useEffect, useMemo, useRef, useState} from "react";
 import MessageBox from "@/components/home/chat/MessageBox";
-import {X} from "lucide-react";
 import ChatInput from "@/components/home/chat/ChatInput";
 import useStompClient from "@/hook/useStompClient";
 import classBuilder from "@/lib/classBuilder";
@@ -180,27 +179,15 @@ export default function ChatArea() {
                     }
 
                 </div>
-                <div className={`${messages === null && "hidden"} sticky bottom-0 w-full left-0 h-fit flex flex-col group`}>
-                    {/*TODO: merge with ChatInput*/}
-                    <div className={`${!replyId && "hidden"} line-clamp-1 border-t-2 sm:border-2 sm:border-b-0 
-                    border-card-border group-has-focus:border-accent bg-light-background flex justify-between transition-all`}>
-                        <div className={"flex space-x-2 p-2"}>
-                            <p className={"text-lg"}>{messageToReplyTo?.name === "" ? "anon" : messageToReplyTo?.name}:</p>
-                            <q className={"text-sm place-self-center"}>{messageToReplyTo?.message}</q>
-                        </div>
-                        <button aria-label={"Cancel reply"} onClick={() => setReplyId(0)}
-                                className={`place-self-center cursor-pointer transition-all focus:outline-none hover:text-accent
-                                hover:bg-card-border focus:text-accent focus:bg-card-border h-full aspect-square`}>
-                            <X className={"place-self-center"}/>
-                        </button>
-                    </div>
-                    <ChatInput
-                        publishMessageAction={publishMessage}
-                        username={store.username}
-                        replyId={replyId}
-                        onSendMessageAction={onSendMessage}
-                    />
-                </div>
+                <ChatInput
+                    publishMessageAction={publishMessage}
+                    username={store.username}
+                    replyId={replyId}
+                    onSendMessageAction={onSendMessage}
+                    cancelReplyAction={() => setReplyId(0)}
+                    messageToReplyTo={messageToReplyTo}
+                    messages={messages}
+                />
                 <ContextMenu
                     ref={contextMenuRef}
                     state={contextMenuState}
