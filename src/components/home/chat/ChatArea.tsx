@@ -27,7 +27,7 @@ export default function ChatArea() {
     const [replyId, setReplyId] = useState(0);
     const [messageToReplyTo, setMessageToReplyTo] = useState<undefined | ChatMessage>(undefined);
     const [pending, setPending] = useState(true);
-    const [prevMessages, setPrevMessages] = useState<ChatMessage[] | null>(null);
+    const prevMessages = useRef<ChatMessage[] | null>(null);
     const [messages, publishMessage] = useStompClient<ChatMessage, ChatPublishBody>(`${process.env.NEXT_PUBLIC_API_URL}/ws`,
         {
             reconnectDelay: 5000,
@@ -143,9 +143,9 @@ export default function ChatArea() {
     }, [store.currentChatId]);
 
     useEffect(() => {
-        if (!chatAreaRef.current || !pending || messages === prevMessages) return;
+        if (!chatAreaRef.current || !pending || messages === prevMessages.current) return;
         chatAreaRef.current.scrollTop = chatAreaRef.current.scrollHeight;
-        setPrevMessages(messages);
+        prevMessages.current = messages;
         setPending(false);
     }, [messages, pending, prevMessages]);
 
