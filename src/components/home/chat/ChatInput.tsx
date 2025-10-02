@@ -18,7 +18,7 @@ export default function ChatInput(
         username: string;
         replyId: number;
         onSendMessageAction: () => void;
-        messageToReplyTo: ChatMessage | undefined;
+        messageToReplyTo: ChatMessage | null;
         messages: ChatMessage[] | null;
         cancelReplyAction: () => void;
     })

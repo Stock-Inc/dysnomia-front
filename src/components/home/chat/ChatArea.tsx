@@ -23,8 +23,7 @@ export interface ChatPublishBody {
 export default function ChatArea() {
     const store = persistentStore();
     const chatAreaRef = useRef<null | HTMLDivElement>(null);
-    const [replyId, setReplyId] = useState(0);
-    const [messageToReplyTo, setMessageToReplyTo] = useState<undefined | ChatMessage>(undefined);
+    const [messageToReplyTo, setMessageToReplyTo] = useState<null | ChatMessage>(null);
     const [pending, setPending] = useState(true);
     const prevMessages = useRef<ChatMessage[] | null>(null);
     const [messages, publishMessage] = useStompClient<ChatMessage, ChatPublishBody>(`${process.env.NEXT_PUBLIC_API_URL}/ws`,
@@ -42,7 +41,7 @@ export default function ChatArea() {
         }
     );
     function onSendMessage() {
-        setReplyId(0);
+        setMessageToReplyTo(null);
         setPending(true);
     }
     const messageRefs = useRef<Map<number, HTMLDivElement>>(new Map());
@@ -67,7 +66,7 @@ export default function ChatArea() {
                         ref={(e) => {
                             messageRefs.current.set(message.id, e!);
                         }}
-                        doubleClickHandler={() => setReplyId(message.id)}
+                        doubleClickHandler={() => setMessageToReplyTo(message)}
                         scrollToOriginal={() => {
                             if (message.reply_id && messageRefs.current.get(message.reply_id)) {
                                 chatAreaRef.current?.scrollTo({
@@ -82,10 +81,10 @@ export default function ChatArea() {
                                     element: messageRefs.current.get(message.id)!,
                                     message
                                 };
-                                const ctx = contextMenuRef.current!;
                                 let deltaX = 0;
                                 let deltaY = 0;
                                 const chatAreaRect = chatAreaRef.current!.getBoundingClientRect();
+                                const ctx = contextMenuRef.current!;
                                 if (chatAreaRect.bottom - e.clientY < ctx.clientHeight) {
                                     deltaY = ctx.clientHeight;
                                 }
@@ -134,10 +133,6 @@ export default function ChatArea() {
     }, [contextMenuState]);
 
     useEffect(() => {
-        setMessageToReplyTo(messages?.find((msg) => msg.id === replyId));
-    }, [replyId, messages]);
-
-    useEffect(() => {
         if (chatAreaRef.current) chatAreaRef.current.scrollTop = chatAreaRef.current.scrollHeight;
     }, [store.currentChatId]);
 
@@ -182,9 +177,9 @@ export default function ChatArea() {
                 <ChatInput
                     publishMessageAction={publishMessage}
                     username={store.username}
-                    replyId={replyId}
+                    replyId={messageToReplyTo?.id ?? 0}
                     onSendMessageAction={onSendMessage}
-                    cancelReplyAction={() => setReplyId(0)}
+                    cancelReplyAction={() => setMessageToReplyTo(null)}
                     messageToReplyTo={messageToReplyTo}
                     messages={messages}
                 />
@@ -192,7 +187,7 @@ export default function ChatArea() {
                     ref={contextMenuRef}
                     state={contextMenuState}
                     replyAction={() => {
-                        setReplyId(contextMenuState?.currentMessage.message.id ?? 0);
+                        setMessageToReplyTo(contextMenuState?.currentMessage.message ?? null);
                     }}
                     forwardAction={() => {
                         //TODO: implement
