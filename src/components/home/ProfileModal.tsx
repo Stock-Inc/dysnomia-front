@@ -33,7 +33,13 @@ export default function ProfileModal() {
     }
 
     return (
-        <div ref={modalRef} className={"absolute z-30 right-0 m-4 flex flex-col font-main text-xl"}>
+        <div
+            ref={modalRef}
+            className={
+                `absolute z-30 right-0 m-4 flex flex-col font-main text-xl max-sm:${
+                    !store.isSidebarOpen && "hidden"
+                }`
+        }>
             <Button
                 ariaLabel={"Open profile modal"}
                 onClickAction={() => setIsOpen(i => !i)}

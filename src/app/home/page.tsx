@@ -2,8 +2,9 @@
 import ChatArea from "@/components/home/chat/ChatArea";
 import {persistentStore} from "@/lib/app-store";
 import {useEffect} from "react";
-import {QueryClientProvider, useQueryClient} from "@tanstack/react-query";
+import {QueryClientProvider} from "@tanstack/react-query";
 import {QueryClient} from "@tanstack/query-core";
+import ChatInfoBar from "@/components/home/ChatInfoBar";
 
 export default function Page() {
 
@@ -15,12 +16,15 @@ export default function Page() {
         }
         window.addEventListener("keydown", handleEsc);
         return () => window.removeEventListener("keydown", handleEsc);
-    }, [store.isSidebarOpen]);
+    }, [store]);
 
     const queryClient = new QueryClient();
 
     return (
         <div className={`h-screen transition-all max-sm:pt-21 sm:pr-21 sm:pl-21 font-main flex flex-col justify-center`}>
+            <QueryClientProvider client={queryClient}>
+                <ChatInfoBar chatId={store.currentChatId}/>
+            </QueryClientProvider>
             <QueryClientProvider client={queryClient}>
                 <ChatArea />
             </QueryClientProvider>
