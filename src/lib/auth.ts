@@ -91,7 +91,7 @@ export async function loginAction(credentials: LoginData): Promise<LoginResponse
             return {
                 success,
                 message: "Logged in",
-                accessToken: accessToken, //FIXME: TEMPORARY TILL WE GET SPECIAL WEBSOCKET ONLY TOKENS
+                // accessToken: accessToken, //FIXME: TEMPORARY TILL WE GET SPECIAL WEBSOCKET ONLY TOKENS
             };
         } else {
             return {
@@ -134,7 +134,7 @@ export async function signupAction(credentials: SignupData): Promise<SignupRespo
             return {
                 success,
                 message: "Signed up",
-                accessToken: accessToken,
+                // accessToken: accessToken,
             };
         } else {
             return {
@@ -160,6 +160,7 @@ export type SessionCheckResponse = {
 export async function checkForActiveSessions(): Promise<SessionCheckResponse> {
     try {
         const cookieJar = await cookies();
+        console.log(cookieJar.get("dysnomia"));
         const accessCookie = cookieJar.get("dysnomia-access");
         if (!accessCookie) {
             const mainCookie = cookieJar.get("dysnomia");
@@ -222,4 +223,6 @@ export async function logoutAction() {
     const cookieJar = await cookies();
     cookieJar.delete("dysnomia");
     cookieJar.delete("dysnomia-access");
+    console.log(cookieJar.get("dysnomia"));
+    console.log(cookieJar.get("dysnomia-access"));
 }
