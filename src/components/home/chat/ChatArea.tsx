@@ -6,6 +6,7 @@ import useStompClient from "@/hook/useStompClient";
 import classBuilder from "@/lib/classBuilder";
 import ContextMenu from "@/components/home/chat/ContextMenu";
 import LoadingCircles from "@/components/LoadingCircles";
+import {useAnimate} from "motion/react";
 
 export interface ChatMessage {
     id: number,
@@ -56,6 +57,7 @@ export default function ChatArea() {
     }
     const [contextMenuState, setContextMenuState] = useState<ContextMenuState | null>(null);
     const contextMenuRef = useRef<null | HTMLDivElement>(null);
+    const [scope, animate] = useAnimate();
     const messagesToRender = useMemo(() => {
         const result: React.ReactNode[] = [];
         if (messages === null) return [null, null];
@@ -69,10 +71,16 @@ export default function ChatArea() {
                         doubleClickHandler={() => setMessageToReplyTo(message)}
                         scrollToOriginal={() => {
                             if (message.reply_id && messageRefs.current.get(message.reply_id)) {
+                                const targetY = (messageRefs.current.get(message.reply_id)?.offsetTop ?? 0) + 42 - window.innerHeight / 2;
+                                const scrollDiff = Math.abs(targetY - (chatAreaRef.current?.scrollTop ?? 0));
                                 chatAreaRef.current?.scrollTo({
-                                    top: messageRefs.current.get(message.reply_id)!.offsetTop - window.innerHeight / 2,
-                                    behavior: "smooth",
-                                });
+                                    top: targetY,
+                                    behavior: "smooth",});
+                                animate(
+                                    document.querySelector(`.msgbg${message.reply_id}`)!,
+                                    {backgroundColor: ["#9393a1", "rgba(128,140,193, 0)"]},
+                                    {duration: 0.5, delay: scrollDiff * 0.0005},
+                                );
                             }
                         }}
                         contextHandler={(e) => {
@@ -112,7 +120,7 @@ export default function ChatArea() {
             });
         }
         return result;
-    }, [messages, store.username]);
+    }, [messages, store.username, animate]);
 
     useEffect(() => {
         function handleClick(e: MouseEvent) {
@@ -165,7 +173,7 @@ export default function ChatArea() {
                     }
                 >
                     {!(messages === null) &&
-                        <div className={"flex flex-col p-4 space-y-2"}>
+                        <div ref={scope} className={"flex flex-col space-y-2 py-2"}>
                             {messagesToRender}
                         </div>
                     }

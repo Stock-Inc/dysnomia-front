@@ -35,8 +35,13 @@ export default function MessageBox(
     };
 
     return (
-        <motion.div className={""}>
-            <motion.div
+        <motion.div
+            initial={{opacity: 0}}
+            animate={{opacity: 1}}
+            transition={{duration: 0.5}}
+            className={`msgbg${message.id} px-2`}
+        >
+            <div
                 onContextMenu={(e) => {
                     e.preventDefault();
                     contextHandler(e);
@@ -50,9 +55,6 @@ export default function MessageBox(
                         ["place-self-end rounded-br-none text-white bg-accent", !isOuter],
                     )
                 }
-                initial={{opacity: 0}}
-                animate={{opacity: 1}}
-                transition={{duration: 0.5}}
             >
                 <p
                     className={`${message.name && "cursor-pointer hover:text-shadow-white-glow"} text-md p-1 mb-1 transition-all w-fit`}
@@ -96,7 +98,7 @@ export default function MessageBox(
                         }
                     </p>
                 </div>
-            </motion.div>
+            </div>
         </motion.div>
     );
 }
