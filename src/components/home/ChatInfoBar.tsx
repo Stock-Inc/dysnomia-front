@@ -1,5 +1,6 @@
 import {useQuery} from "@tanstack/react-query";
 import Image from "next/image";
+import {Suspense} from "react";
 //TODO: merge profile modal, sidebar toggle and this
 export default function ChatInfoBar(
     {
@@ -17,7 +18,17 @@ export default function ChatInfoBar(
             `bg-background sm:border-2 border-t-none border-card-border space-x-5 max-sm:pl-21
             p-2 sm:pl-4 flex max-sm:justify-center max-sm:absolute max-sm:w-full max-sm:top-0`
         }>
-            <Image unoptimized width={50} height={50} className={"place-self-center rounded-full"} src={"https://placehold.co/400"} alt={"pfp"}/>
+            {
+                isLoading ? <div className="w-12 h-12 rounded-full place-self-center bg-gray-500 animate-pulse"/> :
+                    <Image
+                        unoptimized
+                        width={48}
+                        height={48}
+                        className={"place-self-center rounded-full"}
+                        src={"https://placehold.co/400"}
+                        alt={"pfp"}
+                    />
+            }
             <div className={"flex flex-col space-y-2"}>
                 <h1 className={"text-shadow-white-glow text-xl"}>
                     {
