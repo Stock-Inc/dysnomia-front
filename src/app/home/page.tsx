@@ -23,7 +23,7 @@ export default function Page() {
     return (
         <div className={`h-screen transition-all max-sm:pt-21 sm:pr-21 sm:pl-21 font-main flex flex-col justify-center`}>
             <QueryClientProvider client={queryClient}>
-                <ChatInfoBar chatId={store.currentChatId}/>
+                {store.currentChatId && <ChatInfoBar chatId={store.currentChatId}/>}
             </QueryClientProvider>
             <QueryClientProvider client={queryClient}>
                 <ChatArea />
