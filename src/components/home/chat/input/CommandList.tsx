@@ -9,11 +9,13 @@ export default function CommandList(
         isCommand,
         input,
         setInput,
+        textareaRef,
     }: {
         commands: ConsoleCommand[] | null;
         isCommand: boolean;
         input: string | null;
         setInput: React.Dispatch<React.SetStateAction<string>>;
+        textareaRef: React.RefObject<HTMLTextAreaElement | null>;
     }
 ) {
     const list = useMemo(() => {
@@ -37,7 +39,10 @@ export default function CommandList(
                                 [index === 0, "rounded-t-lg"],
                                 [index === commands.length - 1, "rounded-b-lg"]
                             )}
-                            onClick={() => setInput("/" + command.command)}
+                            onClick={() => {
+                                setInput("/" + command.command);
+                                textareaRef.current?.focus();
+                            }}
                         >
                             <p>{command.command}</p>
                             <span className={"text-sm place-self-center text-muted-foreground"}>{command.description}</span>
@@ -47,7 +52,7 @@ export default function CommandList(
             }
         );
         return result;
-    }, [commands, input, setInput]);
+    }, [commands, input, setInput, textareaRef]);
     return (
         <div className={
                 `${(!isCommand || (list instanceof Array && list.length === 0)) && "opacity-0 pointer-events-none"}

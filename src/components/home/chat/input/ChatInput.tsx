@@ -92,8 +92,12 @@ export default function ChatInput(
     return (
         <div className={`${messages === null && "hidden"} sticky bottom-0 w-full left-0 h-fit flex flex-col group`}>
             {
-                replyId ? <ReplyPreview replyId={replyId} messageToReplyTo={messageToReplyTo} cancelReplyAction={cancelReplyAction} />
-                    : <CommandList isCommand={isCommand} commands={consoleCommands} input={input} setInput={setInput} />
+                replyId !== 0 &&
+                <ReplyPreview
+                    replyId={replyId}
+                    messageToReplyTo={messageToReplyTo}
+                    cancelReplyAction={cancelReplyAction}
+                />
             }
             <div className={"flex"}>
                 <textarea
@@ -111,6 +115,7 @@ export default function ChatInput(
                     border-t-2 sm:border-l-2 border-card-border focus:outline-none focus:border-accent transition-all h-auto`}>
                 </textarea>
                 <button
+                    tabIndex={1}
                     aria-label={"Send button"}
                     spellCheck={"false"}
                     onClick={sendMessage}
@@ -124,6 +129,16 @@ export default function ChatInput(
                     <SendHorizonal className={"place-self-center w-8 h-8"}/>
                 </button>
             </div>
+            {
+                !replyId &&
+                <CommandList
+                    isCommand={isCommand}
+                    commands={consoleCommands}
+                    input={input}
+                    setInput={setInput}
+                    textareaRef={textareaRef}
+                />
+            }
         </div>
     );
 }
