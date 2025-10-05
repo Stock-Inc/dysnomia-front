@@ -15,9 +15,10 @@ export default function ConsoleBox(
             initial={{ opacity: 0}}
             animate={{ opacity: 1 }}
             transition={{duration: 0.5}}
+            className="px-2"
         >
             <div
-                className={"text-lg rounded-2xl p-1 flex flex-col max-w-200 w-fit place-self-start rounded-bl-none bg-light-background"}
+                className={"text-lg border-2 border-card-border rounded-2xl p-1 flex flex-col max-w-200 w-fit place-self-start rounded-bl-none bg-light-background"}
             >
                 <div
                     className={`p-1 mx-1 line-clamp-2 overflow-hidden text-md rounded-r-xl 
