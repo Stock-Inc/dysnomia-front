@@ -21,7 +21,7 @@ export default function CommandList(
         const result:React.ReactNode[] = [];
 
         commands.forEach((command, index) => {
-                if (command.command.search(input?.slice(1) ?? "") !== -1 || command.description.search(input?.slice(1) ?? "") !== -1) {
+                if (command.command.includes(input?.slice(1) ?? "") || command.description.includes(input?.slice(1) ?? "")) {
                     result.push(
                         <motion.button
                             key={command.command + "|" + command.description}
