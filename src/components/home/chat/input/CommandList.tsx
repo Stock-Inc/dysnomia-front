@@ -45,7 +45,6 @@ export default function CommandList(
                     );
                 }
             }
-            //TODO: set input on click
         );
         return result;
     }, [commands, input, setInput]);
