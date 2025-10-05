@@ -51,7 +51,7 @@ export default function Sidebar() {
                 className={classBuilder(
                     `max-sm:w-full transition-transform w-90 left-0 border-r-1 border-card-border duration-75 -translate-x-full
                     h-screen max-h-screen bg-light-background absolute z-10 top-0 flex flex-col font-main`,
-                    ["translate-x-0", store.isSidebarOpen]
+                    [store.isSidebarOpen, "translate-x-0"]
                 )}
             >
                 <div
@@ -66,7 +66,7 @@ export default function Sidebar() {
                     className={classBuilder(
                         // "cursor-ew-resize",
                         `max-sm:hidden fixed w-4 h-full bg-card-border left-90 opacity-0`,
-                        ["hidden", !store.isSidebarOpen]
+                        [!store.isSidebarOpen, "hidden"]
                     )}
                 />
                 <h2 className={"text-center text-3xl border-b-2 border-card-border p-6"}>Chats</h2>

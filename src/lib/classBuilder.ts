@@ -1,4 +1,4 @@
-type classConditionPair = [string, object | boolean | undefined];
+type classConditionPair = [object | boolean | undefined, string];
 export default function classBuilder(...inputs: (classConditionPair | string | undefined)[]): string {
     let result = '';
     for (const input of inputs) {
@@ -6,7 +6,7 @@ export default function classBuilder(...inputs: (classConditionPair | string | u
         if (typeof input === 'string') {
             result += `${input} `;
         } else {
-            const [className, condition] = input;
+            const [condition, className] = input;
             if (condition) result += `${className} `;
         }
     }

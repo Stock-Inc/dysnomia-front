@@ -51,8 +51,8 @@ export default function MessageBox(
                 className={
                     classBuilder(
                         `text-lg rounded-2xl p-1 flex flex-col max-w-200 w-fit`,
-                        ["place-self-start rounded-bl-none bg-card-border", isOuter],
-                        ["place-self-end rounded-br-none text-white bg-accent", !isOuter],
+                        [isOuter, "place-self-start rounded-bl-none bg-card-border"],
+                        [!isOuter, "place-self-end rounded-br-none text-white bg-accent"],
                     )
                 }
             >
@@ -72,9 +72,9 @@ export default function MessageBox(
                         className={
                             classBuilder(
                                 `p-1 mx-1 line-clamp-2 overflow-hidden text-md cursor-pointer`,
-                                [`bg-chat-outer-reply-background border-l-4 border-foreground 
-                        rounded-r-xl hover:bg-chat-outer-reply-background-focus`, isOuter],
-                                ["bg-dark-accent border-r-4 border-white rounded-l-xl hover:bg-dark-accent-focus", !isOuter]
+                                [isOuter, `bg-chat-outer-reply-background border-l-4 border-foreground 
+                                    rounded-r-xl hover:bg-chat-outer-reply-background-focus`],
+                                [!isOuter, "bg-dark-accent border-r-4 border-white rounded-l-xl hover:bg-dark-accent-focus"]
                             )
                         }>
                         {replyPreview()}
@@ -85,8 +85,8 @@ export default function MessageBox(
                     <p className={
                         classBuilder(
                             `text-sm place-self-end p-1 select-none pointer-events-none`,
-                            ["text-muted-foreground", isOuter],
-                            ["text-gray-100", isOuter]
+                            [isOuter, "text-muted-foreground"],
+                            [isOuter, "text-gray-100"]
                         )
                     }>
                         {

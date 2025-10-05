@@ -11,9 +11,9 @@ export default function SidebarChatButton({chatId}: {chatId: string}) {
                 classBuilder(
             `p-2 text-lg transition-all bg-card-border 
                     rounded-2xl border-2 border-card-border cursor-pointer`,
-                    ["bg-light-background hover:shadow-dim-glow hover:text-shadow-white-glow hover:bg-card-border",
-                    store.currentChatId !== chatId],
-                    ["text-shadow-white-glow", store.currentChatId === chatId]
+                    [store.currentChatId !== chatId,
+                        "bg-light-background hover:shadow-dim-glow hover:text-shadow-white-glow hover:bg-card-border"],
+                    [store.currentChatId === chatId, "text-shadow-white-glow"]
                 )
             }
             onClick={() => store.setCurrentChatId(chatId)}

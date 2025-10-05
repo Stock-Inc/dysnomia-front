@@ -22,10 +22,10 @@ export default function ContextMenuButton(
                 classBuilder(
                     `bg-light-background p-2 border-2 border-card-border group
                     hover:bg-card-border transition-all flex space-x-2 cursor-pointer`,
-                    ["rounded-t-2xl", position === "top"],
-                    ["rounded-b-2xl", position === "bottom"],
-                    ["text-shadow-error-glow text-error", dangerous],
-                    ["hover:text-shadow-white-glow", !dangerous],
+                    [position === "top", "rounded-t-2xl"],
+                    [position === "bottom", "rounded-b-2xl"],
+                    [dangerous, "text-shadow-error-glow text-error"],
+                    [!dangerous, "hover:text-shadow-white-glow"],
                     className
                 )
             }

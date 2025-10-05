@@ -55,7 +55,7 @@ export default function LoginForm() {
                 <User className={
                     classBuilder(
                         `scale-140 place-self-center transition-all group-focus-within:drop-shadow-accent text-accent`,
-                        ["text-error", error !== null]
+                        [error !== null, "text-error"]
                     )
                 }/>
                 <input
@@ -65,7 +65,7 @@ export default function LoginForm() {
                         classBuilder(
                             `w-full border-2 rounded-2xl text-xl focus:outline-2 p-2 focus:text-accent 
                             focus:shadow-glow transition-all border-accent focus:outline-accent`,
-                            ["border-error focus:outline-error text-error", error !== null]
+                            [error !== null, "border-error focus:outline-error text-error"]
                         )
                     }
                     placeholder="Username"
@@ -76,7 +76,7 @@ export default function LoginForm() {
                 <Lock className={
                     classBuilder(
                         `scale-140 place-self-center transition-all group-focus-within:drop-shadow-accent text-accent`,
-                        ["text-error", error !== null]
+                        [error !== null, "text-error"]
                     )
                 }/>
                 <input
@@ -86,7 +86,7 @@ export default function LoginForm() {
                         classBuilder(
                             `w-full border-2 rounded-2xl text-xl focus:outline-2 p-2 focus:text-accent 
                             focus:shadow-glow transition-all border-accent focus:outline-accent`,
-                            ["border-error focus:outline-error text-error", error !== null]
+                            [error !== null, "border-error focus:outline-error text-error"]
                         )
                     }
                     placeholder="Password"

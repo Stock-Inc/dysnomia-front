@@ -34,8 +34,8 @@ export default function ProfileDetails() {
                     className={
                         classBuilder(
                             `text-2xl text-center`,
-                            ["text-error", errorMessage !== null],
-                            ["text-xl", isLoading || errorMessage !== null],
+                            [errorMessage !== null, "text-error"],
+                            [isLoading || errorMessage !== null, "text-xl"],
                         )
                     }
                 >
@@ -81,8 +81,8 @@ export default function ProfileDetails() {
                         className={
                             classBuilder(
                                 `text-lg text-dark-accent text-center underline cursor-pointer`,
-                                ["text-error", errorMessage !== null],
-                                ["hover:text-accent", !errorMessage],
+                                [errorMessage !== null, "text-error"],
+                                [!errorMessage, "hover:text-accent"],
                             )
                         }
                     >
