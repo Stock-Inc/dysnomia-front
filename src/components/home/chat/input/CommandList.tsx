@@ -8,10 +8,12 @@ export default function CommandList(
         commands,
         isCommand,
         input,
+        setInput,
     }: {
         commands: ConsoleCommand[] | null;
         isCommand: boolean;
         input: string | null;
+        setInput: React.Dispatch<React.SetStateAction<string>>;
     }
 ) {
     const list = useMemo(() => {
@@ -35,6 +37,7 @@ export default function CommandList(
                                 [index === 0, "rounded-t-lg"],
                                 [index === commands.length - 1, "rounded-b-lg"]
                             )}
+                            onClick={() => setInput("/" + command.command)}
                         >
                             <p>{command.command}</p>
                             <span className={"text-sm place-self-center text-muted-foreground"}>{command.description}</span>
@@ -45,7 +48,7 @@ export default function CommandList(
             //TODO: set input on click
         );
         return result;
-    }, [commands, input]);
+    }, [commands, input, setInput]);
     return (
         <div className={
                 `${(!isCommand || (list instanceof Array && list.length === 0)) && "opacity-0 pointer-events-none"}
