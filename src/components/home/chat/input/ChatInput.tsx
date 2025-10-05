@@ -1,8 +1,9 @@
 "use client";
 import React, {ChangeEvent, useRef, useState} from "react";
-import {SendHorizonal, X} from "lucide-react";
+import {SendHorizonal} from "lucide-react";
 import classBuilder from "@/lib/classBuilder";
 import {ChatMessage, ChatPublishBody} from "@/components/home/chat/ChatArea";
+import ReplyPreview from "@/components/home/chat/input/ReplyPreview";
 
 export default function ChatInput(
     {
@@ -24,11 +25,18 @@ export default function ChatInput(
     })
 {
     const [input, setInput] = useState("");
+    const [isCommand, setIsCommand] = useState(false);
     const textareaRef = useRef<null | HTMLTextAreaElement>(null);
 
     function handleInputChange (e: ChangeEvent<HTMLTextAreaElement>) {
         const textarea = textareaRef.current!;
-        setInput(e.currentTarget.value);
+        const value = e.currentTarget.value;
+        setInput(value);
+        if (value.trim()[0] === "/") {
+            setIsCommand(true);
+        } else {
+            setIsCommand(false);
+        }
 
         textarea.style.height = 'auto';
 
@@ -61,18 +69,10 @@ export default function ChatInput(
 
     return (
         <div className={`${messages === null && "hidden"} sticky bottom-0 w-full left-0 h-fit flex flex-col group`}>
-            <div className={`${!replyId && "hidden"} line-clamp-1 border-t-2 sm:border-2 sm:border-b-0 
-                        border-card-border group-has-focus:border-accent bg-light-background flex justify-between transition-all`}>
-                <div className={"flex space-x-2 p-2"}>
-                    <p className={"text-lg"}>{messageToReplyTo?.name === "" ? "anon" : messageToReplyTo?.name}:</p>
-                    <q className={"text-sm place-self-center"}>{messageToReplyTo?.message}</q>
-                </div>
-                <button aria-label={"Cancel reply"} onClick={cancelReplyAction}
-                        className={`place-self-center cursor-pointer transition-all focus:outline-none hover:text-accent
-                                    hover:bg-card-border focus:text-accent focus:bg-card-border h-full aspect-square`}>
-                    <X className={"place-self-center"}/>
-                </button>
-            </div>
+            {
+                replyId ? <ReplyPreview replyId={replyId} messageToReplyTo={messageToReplyTo} cancelReplyAction={cancelReplyAction} />
+                    : isCommand && <div>Command Preview</div>
+            }
             <div className={"flex"}>
                 <textarea
                     value={input}
