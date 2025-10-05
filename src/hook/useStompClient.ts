@@ -11,10 +11,13 @@ interface useStompClientOptions {
     onPublish?: () => void;
 }
 
-export default function useStompClient<T, U>(url: string, options: useStompClientOptions): [T[] | null, (body: U) => void] {
+export default function useStompClient<T, U>(url: string, options: useStompClientOptions): [T[] | null, (body: U) => void, (message: T) => void] {
     //TODO: caching
     const stompClient = useRef<Client | null>(null);
     const [messages, setMessages] = useState<T[] | null>(null);
+    function pushMessage(msg: T): void {
+        setMessages((prevMessages) => [...(prevMessages ?? []), msg]);
+    }
     const publish = (body: U) => {
         stompClient.current?.publish({
             destination: "/app/chat",
@@ -73,5 +76,5 @@ export default function useStompClient<T, U>(url: string, options: useStompClien
             };
         }
     }, []);
-    return [messages, publish];
+    return [messages, publish, pushMessage];
 }

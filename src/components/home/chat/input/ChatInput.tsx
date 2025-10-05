@@ -2,8 +2,9 @@
 import React, {ChangeEvent, useRef, useState} from "react";
 import {SendHorizonal} from "lucide-react";
 import classBuilder from "@/lib/classBuilder";
-import {ChatMessage, ChatPublishBody} from "@/components/home/chat/ChatArea";
+import {ChatMessage, ChatPublishBody, ConsoleCommand, ConsoleMessage} from "@/components/home/chat/ChatArea";
 import ReplyPreview from "@/components/home/chat/input/ReplyPreview";
+import CommandList from "@/components/home/chat/input/CommandList";
 
 export default function ChatInput(
     {
@@ -14,14 +15,18 @@ export default function ChatInput(
         messageToReplyTo,
         messages,
         cancelReplyAction,
+        onCommandSendAction,
+        consoleCommands,
     }: {
         publishMessageAction: (body: ChatPublishBody) => void;
         username: string;
         replyId: number;
         onSendMessageAction: () => void;
         messageToReplyTo: ChatMessage | null;
-        messages: ChatMessage[] | null;
+        messages: (ChatMessage | ConsoleMessage)[] | null;
         cancelReplyAction: () => void;
+        onCommandSendAction: (message: ConsoleMessage) => void;
+        consoleCommands: ConsoleCommand[] | null;
     })
 {
     const [input, setInput] = useState("");
@@ -56,22 +61,39 @@ export default function ChatInput(
     }
 
     function sendMessage() {
-        publishMessageAction(
-            {
-                name: username,
-                message: input,
-                reply_id: replyId,
-            }
-        );
+        if (!isCommand) {
+            publishMessageAction(
+                {
+                    name: username,
+                    message: input,
+                    reply_id: replyId,
+                }
+            );
+            onSendMessageAction();
+        } else {
+            setIsCommand(false);
+            let output = "";
+            fetch(`${process.env.NEXT_PUBLIC_API_URL}/console?command=${input.slice(1)}`)
+                .then(response => response.text().then(text => {
+                    output = text;
+                }))
+                .catch(error => output = error.message)
+                .finally(() => {
+                    onCommandSendAction({
+                        input,
+                        output,
+                    });
+                }
+            );
+        }
         setInput("");
-        onSendMessageAction();
     }
 
     return (
         <div className={`${messages === null && "hidden"} sticky bottom-0 w-full left-0 h-fit flex flex-col group`}>
             {
                 replyId ? <ReplyPreview replyId={replyId} messageToReplyTo={messageToReplyTo} cancelReplyAction={cancelReplyAction} />
-                    : isCommand && <div>Command Preview</div>
+                    : <CommandList isCommand={isCommand} commands={consoleCommands} />
             }
             <div className={"flex"}>
                 <textarea
@@ -96,7 +118,7 @@ export default function ChatInput(
                         `place-self-center p-5 rounded-none bg-light-background border-t-2 sm:border-r-2 border-card-border
                          cursor-pointer group-has-focus:border-accent transition-all h-full hover:text-accent 
                          hover:bg-card-border focus:bg-card-border flex justify-center focus:outline-none`,
-                        ["text-light-background pointer-events-none focus:bg-light-background", !input.trim()]
+                        [!input.trim(), "text-light-background pointer-events-none focus:bg-light-background"]
                     )
                 }>
                     <SendHorizonal className={"place-self-center w-8 h-8"}/>
