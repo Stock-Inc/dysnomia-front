@@ -115,7 +115,6 @@ export default function ChatInput(
                     border-t-2 sm:border-l-2 border-card-border focus:outline-none focus:border-accent transition-all h-auto`}>
                 </textarea>
                 <button
-                    tabIndex={1}
                     aria-label={"Send button"}
                     spellCheck={"false"}
                     onClick={sendMessage}
