@@ -1,6 +1,5 @@
 import {useQuery} from "@tanstack/react-query";
 import Image from "next/image";
-import {Suspense} from "react";
 //TODO: merge profile modal, sidebar toggle and this
 export default function ChatInfoBar(
     {
