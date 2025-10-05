@@ -93,7 +93,7 @@ export default function ChatInput(
         <div className={`${messages === null && "hidden"} sticky bottom-0 w-full left-0 h-fit flex flex-col group`}>
             {
                 replyId ? <ReplyPreview replyId={replyId} messageToReplyTo={messageToReplyTo} cancelReplyAction={cancelReplyAction} />
-                    : <CommandList isCommand={isCommand} commands={consoleCommands} />
+                    : <CommandList isCommand={isCommand} commands={consoleCommands} input={input} />
             }
             <div className={"flex"}>
                 <textarea
