@@ -36,7 +36,7 @@ export default function ProfileModal() {
         <div
             ref={modalRef}
             className={
-                `absolute z-30 right-0 m-4 flex flex-col font-main text-xl max-sm:${
+                `absolute z-30 right-0 m-4 flex flex-col font-main text-xl max-md:${
                     !store.isSidebarOpen && "hidden"
                 }`
         }>
@@ -51,11 +51,11 @@ export default function ProfileModal() {
             <div className={`${!isOpen && "hidden"} transition-all
             mt-2 bg-light-background flex flex-col border-2 border-card-border rounded-2xl p-2 space-y-2`}>
                 <p>Logged in as: <span className={"text-accent text-shadow-glow"}>{store.username}</span></p>
-                <ProfileModalButton onClickAction={() => redirect(`/profile/${store.username}`, RedirectType.push)}>
+                <ProfileModalButton href={`/profile/${store.username}`}>
                     <User className={"group-hover:drop-shadow-white-glow place-self-center"}/>
                     <p>Profile</p>
                 </ProfileModalButton>
-                <ProfileModalButton onClickAction={() => redirect("/settings", RedirectType.push)}>
+                <ProfileModalButton href={'/settings'}>
                     <Settings className={"group-hover:drop-shadow-white-glow place-self-center"}/>
                     <p>Settings</p>
                 </ProfileModalButton>

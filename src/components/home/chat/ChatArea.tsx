@@ -184,7 +184,7 @@ export default function ChatArea() {
                     ref={chatAreaRef}
                     className={
                         classBuilder(
-                            `bg-chat-background max-sm:border-t-2 sm:border-x-2 border-card-border 
+                            `bg-chat-background max-md:border-t-2 md:border-x-2 border-card-border 
                             space-y-2 h-screen flex flex-col justify-between
                             [&::-webkit-scrollbar-track]:border-card-border
                             [&::-webkit-scrollbar-thumb]:hover:bg-accent [&::-webkit-scrollbar-thumb]:transition-all
@@ -193,7 +193,6 @@ export default function ChatArea() {
                             [&::-webkit-scrollbar-thumb]:bg-card-border [&::-webkit-scrollbar-track]:border-l-2`,
                             [contextMenuState?.open, "overflow-y-hidden pr-3"],
                             [!contextMenuState?.open, "overflow-y-scroll"],
-                            [store.isSidebarOpen, "max-md:hidden"],
                             [!messages, "justify-center"]
                         )
                     }

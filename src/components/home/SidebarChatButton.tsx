@@ -9,8 +9,7 @@ export default function SidebarChatButton({chatId}: {chatId: string}) {
         <button
             className={
                 classBuilder(
-            `p-2 text-lg transition-all bg-card-border 
-                    rounded-2xl border-2 border-card-border cursor-pointer`,
+            `p-2 text-lg transition-all bg-card-border border-2 border-card-border cursor-pointer focus:outline-none`,
                     [store.currentChatId !== chatId,
                         "bg-light-background hover:shadow-dim-glow hover:text-shadow-white-glow hover:bg-card-border"],
                     [store.currentChatId === chatId, "text-shadow-white-glow"]

@@ -23,8 +23,8 @@ export default function Sidebar() {
     //         if (window.innerWidth < 800) {
     //             setWidth(window.innerWidth);
     //         }
-    //         else if (width > window.innerWidth * 0.9) {
-    //             setWidth(window.innerWidth * 0.9);
+    //         else if (width > window.innerWidth * 0.5) {
+    //             setWidth(window.innerWidth * 0.5);
     //         }
     //         setHeight(window.innerHeight);
     //     }
@@ -49,9 +49,10 @@ export default function Sidebar() {
                 ref={sidebarRef}
                 // style={{width, height}}
                 className={classBuilder(
-                    `max-sm:w-full transition-transform w-90 left-0 border-r-1 border-card-border duration-75 -translate-x-full
-                    h-screen max-h-screen bg-light-background absolute z-10 top-0 flex flex-col font-main`,
-                    [store.isSidebarOpen, "translate-x-0"]
+                    `max-md:w-full max-md:absolute transition-all border-r-1 border-card-border
+                    h-screen max-h-screen bg-light-background z-10 top-0 flex flex-col font-main`,
+                    [!store.isSidebarOpen, "md:w-0 max-md:-translate-x-full"],
+                    [store.isSidebarOpen, "md:w-90"],
                 )}
             >
                 <div
@@ -59,18 +60,18 @@ export default function Sidebar() {
                     // onDrag={(e) => {
                     //     let newWidth = e.clientX;
                     //     if (newWidth < 360) newWidth = 360;
-                    //     if (newWidth > window.innerWidth * 0.9) newWidth = window.innerWidth * 0.9;
+                    //     if (newWidth > window.innerWidth * 0.5) newWidth = window.innerWidth * 0.5;
                     //     setWidth(newWidth);
                     // }}
                     // style={{left: width}}
                     className={classBuilder(
                         // "cursor-ew-resize",
                         `max-sm:hidden fixed w-4 h-full bg-card-border left-90 opacity-0`,
-                        [!store.isSidebarOpen, "hidden"]
+                        [!store.isSidebarOpen, "sm:hidden"]
                     )}
                 />
                 <h2 className={"text-center text-3xl border-b-2 border-card-border p-6"}>Chats</h2>
-                <div className={"flex flex-col space-y-2 p-2"}>
+                <div className={"flex flex-col space-y-2"}>
                     <SidebarChatButton chatId={"public"}/>
                 </div>
 
