@@ -1,6 +1,7 @@
 import {Client, frameCallbackType} from "@stomp/stompjs";
 import {useEffect, useRef, useState} from "react";
 import SockJS from "sockjs-client";
+import useCookie from "@/hook/useCookie";
 
 interface useStompClientOptions {
     reconnectDelay: number;
@@ -15,6 +16,7 @@ export default function useStompClient<T, U>(url: string, options: useStompClien
     //TODO: caching
     const stompClient = useRef<Client | null>(null);
     const [messages, setMessages] = useState<T[] | null>(null);
+    const tokenFromCookie = useCookie("dysnomia-access");
     function pushMessage(msg: T): void {
         setMessages((prevMessages) => [...(prevMessages ?? []), msg]);
     }
@@ -28,10 +30,6 @@ export default function useStompClient<T, U>(url: string, options: useStompClien
         });
     };
     useEffect(() => {
-        const tokenFromCookie = document.cookie
-            .split("; ")
-            .find(c => c.startsWith("dysnomia-access="))
-            ?.split("=")[1];
         if (!tokenFromCookie) {
             //TODO: iunno kick the user out
         }
