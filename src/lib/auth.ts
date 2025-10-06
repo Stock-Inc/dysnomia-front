@@ -115,7 +115,7 @@ export type SignupResponse = {
 
 export async function signupAction(credentials: SignupData): Promise<SignupResponse> {
     try {
-        const response = await fetch(`${BACKEND_URL}/registration`, {
+        const response = await fetch(`${BACKEND_URL}/signup`, {
             method: "POST",
             headers: {
                 "Content-type": "application/json"
