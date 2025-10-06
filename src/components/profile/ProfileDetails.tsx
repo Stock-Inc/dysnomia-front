@@ -5,25 +5,35 @@ import classBuilder from "@/lib/classBuilder";
 import {motion} from "motion/react";
 import {useEffect, useState} from "react";
 import {useQuery} from "@tanstack/react-query";
+import useCookie from "@/hook/useCookie";
 
 export interface ProfileDetails {
     username: string;
+    displayName: string;
     role: string;
+    bio: string;
 }
 
 export default function ProfileDetails() {
     const {username} = useParams<{username: string}>();
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const tokenFromCookie = useCookie("dysnomia-access");
     const {data, isLoading, error} = useQuery({
-        queryKey: ["profile"],
-        queryFn: () => fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/${username}`).then(res => res.json()),
+        queryKey: ["profile", tokenFromCookie],
+        queryFn: () => fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/${username}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${tokenFromCookie}`,
+            }
+        }).then(res => res.json() as unknown as ProfileDetails),
+        enabled: !!tokenFromCookie,
     });
 
     useEffect(() => {
-        if (data?.error) setErrorMessage(data?.error);
-        else if (error) setErrorMessage(error.message);
+        if (error) setErrorMessage(error.message);
         else setErrorMessage(null);
-    }, [data, isLoading, error]);
+    }, [isLoading, error]);
 
     return (
 
@@ -43,7 +53,7 @@ export default function ProfileDetails() {
                         isLoading ?
                             <p className={"animate-pulse"} >
                                 Loading
-                            </p> : !errorMessage ? data?.username :
+                            </p> : !errorMessage ? data?.displayName ?? data?.username :
                             <>
                                 <motion.span
                                     className={"inline-block relative pr-1"}
@@ -104,7 +114,7 @@ export default function ProfileDetails() {
                         <div className={"col-span-4 h-4 animate-pulse rounded-2xl p-2 bg-gray-600"}/>
                         <div className={"col-span-1 h-4 animate-pulse rounded-2xl p-2 bg-gray-600"}/>
                     </div> : !errorMessage ?
-                        <p className={"text-lg"}>Profile Bio please make it a feature @{data?.username}</p> :
+                        <p className={"text-lg"}>{data?.bio ?? "Nothing here"}</p> :
                         <p className={"text-lg"}>Something went wrong...</p>
                 }
             </div>
