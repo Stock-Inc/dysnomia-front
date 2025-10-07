@@ -32,17 +32,22 @@ export interface ConsoleCommand {
 }
 
 export default function ChatArea() {
-    const store = persistentStore();
     const {data, error, isLoading} = useQuery({
         queryKey: ["console-commands"],
         queryFn: () => fetch(`${process.env.NEXT_PUBLIC_API_URL}/all_commands`)
             .then((res) => res.json() as unknown as ConsoleCommand[]),
     });
+    
+    const cachedMessages = persistentStore(state => state.cachedMessages);
+    const chatId = persistentStore(state => state.currentChatId);
+    const username = persistentStore(state => state.username);
+    
     const chatAreaRef = useRef<null | HTMLDivElement>(null);
     const [messageToReplyTo, setMessageToReplyTo] = useState<null | ChatMessage>(null);
     const [pending, setPending] = useState(true);
     const prevMessages = useRef<(ChatMessage | ConsoleMessage)[] | null>(null);
-    const [messages, publishMessage, pushMessage] = useStompClient<ChatMessage | ConsoleMessage, ChatPublishBody>(`${process.env.NEXT_PUBLIC_API_URL}/ws`,
+    const [messages, publishMessage, pushMessage] = useStompClient<ChatMessage | ConsoleMessage, ChatPublishBody>(
+        `${process.env.NEXT_PUBLIC_API_URL}/ws`,
         {
             reconnectDelay: 5000,
             debugHandler: (str) => console.log(str),
@@ -80,9 +85,10 @@ export default function ChatArea() {
     const [scope, animate] = useAnimate();
     const messagesToRender = useMemo(() => {
         const result: React.ReactNode[] = [];
-        if (messages === null) return [null, null];
+        console.log(cachedMessages[chatId]);
+        if (messages === null && !cachedMessages[chatId]) return null;
         else {
-            messages.forEach((message) => {
+            (messages ?? cachedMessages[chatId]).forEach((message) => {
                 if ("id" in message) {
                     result.push(
                         <MessageBox
@@ -92,7 +98,8 @@ export default function ChatArea() {
                             doubleClickHandler={() => setMessageToReplyTo(message)}
                             scrollToOriginal={() => {
                                 if (message.reply_id && messageRefs.current.get(message.reply_id)) {
-                                    const targetY = (messageRefs.current.get(message.reply_id)?.offsetTop ?? 0) + 42 - window.innerHeight / 2;
+                                    const targetY = (messageRefs.current.get(message.reply_id)?.offsetTop ?? 0) + 42
+                                        - window.innerHeight / 2;
                                     const scrollDiff = Math.abs(targetY - (chatAreaRef.current?.scrollTop ?? 0));
                                     chatAreaRef.current?.scrollTo({
                                         top: targetY,
@@ -134,7 +141,7 @@ export default function ChatArea() {
                                 });
                             }}
                             key={message.id}
-                            isOuter={store.username !== message.name}
+                            isOuter={username !== message.name}
                             message={message}
                         />
                     );
@@ -146,7 +153,12 @@ export default function ChatArea() {
             });
         }
         return result;
-    }, [messages, store.username, animate]);
+    }, [messages, username, animate, cachedMessages, chatId]);
+
+    useEffect(() => {
+        if (!messages) return;
+        persistentStore.getState().setCachedMessages(chatId, messages!);
+    }, [messages, chatId]);
 
     useEffect(() => {
         function handleClick(e: MouseEvent) {
@@ -168,7 +180,7 @@ export default function ChatArea() {
 
     useEffect(() => {
         if (chatAreaRef.current) chatAreaRef.current.scrollTop = chatAreaRef.current.scrollHeight;
-    }, [store.currentChatId]);
+    }, [chatId]);
 
     useEffect(() => {
         if (!chatAreaRef.current || !pending || messages === prevMessages.current) return;
@@ -178,7 +190,7 @@ export default function ChatArea() {
     }, [messages, pending, prevMessages]);
 
     return (
-        store.currentChatId ?
+        chatId ?
             <>
                 <div
                     ref={chatAreaRef}
@@ -193,29 +205,29 @@ export default function ChatArea() {
                             [&::-webkit-scrollbar-thumb]:bg-card-border [&::-webkit-scrollbar-track]:border-l-2`,
                             [contextMenuState?.open, "overflow-y-hidden pr-3"],
                             [!contextMenuState?.open, "overflow-y-scroll"],
-                            [!messages, "justify-center"]
+                            [!messagesToRender, "justify-center"]
                         )
                     }
                 >
-                    {!(messages === null) &&
+                    {messagesToRender &&
                         <div ref={scope} className={"flex flex-col space-y-2 py-2"}>
                             {messagesToRender}
                         </div>
                     }
                     {
-                        messages === null && <LoadingCircles/>
+                        !messagesToRender && <LoadingCircles/>
                     }
 
                 </div>
                 <ChatInput
                     publishMessageAction={publishMessage}
-                    username={store.username}
+                    username={username}
                     replyId={messageToReplyTo?.id ?? 0}
                     onSendMessageAction={onSendMessage}
                     onCommandSendAction={onSendCommand}
                     cancelReplyAction={() => setMessageToReplyTo(null)}
                     messageToReplyTo={messageToReplyTo}
-                    messages={messages}
+                    isLoading={messagesToRender === null}
                     consoleCommands={isLoading ? null : error ? [] : data as ConsoleCommand[]}
                 />
                 <ContextMenu

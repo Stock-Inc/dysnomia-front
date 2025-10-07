@@ -13,7 +13,7 @@ export default function ChatInput(
         replyId,
         onSendMessageAction,
         messageToReplyTo,
-        messages,
+        isLoading,
         cancelReplyAction,
         onCommandSendAction,
         consoleCommands,
@@ -23,7 +23,7 @@ export default function ChatInput(
         replyId: number;
         onSendMessageAction: () => void;
         messageToReplyTo: ChatMessage | null;
-        messages: (ChatMessage | ConsoleMessage)[] | null;
+        isLoading: boolean;
         cancelReplyAction: () => void;
         onCommandSendAction: (message: ConsoleMessage) => void;
         consoleCommands: ConsoleCommand[] | null;
@@ -90,7 +90,7 @@ export default function ChatInput(
     }
 
     return (
-        <div className={`${messages === null && "hidden"} sticky bottom-0 w-full left-0 h-fit flex flex-col group`}>
+        <div className={`${isLoading && "hidden"} sticky bottom-0 w-full left-0 h-fit flex flex-col group`}>
             {
                 replyId !== 0 &&
                 <ReplyPreview
