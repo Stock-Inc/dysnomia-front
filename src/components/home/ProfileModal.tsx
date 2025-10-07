@@ -5,7 +5,7 @@ import {useEffect, useRef, useState} from "react";
 import {persistentStore} from "@/lib/app-store";
 import ProfileModalButton from "@/components/home/ProfileModalButton";
 import {logoutAction} from "@/lib/auth";
-import {redirect, RedirectType} from "next/navigation";
+import {redirect} from "next/navigation";
 
 export default function ProfileModal() {
     const store = persistentStore();
