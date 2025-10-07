@@ -85,7 +85,6 @@ export default function ChatArea() {
     const [scope, animate] = useAnimate();
     const messagesToRender = useMemo(() => {
         const result: React.ReactNode[] = [];
-        console.log(cachedMessages[chatId]);
         if (messages === null && !cachedMessages[chatId]) return null;
         else {
             (messages ?? cachedMessages[chatId]).forEach((message) => {

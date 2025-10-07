@@ -13,7 +13,6 @@ interface useStompClientOptions {
 }
 
 export default function useStompClient<T, U>(url: string, options: useStompClientOptions): [T[] | null, (body: U) => void, (message: T) => void] {
-    //TODO: caching
     const stompClient = useRef<Client | null>(null);
     const [messages, setMessages] = useState<T[] | null>(null);
     const tokenFromCookie = useCookie("dysnomia-access");
