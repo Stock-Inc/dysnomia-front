@@ -25,9 +25,7 @@ export default function ProfileModal() {
 
     function logout() {
         logoutAction().then(() => {
-            store.setDisplayName("");
-            store.setUsername("");
-            store.setCurrentChatId("");
+            store.reset();
             redirect("/login");
         });
     }

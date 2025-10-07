@@ -3,6 +3,7 @@ import {persist} from "zustand/middleware";
 import {ChatMessage, ConsoleMessage} from "@/components/home/chat/ChatArea";
 
 export type PersistentStoreState = {
+    reset: () => void;
     username: string,
     setUsername: (username: string) => void,
     displayName: string,
@@ -33,6 +34,13 @@ export const persistentStore = create(persist<PersistentStoreState>(
                         [chatId]: messages,
                     }
             })),
+        reset: () => set({
+            username: "",
+            displayName: "",
+            isSidebarOpen: true,
+            currentChatId: "",
+            cachedMessages: {},
+        })
     }), {
         name: "dysnomia-client-store"
     })
