@@ -26,7 +26,11 @@ export default function Page() {
                 {store.currentChatId && <ChatInfoBar chatId={store.currentChatId}/>}
             </QueryClientProvider>
             <QueryClientProvider client={queryClient}>
-                <ChatArea />
+                {store.currentChatId ? <ChatArea /> :
+                    <div className={"flex flex-col justify-center h-screen w-full bg-background"}>
+                        <h1 className="place-self-center text-2xl justify-self-center">Select a chat to open it</h1>
+                    </div>
+                }
             </QueryClientProvider>
         </div>
 
