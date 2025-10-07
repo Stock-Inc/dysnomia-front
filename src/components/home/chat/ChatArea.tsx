@@ -19,7 +19,7 @@ export interface ChatMessage {
 }
 export interface ConsoleMessage {
     input: string;
-    output: string;
+    message: string;
 }
 export interface ChatPublishBody {
     name: string,
@@ -146,7 +146,7 @@ export default function ChatArea() {
                     );
                 } else {
                     result.push(
-                        <ConsoleBox key={`${result.length} ${message.input}`} input={message.input} output={message.output} />
+                        <ConsoleBox key={`${result.length} ${message.input}`} input={message.input} output={message.message} />
                     );
                 }
             });

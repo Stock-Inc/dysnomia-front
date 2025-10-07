@@ -81,7 +81,7 @@ export default function ChatInput(
                 .finally(() => {
                     onCommandSendAction({
                         input,
-                        output,
+                        message: output,
                     });
                 }
             );

@@ -1,23 +1,40 @@
 "use client";
 import {persistentStore} from "@/lib/app-store";
 import classBuilder from "@/lib/classBuilder";
+import {useEffect, useState} from "react";
+import {ChatMessage, ConsoleMessage} from "@/components/home/chat/ChatArea";
 
 export default function SidebarChatButton({chatId}: {chatId: string}) {
-    const store = persistentStore();
+    const [prevMessage, setPrevMessage] = useState<null | ChatMessage | ConsoleMessage>(null);
+    const chatMessages = persistentStore(state => state.cachedMessages[chatId]);
+    const currentChatId = persistentStore(state => state.currentChatId);
+    useEffect(() => {
+        if (!chatMessages) return;
+        setPrevMessage(chatMessages[chatMessages.length - 1]);
+    }, [chatId, chatMessages]);
 
     return (
         <button
             className={
                 classBuilder(
-            `p-2 text-lg transition-all bg-card-border border-2 border-card-border cursor-pointer focus:outline-none`,
-                    [store.currentChatId !== chatId,
-                        "bg-light-background hover:shadow-dim-glow hover:text-shadow-white-glow hover:bg-card-border"],
-                    [store.currentChatId === chatId, "text-shadow-white-glow"]
+            `p-2 px-4 text-lg text-start transition-all bg-card-border border-b-2 border-card-border cursor-pointer focus:outline-none group`,
+                    [currentChatId !== chatId, "bg-light-background hover:shadow-dim-glow hover:bg-card-border"],
                 )
             }
-            onClick={() => store.setCurrentChatId(chatId)}
+            onClick={() => persistentStore.getState().setCurrentChatId(chatId)}
         >
-            {chatId}
+            <h4 className={classBuilder(
+                "transition-all text-xl",
+                [currentChatId === chatId, "text-white"],
+            )}>{chatId}</h4>
+            <div className={`${currentChatId !== chatId && "text-muted-foreground"} flex space-x-2`}>
+                <p className={`${currentChatId === chatId}`}>
+                    {
+                        !prevMessage ? "Loading..." : `${"name" in prevMessage ? (prevMessage as ChatMessage)?.name : "console"}:`
+                    }
+                </p>
+                <span className={"wrap-anywhere line-clamp-1"}>{prevMessage?.message}</span>
+            </div>
         </button>
     );
 }
