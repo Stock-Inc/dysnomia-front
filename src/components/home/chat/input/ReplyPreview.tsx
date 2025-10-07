@@ -14,11 +14,11 @@ export default function ReplyPreview(
     }
 ) {
     return (
-        <div className={`${!replyId && "hidden"} line-clamp-1 border-t-2 sm:border-2 sm:border-b-0 
+        <div className={`${!replyId && "hidden"} line-clamp-1 border-t-2 sm:border-2 sm:border-b-0
                             border-card-border group-has-focus:border-accent bg-light-background flex justify-between transition-all`}>
             <div className={"flex space-x-2 p-2"}>
                 <p className={"text-lg"}>{messageToReplyTo?.name === "" ? "anon" : messageToReplyTo?.name}:</p>
-                <q className={"text-sm place-self-center"}>{messageToReplyTo?.message}</q>
+                <q className={"text-sm place-self-center line-clamp-2 wrap-anywhere"}>{messageToReplyTo?.message}</q>
             </div>
             <button aria-label={"Cancel reply"} onClick={cancelReplyAction}
                     className={`place-self-center cursor-pointer transition-all focus:outline-none hover:text-accent

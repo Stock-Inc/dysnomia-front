@@ -5,7 +5,7 @@ export default function HomeLayout({children}: Readonly<{
     children: React.ReactNode;
 }>) {
     return (
-        <div className="">
+        <div className="flex">
             <Sidebar/>
             <ProfileModal/>
             {children}

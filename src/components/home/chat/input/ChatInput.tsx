@@ -13,7 +13,7 @@ export default function ChatInput(
         replyId,
         onSendMessageAction,
         messageToReplyTo,
-        messages,
+        isLoading,
         cancelReplyAction,
         onCommandSendAction,
         consoleCommands,
@@ -23,7 +23,7 @@ export default function ChatInput(
         replyId: number;
         onSendMessageAction: () => void;
         messageToReplyTo: ChatMessage | null;
-        messages: (ChatMessage | ConsoleMessage)[] | null;
+        isLoading: boolean;
         cancelReplyAction: () => void;
         onCommandSendAction: (message: ConsoleMessage) => void;
         consoleCommands: ConsoleCommand[] | null;
@@ -81,7 +81,7 @@ export default function ChatInput(
                 .finally(() => {
                     onCommandSendAction({
                         input,
-                        output,
+                        message: output,
                     });
                 }
             );
@@ -90,7 +90,7 @@ export default function ChatInput(
     }
 
     return (
-        <div className={`${messages === null && "hidden"} sticky bottom-0 w-full left-0 h-fit flex flex-col group`}>
+        <div className={`${isLoading && "hidden"} sticky bottom-0 w-full left-0 h-fit flex flex-col group`}>
             {
                 replyId !== 0 &&
                 <ReplyPreview
@@ -115,7 +115,6 @@ export default function ChatInput(
                     border-t-2 sm:border-l-2 border-card-border focus:outline-none focus:border-accent transition-all h-auto`}>
                 </textarea>
                 <button
-                    tabIndex={1}
                     aria-label={"Send button"}
                     spellCheck={"false"}
                     onClick={sendMessage}

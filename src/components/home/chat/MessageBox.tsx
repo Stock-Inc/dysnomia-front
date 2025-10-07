@@ -29,7 +29,7 @@ export default function MessageBox(
         return (
             <>
                 <p className={"text-sm"}>{profileName}</p>
-                <p className={`${isLoading && "p-[10px]"}`}>{text}</p>
+                <p className={`${isLoading && "p-[12px]"} wrap-anywhere line-clamp-1`}>{text}</p>
             </>
         );
     };

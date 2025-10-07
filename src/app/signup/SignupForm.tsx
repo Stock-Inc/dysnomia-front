@@ -68,7 +68,7 @@ export default function SignupForm() {
                 <div className={"flex space-x-4 group"}>
                     <User className={classBuilder(
                         `scale-140 place-self-center transition-all group-focus-within:drop-shadow-accent text-accent`,
-                        ["text-error", error !== null || form.formState.errors.username],
+                        [error !== null || form.formState.errors.username, "text-error"],
                     )}/>
                     <input
                         spellCheck={"false"}
@@ -77,7 +77,7 @@ export default function SignupForm() {
                         className={classBuilder(
                             `w-full border-2 rounded-2xl text-xl focus:outline-2 p-2 focus:text-accent focus:shadow-glow 
                             transition-all border-accent focus:outline-accent`,
-                            ["border-error focus:outline-error text-error", error !== null || form.formState.errors.username],
+                            [error !== null || form.formState.errors.username, "border-error focus:outline-error text-error"],
                         )}
                         type={"text"} {...form.register("username")}
                     />
@@ -88,7 +88,7 @@ export default function SignupForm() {
                 <div className={"flex space-x-4 group"}>
                     <AtSign className={classBuilder(
                         `scale-140 place-self-center transition-all group-focus-within:drop-shadow-accent text-accent`,
-                        ["text-error", error !== null || form.formState.errors.email]
+                        [error !== null || form.formState.errors.email, "text-error"]
                     )}/>
                     <input
                         spellCheck={"false"}
@@ -97,7 +97,7 @@ export default function SignupForm() {
                         className={classBuilder(
                             `w-full border-2 rounded-2xl text-xl focus:outline-2 p-2 focus:text-accent 
                             focus:shadow-glow transition-all border-accent focus:outline-accent`,
-                            ["border-error focus:outline-error text-error", error !== null || form.formState.errors.email]
+                            [error !== null || form.formState.errors.email, "border-error focus:outline-error text-error"]
                         )}
                         type={"text"}
                         {...form.register("email")}
@@ -111,7 +111,7 @@ export default function SignupForm() {
                 <div className={"flex space-x-4 group"}>
                     <Shield className={classBuilder(
                         `scale-140 place-self-center transition-all group-focus-within:drop-shadow-accent text-accent`,
-                        ["text-error", error !== null || form.formState.errors.password])
+                        [error !== null || form.formState.errors.password, "text-error"])
                     }/>
                     <input
                         spellCheck={"false"}
@@ -120,7 +120,7 @@ export default function SignupForm() {
                         className={classBuilder(
                             `w-full border-2 rounded-2xl text-xl focus:outline-2 p-2 focus:text-accent focus:shadow-glow 
                             transition-all border-accent focus:outline-accent`,
-                            ["border-error focus:outline-error text-error", error !== null || form.formState.errors.password])}
+                            [error !== null || form.formState.errors.password, "border-error focus:outline-error text-error"])}
                         type={"password"} {...form.register("password")}
                     />
                 </div>
@@ -130,7 +130,7 @@ export default function SignupForm() {
                 <div className={"flex space-x-4 group"}>
                     <ShieldCheck className={classBuilder(
                         `scale-140 place-self-center transition-all group-focus-within:drop-shadow-accent text-accent`,
-                        ["text-error", error !== null || form.formState.errors.password]
+                        [error !== null || form.formState.errors.password, "text-error"]
                     )}/>
                     <input
                         spellCheck={"false"}
@@ -139,7 +139,7 @@ export default function SignupForm() {
                         className={classBuilder(
                             `w-full border-2 rounded-2xl text-xl focus:outline-2 p-2 focus:text-accent focus:shadow-glow 
                             transition-all text-accent focus:outline-accent border-accent`,
-                            ["border-error text-error focus:outline-error", error !== null || form.formState.errors.password]
+                            [error !== null || form.formState.errors.password, "border-error text-error focus:outline-error"]
                         )}
                         type={"password"} {...form.register("confirmPassword")}
                     />
@@ -151,7 +151,7 @@ export default function SignupForm() {
                 <div className={"flex space-x-4 justify-evenly"}>
                     <label htmlFor={"terms"} className={classBuilder(
                         `text-xl`,
-                        ["text-error", form.formState.errors.agreeToTerms]
+                        [form.formState.errors.agreeToTerms, "text-error"]
                     )}>
                         Agree to the <Link className={"underline hover:text-accent transition-all"} href={"/tos"}>Terms of
                         Service</Link>
@@ -162,7 +162,7 @@ export default function SignupForm() {
                             checked:bg-dark-accent checked:after:content-['✔'] checked:after:text-xl checked:after:text-white
                             checked:after:font-bold text-center checked:after:flex checked:after:flex-col checked:after:justify-center after:max-h-6
                             focus:outline-2 focus:outline-accent transition-all`,
-                            ["border-error focus:outline-error", form.formState.errors.agreeToTerms])}
+                            [form.formState.errors.agreeToTerms, "border-error focus:outline-error"])}
                         id={"terms"}
                         type={"checkbox"}
                         {...form.register("agreeToTerms")}
@@ -175,7 +175,7 @@ export default function SignupForm() {
                     type={"submit"}
                     className={classBuilder(
                         `text-xl`,
-                            ["animate-pulse", !canSubmit]
+                            [!canSubmit, "animate-pulse"]
                     )}
             >
                 Register

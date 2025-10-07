@@ -115,7 +115,7 @@ export type SignupResponse = {
 
 export async function signupAction(credentials: SignupData): Promise<SignupResponse> {
     try {
-        const response = await fetch(`${BACKEND_URL}/registration`, {
+        const response = await fetch(`${BACKEND_URL}/signup`, {
             method: "POST",
             headers: {
                 "Content-type": "application/json"
@@ -147,7 +147,6 @@ export type SessionCheckResponse = {
     success: boolean,
     message: string,
     username?: string,
-    accessToken?: string,
 }
 
 export async function checkForActiveSessions(): Promise<SessionCheckResponse> {
@@ -166,6 +165,7 @@ export async function checkForActiveSessions(): Promise<SessionCheckResponse> {
                 const username = payload.username as string;
                 const refreshToken = payload.refreshToken as string;
                 try {
+                    //FIXME: throws internal server error, waiting for backend
                     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/refresh_token`, {
                         method: "POST",
                         headers: {
@@ -195,11 +195,9 @@ export async function checkForActiveSessions(): Promise<SessionCheckResponse> {
                 }
             }
         } else {
-            const accessToken = accessCookie.value;
             return {
                 success: true,
                 message: "session found",
-                accessToken: accessToken,
             };
         }
     } catch (e) {
