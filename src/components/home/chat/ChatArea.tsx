@@ -9,6 +9,7 @@ import LoadingCircles from "@/components/LoadingCircles";
 import {useQuery} from "@tanstack/react-query";
 import {useAnimate} from "motion/react";
 import ConsoleBox from "@/components/home/chat/ConsoleBox";
+import useContextMenuState from "@/hook/useContextMenuState";
 
 export interface ChatMessage {
     id: number,
@@ -71,17 +72,8 @@ export default function ChatArea() {
         pushMessage(message);
     }
     const messageRefs = useRef<Map<number, HTMLDivElement>>(new Map());
-    interface ContextMenuState {
-        x: number,
-        y: number,
-        open: boolean,
-        currentMessage: {
-            element: HTMLDivElement;
-            message: ChatMessage;
-        },
-    }
-    const [contextMenuState, setContextMenuState] = useState<ContextMenuState | null>(null);
     const contextMenuRef = useRef<null | HTMLDivElement>(null);
+    const [contextMenuState, contextHandler] = useContextMenuState(contextMenuRef);
     const [scope, animate] = useAnimate();
     const messagesToRender = useMemo(() => {
         const result: React.ReactNode[] = [];
@@ -111,33 +103,7 @@ export default function ChatArea() {
                                 }
                             }}
                             contextHandler={(e) => {
-                                setContextMenuState(s => {
-                                    const currentMessage = {
-                                        element: messageRefs.current.get(message.id)!,
-                                        message
-                                    };
-                                    let deltaX = 0;
-                                    let deltaY = 0;
-                                    const chatAreaRect = chatAreaRef.current!.getBoundingClientRect();
-                                    const ctx = contextMenuRef.current!;
-                                    if (chatAreaRect.bottom - e.clientY < ctx.clientHeight) {
-                                        deltaY = ctx.clientHeight;
-                                    }
-                                    if (chatAreaRect.right - e.clientX < ctx.clientWidth) {
-                                        deltaX = ctx.clientWidth;
-                                    }
-                                    return s?.open ? {
-                                        x: s.x,
-                                        y: s.y,
-                                        open: false,
-                                        currentMessage
-                                    } : {
-                                        x: e.clientX - deltaX,
-                                        y: e.clientY - deltaY,
-                                        open: true,
-                                        currentMessage
-                                    };
-                                });
+                                contextHandler(e, message, messageRefs, chatAreaRef);
                             }}
                             key={message.id}
                             isOuter={username !== message.name}
@@ -152,30 +118,12 @@ export default function ChatArea() {
             });
         }
         return result;
-    }, [messages, username, animate, cachedMessages, chatId]);
+    }, [messages, username, animate, cachedMessages, chatId, contextHandler]);
 
     useEffect(() => {
         if (!messages) return;
         persistentStore.getState().setCachedMessages(chatId, messages!);
     }, [messages, chatId]);
-
-    useEffect(() => {
-        function handleClick(e: MouseEvent) {
-            if (contextMenuState?.open) {
-                const rect = contextMenuRef.current!.getBoundingClientRect();
-                if (e.x > rect.right || e.x < rect.left || e.y > rect.top || e.y < rect.bottom) {
-                    setContextMenuState(s => s ? {
-                            ...s, open: false
-                        } : null
-                    );
-                }
-            }
-        }
-        window.addEventListener("click", handleClick);
-        return () => {
-            window.removeEventListener("click", handleClick);
-        };
-    }, [contextMenuState]);
 
     useEffect(() => {
         if (chatAreaRef.current) chatAreaRef.current.scrollTop = chatAreaRef.current.scrollHeight;
@@ -194,7 +142,7 @@ export default function ChatArea() {
                     ref={chatAreaRef}
                     className={
                         classBuilder(
-                            `bg-chat-background max-md:border-t-2 md:border-x-2 border-card-border 
+                            `bg-background max-md:border-t-2 md:border-x-2 border-card-border 
                             space-y-2 h-screen flex flex-col justify-between
                             [&::-webkit-scrollbar-track]:border-card-border
                             [&::-webkit-scrollbar-thumb]:hover:bg-accent [&::-webkit-scrollbar-thumb]:transition-all
