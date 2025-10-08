@@ -51,13 +51,15 @@ export default function MessageBox(
                 className={
                     classBuilder(
                         `text-lg rounded-2xl p-1 flex flex-col max-w-200 w-fit`,
-                        [isOuter, "place-self-start rounded-bl-none bg-card-border"],
-                        [!isOuter, "place-self-end rounded-br-none text-white bg-accent"],
+                        [isOuter, "place-self-start rounded-bl-none bg-background border-2 border-card-border"],
+                        [!isOuter, "place-self-end rounded-br-none text-background bg-accent"],
                     )
                 }
             >
                 <p
-                    className={`${message.name && "cursor-pointer hover:text-shadow-white-glow"} text-md p-1 mb-1 transition-all w-fit`}
+                    className={`${message.name && classBuilder(
+                        "cursor-pointer", [isOuter, "hover:text-shadow-white-glow"], [!isOuter, "hover:font-bold"]
+                    )} text-md p-1 mb-1 transition-all w-fit`}
                     onClick={() => {
                         if (message.name) redirect(`/profile/${message.name}`, RedirectType.push);
                     }}
@@ -72,9 +74,9 @@ export default function MessageBox(
                         className={
                             classBuilder(
                                 `p-1 mx-1 line-clamp-2 overflow-hidden text-md cursor-pointer`,
-                                [isOuter, `bg-chat-outer-reply-background border-l-4 border-foreground 
-                                    rounded-r-xl hover:bg-chat-outer-reply-background-focus`],
-                                [!isOuter, "bg-dark-accent border-r-4 border-white rounded-l-xl hover:bg-dark-accent-focus"]
+                                [isOuter, `bg-background border-l-4 border-l-accent border-2 border-light-background
+                                    rounded-r-xl hover:bg-light-background`],
+                                [!isOuter, "bg-dark-accent border-r-4 border-background rounded-l-xl hover:bg-dark-accent-focus"]
                             )
                         }>
                         {replyPreview()}
@@ -86,7 +88,7 @@ export default function MessageBox(
                         classBuilder(
                             `text-sm place-self-end p-1 select-none pointer-events-none`,
                             [isOuter, "text-muted-foreground"],
-                            [isOuter, "text-gray-100"]
+                            [!isOuter, "text-light-background"]
                         )
                     }>
                         {
