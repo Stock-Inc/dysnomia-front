@@ -189,7 +189,6 @@ export default function ChatArea() {
     }, [messages, pending, prevMessages]);
 
     return (
-        chatId ?
             <>
                 <div
                     ref={chatAreaRef}
@@ -249,8 +248,5 @@ export default function ChatArea() {
                     }}
                 />
             </>
-            :
-            <h1 className="place-self-center text-2xl justify-self-center">Select a chat to open it</h1>
-
     );
 }
