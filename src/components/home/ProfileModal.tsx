@@ -6,6 +6,7 @@ import {persistentStore} from "@/lib/app-store";
 import ProfileModalButton from "@/components/home/ProfileModalButton";
 import {logoutAction} from "@/lib/auth";
 import {redirect} from "next/navigation";
+import {AnimatePresence, motion} from "motion/react";
 
 export default function ProfileModal() {
     const store = persistentStore();
@@ -46,22 +47,34 @@ export default function ProfileModal() {
                 text-foreground hover:scale-none hover:border-accent hover:text-accent`}>
                 <User/>
             </Button>
-            <div className={`${!isOpen && "hidden"} transition-all
-            mt-2 bg-light-background flex flex-col border-2 border-card-border rounded-2xl p-2 space-y-2`}>
-                <p>Logged in as: <span className={"text-accent text-shadow-glow"}>{store.username}</span></p>
-                <ProfileModalButton href={`/profile/${store.username}`}>
-                    <User className={"group-hover:drop-shadow-white-glow place-self-center"}/>
-                    <p>Profile</p>
-                </ProfileModalButton>
-                <ProfileModalButton href={'/settings'}>
-                    <Settings className={"group-hover:drop-shadow-white-glow place-self-center"}/>
-                    <p>Settings</p>
-                </ProfileModalButton>
-                <ProfileModalButton dangerous onClickAction={logout}>
-                    <LogOut className={"group-hover:drop-shadow-error-glow place-self-center"}/>
-                    <p>Log Out</p>
-                </ProfileModalButton>
-            </div>
+            <AnimatePresence mode={"sync"}>
+                {
+                    isOpen && <motion.div
+                        initial={{opacity: 0}}
+                        animate={{opacity: 1}}
+                        exit={{opacity: 0}}
+                        transition={{duration: 0.1}}
+                        className={
+                            `transition-all mt-2 bg-light-background flex flex-col 
+                            border-2 border-card-border rounded-2xl p-2 space-y-2`
+                        }
+                    >
+                        <p>Logged in as: <span className={"text-accent text-shadow-glow"}>{store.username}</span></p>
+                        <ProfileModalButton href={`/profile/${store.username}`}>
+                            <User className={"group-hover:drop-shadow-white-glow place-self-center"}/>
+                            <p>Profile</p>
+                        </ProfileModalButton>
+                        <ProfileModalButton href={'/settings'}>
+                            <Settings className={"group-hover:drop-shadow-white-glow place-self-center"}/>
+                            <p>Settings</p>
+                        </ProfileModalButton>
+                        <ProfileModalButton dangerous onClickAction={logout}>
+                            <LogOut className={"group-hover:drop-shadow-error-glow place-self-center"}/>
+                            <p>Log Out</p>
+                        </ProfileModalButton>
+                    </motion.div>
+                }
+            </AnimatePresence>
         </div>
     );
 }
