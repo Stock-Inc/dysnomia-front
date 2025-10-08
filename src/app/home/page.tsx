@@ -21,7 +21,7 @@ export default function Page() {
     const queryClient = new QueryClient();
 
     return (
-        <div className={`h-screen transition-all max-md:pt-21 lg:pr-21 lg:pl-21 font-main flex flex-col justify-center w-full`}>
+        <div className={`h-screen transition-all max-md:pt-21 lg:pr-21 ${!store.isSidebarOpen && "lg:pl-21"} font-main flex flex-col justify-center w-full`}>
             <QueryClientProvider client={queryClient}>
                 {store.currentChatId && <ChatInfoBar chatId={store.currentChatId}/>}
             </QueryClientProvider>
