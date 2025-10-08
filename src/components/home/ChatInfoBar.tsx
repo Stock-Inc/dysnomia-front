@@ -18,7 +18,7 @@ export default function ChatInfoBar(
 
     return (
         <div className={
-            `${!store.isSidebarOpen ? "pl-21" : "pl-4"} bg-background md:border-2 border-t-none border-card-border space-x-5
+            `${store.isSidebarOpen && "pl-4"} bg-background md:border-2 border-t-none border-card-border space-x-5
             p-2 flex max-md:absolute max-md:w-full max-md:top-0 max-sm:justify-center transition-all`
         }>
             {

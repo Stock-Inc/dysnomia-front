@@ -70,8 +70,8 @@ export default function Sidebar() {
                         [!store.isSidebarOpen, "sm:hidden"]
                     )}
                 />
-                <h2 className={"text-center text-3xl border-b-2 border-card-border p-6"}>Chats</h2>
-                <div className={"flex flex-col"}>
+                <h2 className={`${!store.isSidebarOpen && "hidden"} text-center text-3xl border-b-2 border-card-border p-6`}>Chats</h2>
+                <div className={`${!store.isSidebarOpen && "hidden"} flex flex-col`}>
                     <SidebarChatButton chatId={"public"}/>
                 </div>
 
