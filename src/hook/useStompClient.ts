@@ -72,6 +72,6 @@ export default function useStompClient<T, U>(url: string, options: useStompClien
                 stompClient.current?.deactivate();
             };
         }
-    }, [tokenFromCookie]);
+    }, [tokenFromCookie, url]);
     return [messages, publish, pushMessage];
 }
