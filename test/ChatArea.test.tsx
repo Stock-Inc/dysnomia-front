@@ -128,10 +128,10 @@ describe("ChatArea", () => {
             </QueryClientProvider>
         );
 
-        await waitFor(() => {
-            const helloMessage = document.querySelector(".msgbg1 > div");
-            const hiMessage = document.querySelector(".msgbg2 > div");
+        const helloMessage = document.querySelector(".msgbg1 > div");
+        const hiMessage = document.querySelector(".msgbg2 > div");
 
+        await waitFor(() => {
             expect(helloMessage?.className).toContain("place-self-end");
             expect(hiMessage?.className).toContain("place-self-start");
         });
@@ -144,9 +144,9 @@ describe("ChatArea", () => {
             </QueryClientProvider>
         );
 
-        await waitFor(() => {
-            const hiMessage = document.querySelector(".msgbg2 > div");
+        const hiMessage = document.querySelector(".msgbg2 > div");
 
+        await waitFor(() => {
             expect(hiMessage?.innerHTML).toContain("Hello");
         });
     });
@@ -158,10 +158,11 @@ describe("ChatArea", () => {
             </QueryClientProvider>
         );
 
+        await user.pointer([{keys: "[MouseLeft]", target: screen.getByPlaceholderText("Write a message...")}]);
+        await user.keyboard("/");
+
         await waitFor(() => {
-            user.pointer({keys: "[MouseLeft]", target: screen.getByPlaceholderText("Write a message...")});
-            user.keyboard("/");
-            expect(screen.getByText("cmd")).toBeTruthy();
+            expect(screen.getByTestId("cmd").className).not.toContain("opacity-0");
         });
     });
 });
