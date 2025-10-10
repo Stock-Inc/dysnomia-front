@@ -1,21 +1,18 @@
 @import "tailwindcss";
 
 :root {
-    --background: #121318;
-    --light-background: #181820;
-    --card-border: #252535;
+    --background: #191113;
+    --light-background: #271a1d;
+    --card-border: #3c2e2f;
     --accent: #ea96ad;
-    --dark-accent: #ba7787;
+    --dark-accent: #cc8495;
     --dark-accent-focus: #c67e8f;
     --foreground: #d8d8d8;
     --error: #e36666;
     --highlight-background: #653f46;
     --highlight-text: #e1b7c2;
-    --chat-background: #14141b;
-    --chat-outer-reply-background: #20202e;
-    --chat-outer-reply-background-focus: #2a2a3c;
-    --muted-foreground: #9393a1;
-    --loading-circle: #383850;
+    --muted-foreground: #a19393;
+    --loading-circle: #3e3030;
 }
 
 @keyframes loadingCircle {
@@ -51,13 +48,10 @@
     --shadow-dim-glow: 0px 0px 10px 1px #252535;
     --text-shadow-white-glow: 0px 0px 2px #ffffff;
     --text-shadow-error-glow: 0px 0px 2px #e36666;
-    --color-chat-background: var(--chat-background);
-    --color-chat-outer-reply-background: var(--chat-outer-reply-background);
     --color-muted-foreground: var(--muted-foreground);
     --animate-loading-circle: loadingCircle 1s ease-in-out 0s infinite;
     --color-loading-circle: var(--loading-circle);
     --color-dark-accent-focus: var(--dark-accent-focus);
-    --color-chat-outer-reply-background-focus: var(--chat-outer-reply-background-focus);
 }
 
 body {

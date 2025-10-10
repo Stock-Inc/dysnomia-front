@@ -30,6 +30,7 @@ export default function ContextMenu(
             ref={ref}
             onContextMenu={(e) => e.preventDefault()}
             style={{left: state?.x, top: state?.y}}
+            role={"menu"}
             className={
                 `${!state?.open && "opacity-0 pointer-events-none"} fixed transition-opacity 
                 bg-light-background rounded-2xl flex flex-col text-xl`

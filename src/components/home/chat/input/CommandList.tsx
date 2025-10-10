@@ -19,7 +19,7 @@ export default function CommandList(
     }
 ) {
     const list = useMemo(() => {
-        if (commands === null) return <p>Loading...</p>;
+        if (!commands) return <p>Loading...</p>;
 
         if (commands.length === 0) return <p className={"text-error"}>Something went wrong...</p>;
         const result:React.ReactNode[] = [];
@@ -54,7 +54,7 @@ export default function CommandList(
         return result;
     }, [commands, input, setInput, textareaRef]);
     return (
-        <div className={
+        <div data-testid={"cmd"} className={
                 `${(!isCommand || (list instanceof Array && list.length === 0)) && "opacity-0 pointer-events-none"}
                 absolute bottom-20 place-self-center flex flex-col mx-5 transition-all w-[80%]
                 border-2 border-card-border group-focus-within:border-accent rounded-lg bg-light-background
