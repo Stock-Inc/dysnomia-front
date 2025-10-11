@@ -18,9 +18,9 @@ export default function MessageBox(
 ) {
     const {isLoading, error, data} = useQuery({
         queryKey: [message.id],
-        queryFn: () => fetch(`${process.env.NEXT_PUBLIC_API_URL}/message/${message.reply_id}`).then(res => {
+        queryFn: message.reply_id !== 0 ? () => fetch(`${process.env.NEXT_PUBLIC_API_URL}/message/${message.reply_id}`).then(res => {
             if (res.ok) return res.json();
-        }),
+        }) : () => {return null},
     });
 
     const replyPreview = () => {
