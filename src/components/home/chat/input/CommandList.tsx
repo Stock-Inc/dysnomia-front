@@ -19,9 +19,9 @@ export default function CommandList(
     }
 ) {
     const list = useMemo(() => {
-        if (!commands) return <p>Loading...</p>;
+        if (!commands) return <p className={"p-2"}>Loading...</p>;
 
-        if (commands.length === 0) return <p className={"text-error"}>Something went wrong...</p>;
+        if (commands.length === 0) return <p className={"text-error p-2"}>Something went wrong...</p>;
         const result:React.ReactNode[] = [];
 
         commands.forEach((command, index) => {
