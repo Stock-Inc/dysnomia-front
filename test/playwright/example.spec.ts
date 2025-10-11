@@ -30,11 +30,31 @@ test.describe("chat", () => {
         await page.getByLabel("Toggle sidebar").click();
         await expect(page.getByText("Chats")).toHaveCSS("opacity", "0");
     });
-    const message = crypto.randomUUID().toString();
     test("should be able to load public chat and send a message", async ({page}) => {
+        const message = crypto.randomUUID().toString();
         await expect(page.getByPlaceholder("Write a message...")).toBeVisible();
         await page.getByPlaceholder("Write a message...").fill(message);
         await page.getByLabel("Send button").click();
         await expect(page.getByText(message).filter({visible: true})).toBeVisible();
+    });
+    // test("should be able to reply and do associated stuff", async ({page}) => {
+    //     const message = crypto.randomUUID().toString();
+    //     await page.getByText(process.env.PLAYWRIGHT_LOGIN!).nth(1).click({clickCount: 2});
+    //     await expect(page.getByLabel("Cancel reply")).toBeVisible();
+    //     await page.getByPlaceholder("Write a message...").fill(message);
+    //     await page.getByLabel("Send button").click();
+    //     const originalMessage = await page.getByText(message).getByText(process.env.PLAYWRIGHT_LOGIN!).textContent();
+    //     await page.getByText(message).filter({hasText: process.env.PLAYWRIGHT_LOGIN!}).nth(0).click();
+    //     await expect(page.getByText(originalMessage!)).toBeInViewport();
+    // });
+    test("should be able to go to the profile and back", async ({page}) => {
+        await page.getByLabel("Open profile modal").click();
+        await expect(page.getByRole("menu").filter({hasText: "Logged in as"})).toBeVisible();
+        await page.getByText("Profile").click();
+        await page.waitForURL(`http://localhost:3000/profile/${process.env.PLAYWRIGHT_LOGIN!}`, {timeout: 10000});
+        await expect(page.getByText(`@${process.env.PLAYWRIGHT_LOGIN!}`)).toBeVisible();
+        await page.getByLabel("Go back").click();
+        await page.waitForURL("http://localhost:3000/home", {timeout: 10000});
+        await expect(page.getByPlaceholder("Write a message...")).toBeVisible();
     });
 });
