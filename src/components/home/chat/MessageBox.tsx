@@ -20,7 +20,7 @@ export default function MessageBox(
         queryKey: [message.id],
         queryFn: message.reply_id !== 0 ? () => fetch(`${process.env.NEXT_PUBLIC_API_URL}/message/${message.reply_id}`).then(res => {
             if (res.ok) return res.json();
-        }) : () => {return null},
+        }) : () => null,
     });
 
     const replyPreview = () => {
