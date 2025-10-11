@@ -37,6 +37,7 @@ test.describe("chat", () => {
         await page.getByLabel("Send button").click();
         await expect(page.getByText(message).filter({visible: true})).toBeVisible();
     });
+    //FIXME
     // test("should be able to reply and do associated stuff", async ({page}) => {
     //     const message = crypto.randomUUID().toString();
     //     await page.getByText(process.env.PLAYWRIGHT_LOGIN!).nth(1).click({clickCount: 2});
