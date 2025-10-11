@@ -123,6 +123,7 @@ export default function ChatArea() {
     useEffect(() => {
         if (!messages) return;
         persistentStore.getState().setCachedMessages(chatId, messages!);
+        chatAreaRef.current!.scrollTop = chatAreaRef.current!.scrollHeight;
     }, [messages, chatId]);
 
     useEffect(() => {
