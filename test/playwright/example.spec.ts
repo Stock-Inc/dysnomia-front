@@ -57,4 +57,9 @@ test.describe("chat", () => {
         await page.waitForURL("http://localhost:3000/home", {timeout: 10000});
         await expect(page.getByPlaceholder("Write a message...")).toBeVisible();
     });
+    test("clicking on people's names should redirect to their profile page", async ({page}) => {
+        await page.getByText(process.env.PLAYWRIGHT_LOGIN!).filter({visible: true}).first().click();
+        await page.waitForURL(`http://localhost:3000/profile/${process.env.PLAYWRIGHT_LOGIN!}`, {timeout: 10000});
+        await expect(page.getByText(`@${process.env.PLAYWRIGHT_LOGIN!}`)).toBeVisible();
+    });
 });
