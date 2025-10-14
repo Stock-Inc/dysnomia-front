@@ -144,7 +144,7 @@ export default function ChatArea() {
                     className={
                         classBuilder(
                             `bg-background max-md:border-t-2 md:border-x-2 border-card-border 
-                            space-y-2 h-screen flex flex-col justify-between
+                            space-y-2 h-screen flex flex-col justify-between overflow-x-hidden
                             [&::-webkit-scrollbar-track]:border-card-border
                             [&::-webkit-scrollbar-thumb]:hover:bg-accent [&::-webkit-scrollbar-thumb]:transition-all
                             [&::-webkit-scrollbar]:w-3 [&::-webkit-scrollbar-track]:rounded-full 
