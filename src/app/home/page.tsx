@@ -1,10 +1,10 @@
 "use client";
-import ChatArea from "@/components/home/chat/ChatArea";
 import {persistentStore} from "@/lib/app-store";
 import {useEffect} from "react";
 import {QueryClientProvider} from "@tanstack/react-query";
 import {QueryClient} from "@tanstack/query-core";
 import ChatInfoBar from "@/components/home/ChatInfoBar";
+import ChatArea from "@/components/home/chat/ChatArea";
 
 export default function Page() {
 
@@ -21,7 +21,8 @@ export default function Page() {
     const queryClient = new QueryClient();
 
     return (
-        <div className={`h-screen transition-all max-md:pt-21 lg:pr-21 ${!store.isSidebarOpen && "lg:pl-21"} font-main flex flex-col justify-center w-full`}>
+        <div className={`h-screen transition-all max-md:pt-21 lg:pr-21 ${!store.isSidebarOpen && "lg:pl-21"}
+         font-main flex flex-col justify-center w-full`}>
             <QueryClientProvider client={queryClient}>
                 {store.currentChatId && <ChatInfoBar chatId={store.currentChatId}/>}
             </QueryClientProvider>
