@@ -61,7 +61,7 @@ export default function ProfileModal() {
                         }
                     >
                         <p>Logged in as: <span className={"text-accent text-shadow-glow"}>{store.username}</span></p>
-                        <ProfileModalButton href={`/profile/${store.username}`}>
+                        <ProfileModalButton href={`/profile`}>
                             <User className={"group-hover:drop-shadow-white-glow place-self-center"}/>
                             <p>Profile</p>
                         </ProfileModalButton>
