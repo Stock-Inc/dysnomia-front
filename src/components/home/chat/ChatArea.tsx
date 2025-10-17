@@ -10,6 +10,7 @@ import {useQuery} from "@tanstack/react-query";
 import {useAnimate} from "motion/react";
 import ConsoleBox from "@/components/home/chat/ConsoleBox";
 import useContextMenuState from "@/hook/useContextMenuState";
+import PendingMessage from "@/components/home/chat/PendingMessage";
 
 export interface ChatMessage {
     id: number,
@@ -62,15 +63,17 @@ export default function ChatArea() {
             },
         }
     );
-    function onSendMessage() {
+    function onSendMessage(message: ChatPublishBody) {
         setMessageToReplyTo(null);
         setPending(true);
+        setPendingMessages(s => [...s, message]);
     }
     function onSendCommand(message: ConsoleMessage) {
         setMessageToReplyTo(null);
         setPending(true);
         pushMessage(message);
     }
+    const [pendingMessages, setPendingMessages] = useState<ChatPublishBody[]>([]);
     const messageRefs = useRef<Map<number, HTMLDivElement>>(new Map());
     const contextMenuRef = useRef<null | HTMLDivElement>(null);
     const [contextMenuState, contextHandler] = useContextMenuState(contextMenuRef);
@@ -132,6 +135,7 @@ export default function ChatArea() {
 
     useEffect(() => {
         if (!chatAreaRef.current || !pending || messages === prevMessages.current) return;
+        setPendingMessages([]);
         chatAreaRef.current.scrollTop = chatAreaRef.current.scrollHeight;
         prevMessages.current = messages;
         setPending(false);
@@ -144,7 +148,7 @@ export default function ChatArea() {
                     className={
                         classBuilder(
                             `bg-background max-md:border-t-2 md:border-x-2 border-card-border 
-                            space-y-2 h-screen flex flex-col justify-between
+                            space-y-2 h-screen flex flex-col justify-between overflow-x-hidden
                             [&::-webkit-scrollbar-track]:border-card-border
                             [&::-webkit-scrollbar-thumb]:hover:bg-accent [&::-webkit-scrollbar-thumb]:transition-all
                             [&::-webkit-scrollbar]:w-3 [&::-webkit-scrollbar-track]:rounded-full 
@@ -159,6 +163,9 @@ export default function ChatArea() {
                     {messagesToRender &&
                         <div ref={scope} className={"flex flex-col space-y-2 py-2"}>
                             {messagesToRender}
+                            {pendingMessages.map(
+                                message => <PendingMessage key={message.message + "pending"} message={message}/>
+                            )}
                         </div>
                     }
                     {

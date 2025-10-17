@@ -21,7 +21,7 @@ export default function ChatInput(
         publishMessageAction: (body: ChatPublishBody) => void;
         username: string;
         replyId: number;
-        onSendMessageAction: () => void;
+        onSendMessageAction: (body: ChatPublishBody) => void;
         messageToReplyTo: ChatMessage | null;
         isLoading: boolean;
         cancelReplyAction: () => void;
@@ -69,7 +69,11 @@ export default function ChatInput(
                     reply_id: replyId,
                 }
             );
-            onSendMessageAction();
+            onSendMessageAction({
+                name: username,
+                message: input,
+                reply_id: replyId,
+            });
         } else {
             setIsCommand(false);
             let output = "";

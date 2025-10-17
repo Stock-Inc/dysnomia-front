@@ -1,16 +1,18 @@
 "use client";
-import {redirect, usePathname} from "next/navigation";
-import {persistentStore} from "@/lib/app-store";
-import {useEffect} from "react";
+import LocalProfileDetails from "@/components/profile/LocalProfileDetails";
+import {QueryClient} from "@tanstack/query-core";
+import {QueryClientProvider} from "@tanstack/react-query";
 
 export default function Page() {
-    //TODO: make this redirect serverside
-    const pathname = usePathname();
-    const store = persistentStore();
 
-    useEffect(() => {
-        if (pathname === "/profile") redirect(`/profile/${store.username}`);
-    }, [store, pathname]);
+    const queryClient = new QueryClient();
 
-    return (<></>);
+    return (
+        <div>
+            <h1 className={"text-center text-3xl mb-4"}>My Profile</h1>
+            <QueryClientProvider client={queryClient}>
+                <LocalProfileDetails/>
+            </QueryClientProvider>
+        </div>
+    );
 }

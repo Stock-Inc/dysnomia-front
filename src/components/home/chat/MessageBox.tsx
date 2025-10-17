@@ -3,7 +3,7 @@ import {motion} from "motion/react";
 import classBuilder from "@/lib/classBuilder";
 import {redirect, RedirectType} from "next/navigation";
 import {useQuery} from "@tanstack/react-query";
-import React from "react";
+import React, {useRef} from "react";
 
 export default function MessageBox(
     {message, isOuter, doubleClickHandler, ref, scrollToOriginal, contextHandler}:
@@ -34,8 +34,23 @@ export default function MessageBox(
         );
     };
 
+    const initialX = useRef(0);
+    const msgRef = useRef<null | HTMLDivElement>(null);
+
     return (
         <motion.div
+            ref={msgRef}
+            drag={"x"}
+            dragElastic={0.3}
+            onDragStart={() => {
+                initialX.current = msgRef.current!.getBoundingClientRect().left;
+            }}
+            onDragEnd={(_, info) => {
+                if (Math.abs(info.offset.x - initialX.current) > 200) {
+                    doubleClickHandler();
+                }
+            }}
+            dragConstraints={{left: 0, right: 0}}
             initial={{opacity: 0}}
             animate={{opacity: 1}}
             transition={{duration: 0.5}}
