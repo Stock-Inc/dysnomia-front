@@ -2,6 +2,8 @@ import {create} from "zustand/react";
 import {persist} from "zustand/middleware";
 import {ChatMessage, ConsoleMessage} from "@/components/home/chat/ChatArea";
 
+export type Theme = "light" | "dark"
+
 export type PersistentStoreState = {
     reset: () => void;
     username: string,
@@ -10,6 +12,8 @@ export type PersistentStoreState = {
     setDisplayName: (displayName: string) => void,
     profileDescription: string | null,
     setProfileDescription: (newBio: string | null) => void,
+    theme: Theme,
+    setTheme: (newTheme: Theme) => void
     isSidebarOpen: boolean,
     setIsSidebarOpen: () => void,
     currentChatId: string,
@@ -26,6 +30,8 @@ export const persistentStore = create(persist<PersistentStoreState>(
         setDisplayName: displayName => set({displayName: displayName}),
         profileDescription: null,
         setProfileDescription: (newBio) => set({profileDescription: newBio}),
+        theme: "dark",
+        setTheme: (newTheme) => set({theme: newTheme}),
         isSidebarOpen: true,
         setIsSidebarOpen: () => set({isSidebarOpen: !get().isSidebarOpen}),
         currentChatId: "",
