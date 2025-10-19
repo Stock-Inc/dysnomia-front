@@ -2,15 +2,20 @@
 import BackButton from "@/components/profile/BackButton";
 import {useMemo, useState} from "react";
 import SettingsTabButton from "@/components/settings/SettingsTabButton";
+import PreferencesSettings from "@/components/settings/PreferencesSettings";
+import ProfileSettings from "@/components/settings/ProfileSettings";
+import {QueryClient} from "@tanstack/query-core";
+import {QueryClientProvider} from "@tanstack/react-query";
 
 export type SettingsTabs = "profile" | "preferences" | "privacy";
 
 export default function Page() {
+    const queryClient = new QueryClient();
     const [currentTab, setCurrentTab] = useState<SettingsTabs>("profile");
     const tabToRender = useMemo(() => {
         switch (currentTab) {
-            case "profile": return <div>profile tab</div>;
-            case "preferences": return <div>preferences tab</div>;
+            case "profile": return <ProfileSettings/>;
+            case "preferences": return <PreferencesSettings/>;
             case "privacy": return <div>privacy tab</div>;
         }
     }, [currentTab]);
@@ -44,9 +49,12 @@ export default function Page() {
                             Privacy
                         </SettingsTabButton>
                     </div>
-                    {
-                        tabToRender
-                    }
+                    <QueryClientProvider client={queryClient}>
+                        {
+                            tabToRender
+                        }
+                    </QueryClientProvider>
+
                 </div>
             </div>
         </>

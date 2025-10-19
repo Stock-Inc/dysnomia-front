@@ -1,13 +1,13 @@
 "use client";
 //TODO: merge with ProfileDetails
 import {persistentStore} from "@/lib/app-store";
-import {Camera, Pen, User} from "lucide-react";
+import {Camera, User} from "lucide-react";
 import {useQuery} from "@tanstack/react-query";
 import useCookie from "@/hook/useCookie";
-import {ProfileDetails} from "@/components/profile/ProfileDetails";
 import {useState} from "react";
+import {ProfileDetails} from "@/components/profile/ProfileDetails";
 
-export default function LocalProfileDetails() {
+export default function ProfileSettings() {
     const store = persistentStore();
     const token = useCookie("dysnomia-access");
     const {data, isLoading, error} = useQuery({
@@ -79,7 +79,7 @@ export default function LocalProfileDetails() {
                     rounded-2xl mt-5 p-2 transition-all cursor-pointer focus:outline-none`}
                     type={"submit"}
                 >
-                    Submit
+                    Apply
                 </button>
             </form>
         </div>

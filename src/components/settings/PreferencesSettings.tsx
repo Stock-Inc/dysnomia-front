@@ -26,7 +26,7 @@ export default function PreferencesSettings() {
                     rounded-2xl mt-5 p-2 transition-all cursor-pointer focus:outline-none`}
                     type={"submit"}
                 >
-                    Submit
+                    Apply
                 </button>
             </form>
         </div>
