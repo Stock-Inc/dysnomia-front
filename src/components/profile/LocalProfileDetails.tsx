@@ -5,8 +5,7 @@ import {Camera, Pen, User} from "lucide-react";
 import {useQuery} from "@tanstack/react-query";
 import useCookie from "@/hook/useCookie";
 import {ProfileDetails} from "@/components/profile/ProfileDetails";
-import {useEffect, useRef, useState} from "react";
-import classBuilder from "@/lib/classBuilder";
+import {useState} from "react";
 
 export default function LocalProfileDetails() {
     const store = persistentStore();
@@ -23,142 +22,66 @@ export default function LocalProfileDetails() {
         ).then(res => res.json() as unknown as ProfileDetails),
         enabled: !!token && !!store.username
     });
-    const [pendingName, setPendingName] = useState("");
-    const [isEditingName, setIsEditingName] = useState(false);
-    const nameInputRef = useRef<null | HTMLInputElement>(null);
-    const [pendingDescription, setPendingDescription] = useState("");
-    const [isEditingDescription, setIsEditingDescription] = useState(false);
-    const descriptionInputRef = useRef<null | HTMLTextAreaElement>(null);
-
-    useEffect(() => {
-        nameInputRef.current?.focus();
-    }, [isEditingName]);
-    useEffect(() => {
-        descriptionInputRef.current?.focus();
-    }, [isEditingDescription]);
+    const [newName, setNewName] = useState("");
+    const [newBio, setNewBio] = useState("");
 
     return (
-        <div className={"flex justify-evenly sm:space-x-10 max-sm:flex-col max-h-[80vh]"}>
-            <div className={"flex flex-col space-y-2"}>
+        //TODO: zod + react hook form
+        <div className={"flex justify-evenly items-start flex-col max-h-[80vh] p-4 text-xl"}>
+            <form className={"space-y-4 flex flex-col w-full"}>
                 <button
-                    className={`w-fit h-fit flex justify-center group rounded-2xl 
-                    border-2 border-foreground cursor-pointer focus:outline-none place-self-center`}
+                    onClick={(e) => e.preventDefault()}
+                    className={`w-fit h-fit flex justify-center group rounded-2xl place-self-center 
+                    border-2 border-foreground cursor-pointer focus:outline-none`}
                 >
-                    <User className={"group-has-hover:blur-xs w-40 h-40 place-self-center transition-all"}/>
-                    <Camera className={`absolute w-20 h-20 place-self-center p-2 rounded-full 
-                    not-group-has-hover:opacity-0 transition-all group-has-hover:bg-card-border`}/>
+                    <User className={"w-40 h-40 place-self-center brightness-50"}/>
+                    <Camera className={`absolute w-20 h-20 place-self-center p-2 rounded-full transition-all group-has-hover:text-accent`}/>
                 </button>
+                <div className={"w-full"}>
+                    <label htmlFor={"displayName"} className={"text-lg text-muted-foreground"}>Display Name</label>
+                    <input
+                        //TODO: zod validation
+                        onChange={(e) => setNewName(e.currentTarget.value)}
+                        autoComplete={"off"}
+                        id={"displayName"}
+                        maxLength={64}
+                        className={
+                            `focus:outline-none border-foreground transition-all border-2 focus:border-accent w-full rounded-2xl p-1`
+                        }
+                        defaultValue={store.displayName || data?.displayName}
+                    />
+                </div>
+                <div className={"w-full"}>
+                    <div className={`${!(isLoading || !!error) && "flex flex-col space-x-2"}`}>
+                        <label className={"text-lg text-muted-foreground"} htmlFor={"bio"}>Bio</label>
+                        <input
+                            onChange={(e) => setNewBio(e.currentTarget.value)}
+                            id={"bio"}
+                            autoComplete={"off"}
+                            maxLength={512}
+                            placeholder={"Nothing here..."}
+                            defaultValue={(store.profileDescription || data?.bio)}
+                            className={
+                                `focus:outline-none border-foreground transition-all border-2 focus:border-accent w-full rounded-2xl p-1`
+                            }
+                        />
+                    </div>
+                </div>
                 <button
-                    className={"justify-center focus:outline-none cursor-text text-2xl text-center group"}
-                    onClick={() => setIsEditingName(true)}
-                >
-                    {
-                        isEditingName ?
-                            <input
-                                onChange={(e) => {
-                                    setPendingName(e.currentTarget.value);
-                                }}
-                                //TODO: zod validation
-                                onKeyDown={(e) => {
-                                    if (
-                                        e.key === "Enter" && pendingName.trim() !== store.displayName
-                                        && pendingName.trim().length >= 3 && pendingName.trim().length <= 16
-                                    ) {
-                                        store.setDisplayName(pendingName);
-                                        setPendingName("");
-                                        setIsEditingName(false);
-                                        //TODO: api call
-                                    } else if (e.key === "Escape") {
-                                        setPendingName("");
-                                        setIsEditingName(false);
-                                    }
-                                }}
-                                autoComplete={"off"}
-                                id={"displayName"}
-                                onBlur={() => setIsEditingName(false)}
-                                ref={nameInputRef}
-                                className={
-                                    `text-center focus:outline-none border-accent transition-all border-b-2 not-focus:border-b-light-background w-40`
-                                }
-                                defaultValue={pendingName || store.displayName || data?.displayName}
-                            /> :
-                            <h2 className={"border-b-2 border-light-background group-has-hover:border-foreground transition-all"}>
-                                {store.displayName || data?.displayName}
-                            </h2>
-                    }
-                </button>
-                <button
-                    className={"w-fit h-fit place-self-center focus:outline-none"}
                     onClick={(e) => {
                         e.preventDefault();
-                        navigator.clipboard.writeText(`@${store.username}`);
+                        if (newName.trim().length >= 3) {
+                            store.setDisplayName(newName.trim());
+                        }
+                        store.setProfileDescription(newBio.trim());
                     }}
+                    className={`hover:bg-card-border border-2 hover:text-accent border-card-border 
+                    rounded-2xl mt-5 p-2 transition-all cursor-pointer focus:outline-none`}
+                    type={"submit"}
                 >
-                    <h3 className={"text-lg text-dark-accent text-center underline cursor-pointer hover:text-accent"}>
-                        @{store.username}
-                    </h3>
+                    Submit
                 </button>
-            </div>
-            <div className={"flex flex-col h-full max-sm:mt-4 max-sm:w-60 sm:w-80 md:w-120 lg:w-180 group"}>
-                <div className={`${!(isLoading || !!error) && "flex space-x-2"}`}>
-                    {
-                        isLoading ? <div className={"grid grid-cols-6 space-x-4 space-y-4"}>
-                            <div className={"col-span-1 h-4 animate-pulse rounded-2xl p-2 bg-gray-600"}/>
-                            <div className={"col-span-2 h-4 animate-pulse rounded-2xl p-2 bg-gray-600"}/>
-                            <div className={"col-span-3 h-4 animate-pulse rounded-2xl p-2 bg-gray-600"}/>
-                            <div className={"col-span-2 h-4 animate-pulse rounded-2xl p-2 bg-gray-600"}/>
-                            <div className={"col-span-3 h-4 animate-pulse rounded-2xl p-2 bg-gray-600"}/>
-                            <div className={"col-span-1 h-4 animate-pulse rounded-2xl p-2 bg-gray-600"}/>
-                            <div className={"col-span-4 h-4 animate-pulse rounded-2xl p-2 bg-gray-600"}/>
-                            <div className={"col-span-1 h-4 animate-pulse rounded-2xl p-2 bg-gray-600"}/>
-                        </div> : !error ?
-                            (isEditingDescription ? <textarea
-                                ref={descriptionInputRef}
-                                id={"bio"}
-                                onChange={(e) => {
-                                    setPendingDescription(e.currentTarget.value);
-                                }}
-                                onBlur={() => {
-                                    setIsEditingDescription(false);
-                                }}
-                                onKeyDown={(e) => {
-                                    if (e.key === "Enter") {
-                                        if (e.shiftKey) return;
-                                        store.setProfileDescription(pendingDescription.trim());
-                                        setPendingDescription("");
-                                        setIsEditingDescription(false);
-                                        //TODO: api call
-                                    }
-                                }}
-                                rows={8}
-                                placeholder={"Your profile bio..."}
-                                defaultValue={(pendingDescription || store.profileDescription || data?.bio)}
-                                className={
-                                    `text-lg resize-none focus:outline-none w-full h-full transition-all whitespace-pre
-                                    [&::-webkit-scrollbar-track]:border-card-border
-                                    [&::-webkit-scrollbar-thumb]:hover:bg-accent [&::-webkit-scrollbar-thumb]:transition-all
-                                    [&::-webkit-scrollbar]:w-3 [&::-webkit-scrollbar-track]:rounded-full 
-                                    [&::-webkit-scrollbar-track]:bg-background [&::-webkit-scrollbar-thumb]:rounded-full 
-                                    [&::-webkit-scrollbar-thumb]:bg-card-border`
-                                }
-                            /> : <p
-                                onClick={() => setIsEditingDescription(true)}
-                                className={
-                                    `text-lg w-full h-full transition-all whitespace-pre wrap-anywhere 
-                                    overflow-y-scroll max-sm:max-h-[22.5vh] sm:max-h-[23vh]
-                                    [&::-webkit-scrollbar-track]:border-card-border
-                                    [&::-webkit-scrollbar-thumb]:hover:bg-accent [&::-webkit-scrollbar-thumb]:transition-all
-                                    [&::-webkit-scrollbar]:w-3 [&::-webkit-scrollbar-track]:rounded-full 
-                                    [&::-webkit-scrollbar-track]:bg-background [&::-webkit-scrollbar-thumb]:rounded-full 
-                                    [&::-webkit-scrollbar-thumb]:bg-card-border`
-                                }
-                            >
-                                {(store.profileDescription || data?.bio) ?? "Nothing here"}
-                            </p>) :
-                            <p className={"text-lg"}>Something went wrong...</p>
-                    }
-                </div>
-            </div>
+            </form>
         </div>
     );
 }
