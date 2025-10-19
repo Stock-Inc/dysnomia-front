@@ -100,7 +100,6 @@ export default function ProfileDetails() {
                     </h3>
                 </button>
             </div>
-            {/*TODO: make bio editable*/}
             {/*TODO: make user tags in bio clickable*/}
             <div className={"flex flex-col max-sm:mt-4 max-sm:w-60 sm:w-80 md:w-120 lg:w-180"}>
                 {

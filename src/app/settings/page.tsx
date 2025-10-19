@@ -2,24 +2,30 @@
 import BackButton from "@/components/profile/BackButton";
 import {useMemo, useState} from "react";
 import SettingsTabButton from "@/components/settings/SettingsTabButton";
+import PreferencesSettings from "@/components/settings/PreferencesSettings";
+import ProfileSettings from "@/components/settings/ProfileSettings";
+import {QueryClient} from "@tanstack/query-core";
+import {QueryClientProvider} from "@tanstack/react-query";
+import PrivacySettings from "@/components/settings/PrivacySettings";
 
 export type SettingsTabs = "profile" | "preferences" | "privacy";
 
 export default function Page() {
+    const queryClient = new QueryClient();
     const [currentTab, setCurrentTab] = useState<SettingsTabs>("profile");
     const tabToRender = useMemo(() => {
         switch (currentTab) {
-            case "profile": return <div>profile tab</div>;
-            case "preferences": return <div>preferences tab</div>;
-            case "privacy": return <div>privacy tab</div>;
+            case "profile": return <ProfileSettings/>;
+            case "preferences": return <PreferencesSettings/>;
+            case "privacy": return <PrivacySettings/>;
         }
     }, [currentTab]);
 
     return (
-        <>
+        <div className={"flex justify-center"}>
             <BackButton/>
-            <div className={"h-screen flex flex-col justify-center w-full font-main"}>
-                <div className={"border-2 border-card-border bg-light-background p-4 place-self-center rounded-2xl flex flex-col space-y-2"}>
+            <div className={"h-screen flex flex-col justify-center w-full font-main max-sm:max-w-40"}>
+                <div className={"border-2 border-card-border bg-light-background max-sm:p-2 sm:p-4 place-self-center rounded-2xl flex flex-col space-y-2"}>
                     <h1 className={"text-3xl text-center"}>Settings</h1>
                     <div className={"flex justify-evenly space-x-5 text-xl"}>
                         <SettingsTabButton
@@ -44,11 +50,13 @@ export default function Page() {
                             Privacy
                         </SettingsTabButton>
                     </div>
-                    {
-                        tabToRender
-                    }
+                    <QueryClientProvider client={queryClient}>
+                        {
+                            tabToRender
+                        }
+                    </QueryClientProvider>
                 </div>
             </div>
-        </>
+        </div>
     );
 }
