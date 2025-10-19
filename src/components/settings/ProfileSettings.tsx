@@ -7,12 +7,14 @@ import {ProfileDetails} from "@/components/profile/ProfileDetails";
 import {z} from "zod";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
+import classBuilder from "@/lib/classBuilder";
+import {useEffect, useState} from "react";
 
 const formSchema = z.object({
     displayName: z.string()
         .min(3, {message: "Display name has to be at least 3 characters long!"})
         .max(20, {error: "Display name can not be longer than 20 symbols"}),
-    profileDescription: z.string()
+    profileDescription: z.string().optional()
 });
 
 export default function ProfileSettings() {
@@ -30,7 +32,7 @@ export default function ProfileSettings() {
         ).then(res => res.json() as unknown as ProfileDetails),
         enabled: !!token && !!store.username
     });
-    const {mutate} = useMutation({
+    const {mutate, isPending:mutationPending} = useMutation({
         mutationFn: (body: z.infer<typeof formSchema>) => fetch(
             `${process.env.NEXT_PUBLIC_API_URL}/profile/edit_info`,
             {
@@ -43,17 +45,28 @@ export default function ProfileSettings() {
             }
         )
     });
+    const [mutationResult, setMutationResult] = useState("");
 
     const form = useForm({
         resolver: zodResolver(formSchema)
     });
 
+    useEffect(() => {
+        form.setValue("displayName", store.displayName);
+        form.setValue("profileDescription", store.profileDescription);
+    }, [form, store.displayName, store.profileDescription]);
+
     async function handleSubmit(values: z.infer<typeof formSchema>) {
         form.clearErrors();
         mutate(values, {
-            onSuccess: (_) => {
-                store.setDisplayName(values.displayName);
-                store.setProfileDescription(values.profileDescription);
+            onSuccess: (res) => {
+                if (res.ok) {
+                    store.setDisplayName(values.displayName);
+                    store.setProfileDescription(values.profileDescription);
+                    setMutationResult("Profile updated!");
+                } else {
+                    setMutationResult("Something went wrong...");
+                }
             },
             onError: (err) => console.log(err),
         });
@@ -104,9 +117,18 @@ export default function ProfileSettings() {
                         />
                     </div>
                 </div>
-                <p className={"text-error text-lg"}>{form.formState.errors.displayName?.message}</p>
+                <p className={classBuilder(
+                    [!!form.formState.errors.displayName?.message, "text-error"],
+                    "text-lg"
+                )}>
+                    {
+                        form.formState.errors.displayName?.message || mutationResult
+                    }
+                </p>
                 <button
-                    className={`enabled:hover:bg-card-border border-2 enabled:hover:text-accent border-card-border 
+                    disabled={mutationPending}
+                    className={`${mutationPending && "animate-pulse"} 
+                    enabled:hover:bg-card-border border-2 enabled:hover:text-accent border-card-border 
                     rounded-2xl p-2 transition-all enabled:cursor-pointer enabled:focus:outline-none disabled:text-muted-foreground`}
                     type={"submit"}
                 >
