@@ -6,6 +6,7 @@ import PreferencesSettings from "@/components/settings/PreferencesSettings";
 import ProfileSettings from "@/components/settings/ProfileSettings";
 import {QueryClient} from "@tanstack/query-core";
 import {QueryClientProvider} from "@tanstack/react-query";
+import PrivacySettings from "@/components/settings/PrivacySettings";
 
 export type SettingsTabs = "profile" | "preferences" | "privacy";
 
@@ -16,7 +17,7 @@ export default function Page() {
         switch (currentTab) {
             case "profile": return <ProfileSettings/>;
             case "preferences": return <PreferencesSettings/>;
-            case "privacy": return <div>privacy tab</div>;
+            case "privacy": return <PrivacySettings/>;
         }
     }, [currentTab]);
 
