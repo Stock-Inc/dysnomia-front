@@ -21,10 +21,10 @@ export default function Page() {
     }, [currentTab]);
 
     return (
-        <>
+        <div className={"flex justify-center"}>
             <BackButton/>
-            <div className={"h-screen flex flex-col justify-center w-full font-main"}>
-                <div className={"border-2 border-card-border bg-light-background p-4 place-self-center rounded-2xl flex flex-col space-y-2"}>
+            <div className={"h-screen flex flex-col justify-center w-full font-main max-sm:max-w-40"}>
+                <div className={"border-2 border-card-border bg-light-background max-sm:p-2 sm:p-4 place-self-center rounded-2xl flex flex-col space-y-2"}>
                     <h1 className={"text-3xl text-center"}>Settings</h1>
                     <div className={"flex justify-evenly space-x-5 text-xl"}>
                         <SettingsTabButton
@@ -54,9 +54,8 @@ export default function Page() {
                             tabToRender
                         }
                     </QueryClientProvider>
-
                 </div>
             </div>
-        </>
+        </div>
     );
 }
