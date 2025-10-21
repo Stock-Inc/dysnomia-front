@@ -14,7 +14,7 @@ export default function P(
     }
 ) {
     const content = useMemo(() => {
-        const tags = children?.toString().match(/@[a-zA-Z0-9_]*/gm);
+        const tags = children?.toString().match(/@[a-zA-Z0-9_-]*/gm);
         const output: (ReactNode | string)[] = [];
         if (!children || !tags) return children;
         let input = children.toString();
