@@ -4,6 +4,7 @@ import classBuilder from "@/lib/classBuilder";
 import {redirect, RedirectType} from "next/navigation";
 import {useQuery} from "@tanstack/react-query";
 import React, {useRef} from "react";
+import P from "@/components/P";
 
 export default function MessageBox(
     {message, isOuter, doubleClickHandler, ref, scrollToOriginal, contextHandler}:
@@ -98,7 +99,7 @@ export default function MessageBox(
                     </div>
                 }
                 <div className={"flex justify-between"}>
-                    <p className={"p-1 wrap-anywhere"}>{message.message}</p>
+                    <P linkVariant={"message"} className={"p-1 wrap-anywhere"}>{message.message}</P>
                     <p className={
                         classBuilder(
                             `text-sm place-self-end p-1 select-none pointer-events-none`,

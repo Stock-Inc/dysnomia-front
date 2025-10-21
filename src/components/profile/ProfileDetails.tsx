@@ -6,6 +6,7 @@ import {motion} from "motion/react";
 import {useEffect, useState} from "react";
 import {useQuery} from "@tanstack/react-query";
 import useCookie from "@/hook/useCookie";
+import P from "@/components/P";
 
 export interface ProfileDetails {
     username: string;
@@ -113,7 +114,7 @@ export default function ProfileDetails() {
                         <div className={"col-span-4 h-4 animate-pulse rounded-2xl p-2 bg-gray-600"}/>
                         <div className={"col-span-1 h-4 animate-pulse rounded-2xl p-2 bg-gray-600"}/>
                     </div> : !errorMessage ?
-                        <p className={"text-lg"}>{data?.bio ?? "Nothing here"}</p> :
+                        <P linkVariant={"bio"} className={"text-lg"}>{data?.bio ?? "Nothing here"}</P> :
                         <p className={"text-lg"}>Something went wrong...</p>
                 }
             </div>
