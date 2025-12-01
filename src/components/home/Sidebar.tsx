@@ -5,10 +5,35 @@ import {useRef} from "react";
 import {persistentStore} from "@/lib/app-store";
 import SidebarChatButton from "@/components/home/SidebarChatButton";
 import classBuilder from "@/lib/classBuilder";
+import {useQuery} from "@tanstack/react-query";
+
+interface Chat {
+    id: string
+    userId: number
+    userName: string
+}
 
 export default function Sidebar() {
     const store = persistentStore();
     const sidebarRef = useRef<null | HTMLDivElement>(null);
+    const {data, error, isLoading} = useQuery<Chat[] | undefined>({
+        queryKey: ["chats"],
+        queryFn: () => fetch(`${process.env.NEXT_PUBLIC_API_URL}/chats`).then(res => {
+            if (res.ok) return [
+                {
+                    id: "1",
+                    userId: 30174932,
+                    userName: "Go"
+                },
+                {
+                    id: "2",
+                    userId: 30174933,
+                    userName: "Golden Freddy"
+                }
+            ] as Chat[];
+            else throw new Error(res.statusText);
+        }) //TODO: update when actual backend is ready
+    });
     // const [width, setWidth] = useState(360);
     // const [height, setHeight] = useState(0);
 
@@ -76,6 +101,22 @@ export default function Sidebar() {
                 </h2>
                 <div className={`${!store.isSidebarOpen && "opacity-0 pointer-events-none"} transition-all flex flex-col`}>
                     <SidebarChatButton chatId={"public"}/>
+                    {
+                        isLoading ? <p className={"text-center text-muted-foreground p-4"}>Fetching...</p>
+                            : error ?
+                                <p className={"text-center text-error p-4"}>
+                                    {error.message.length === 0 ? "Something went wrong..." : error.message}
+                                </p>
+                            : data!.map(
+                                (c) =>
+                                    <SidebarChatButton
+                                        key={c.id}
+                                        chatId={c.id}
+                                        userId={c.userId}
+                                        userName={c.userName}
+                                    />
+                            )
+                    }
                 </div>
 
             </div>

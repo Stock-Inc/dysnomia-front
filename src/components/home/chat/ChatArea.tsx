@@ -49,7 +49,7 @@ export default function ChatArea() {
     const [pending, setPending] = useState(true);
     const prevMessages = useRef<(ChatMessage | ConsoleMessage)[] | null>(null);
     const [messages, publishMessage, pushMessage] = useStompClient<ChatMessage | ConsoleMessage, ChatPublishBody>(
-        `${process.env.NEXT_PUBLIC_API_URL}/ws`,
+        chatId === "public" ? `${process.env.NEXT_PUBLIC_API_URL}/ws` : `${process.env.NEXT_PUBLIC_API_URL}/${chatId}/ws`,
         {
             reconnectDelay: 5000,
             debugHandler: (str) => console.log(str),

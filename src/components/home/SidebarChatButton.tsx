@@ -4,7 +4,17 @@ import classBuilder from "@/lib/classBuilder";
 import {useEffect, useMemo, useState} from "react";
 import {ChatMessage, ConsoleMessage} from "@/components/home/chat/ChatArea";
 
-export default function SidebarChatButton({chatId}: {chatId: string}) {
+export default function SidebarChatButton(
+    {
+        chatId,
+        userId,
+        userName
+    }: {
+        chatId: string
+        userId?: number
+        userName?: string
+    }
+) {
     const [prevMessage, setPrevMessage] = useState<null | ChatMessage | ConsoleMessage>(null);
     const chatMessages = persistentStore(state => state.cachedMessages[chatId]);
     const currentChatId = persistentStore(state => state.currentChatId);
@@ -29,10 +39,14 @@ export default function SidebarChatButton({chatId}: {chatId: string}) {
             }
             onClick={() => persistentStore.getState().setCurrentChatId(chatId)}
         >
-            <h4 className={classBuilder(
-                "transition-all text-xl",
-                [currentChatId === chatId, "text-white"],
-            )}>{chatId}</h4>
+            <h4
+                className={classBuilder(
+                    "transition-all text-xl",
+                    [currentChatId === chatId, "text-white"],
+                )}
+            >
+                {userName ? userName : chatId}
+            </h4>
             <div className={`${currentChatId !== chatId && "text-muted-foreground"} flex space-x-2`}>
                 <p className={`${currentChatId === chatId}`}>
                     {

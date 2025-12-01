@@ -72,6 +72,6 @@ export default function useStompClient<T, U>(url: string, options: useStompClien
                 stompClient.current?.deactivate();
             };
         }
-    }, [tokenFromCookie, url]);
+    }, [tokenFromCookie, url]); //DO NOT add options to deps as it causes the connection to constantly close and reopen
     return [messages, publish, pushMessage];
 }
