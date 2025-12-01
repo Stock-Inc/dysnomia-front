@@ -20,6 +20,18 @@ export default function Sidebar() {
         queryKey: ["chats"],
         queryFn: () => fetch(`${process.env.NEXT_PUBLIC_API_URL}/chats`).then(res => {
             console.log(res);
+            return [
+                {
+                    id: "1",
+                    userId: 30174932,
+                    userName: "Go"
+                },
+                {
+                    id: "2",
+                    userId: 30174933,
+                    userName: "Golden Freddy"
+                }
+            ] as Chat[];
             if (res.ok) return [
                 {
                     id: "1",
